@@ -8,32 +8,49 @@
 </head>
 <body>
     <header>
-        <h1>Добро пожаловать на сайт Ludvig2457</h1>
-        <nav>
-            <a href="#about">Обо мне</a>
-            <a href="#projects">Проекты</a>
-            <a href="#contact">Контакты</a>
-        </nav>
+        <div class="container">
+            <h1 class="logo">Ludvig2457</h1>
+            <nav>
+                <a href="#about">Обо мне</a>
+                <a href="#projects">Проекты</a>
+                <a href="#contact">Контакты</a>
+                <button id="theme-toggle" aria-label="Переключить тему">🌙</button>
+            </nav>
+        </div>
     </header>
 
-    <section id="about">
-        <h2>Обо мне</h2>
-        <p>Привет! Я Ludvig2457 — разработчик и энтузиаст технологий.</p>
-    </section>
+    <main class="container">
+        <section id="about" class="fade-in">
+            <h2>Обо мне</h2>
+            <p>Привет! Я Ludvig2457 — разработчик и энтузиаст технологий. Люблю создавать крутые проекты и делиться ими с миром.</p>
+        </section>
 
-    <section id="projects">
-        <h2>Мои проекты</h2>
-        <ul>
-            <li><a href="https://github.com/ludvig2457/SuperLauncher" target="_blank" rel="noopener">SuperLauncher — Minecraft лаунчер</a></li>
-            <li><a href="https://github.com/ludvig2457" target="_blank" rel="noopener">Мой GitHub профиль</a></li>
-            <!-- Добавь сюда свои проекты -->
-        </ul>
-    </section>
+        <section id="projects" class="fade-in delay-1">
+            <h2>Мои проекты</h2>
+            <ul>
+                <li><a href="https://github.com/ludvig2457/SuperLauncher" target="_blank" rel="noopener">SuperLauncher — Minecraft лаунчер</a></li>
+                <li><a href="https://github.com/ludvig2457" target="_blank" rel="noopener">Мой GitHub профиль</a></li>
+                <!-- Добавь сюда свои проекты -->
+            </ul>
+        </section>
 
-    <section id="contact">
-        <h2>Контакты</h2>
-        <p>Связаться со мной можно по почте: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
-    </section>
+        <section id="contact" class="fade-in delay-2">
+            <h2>Связаться со мной</h2>
+            <form id="contact-form">
+                <label for="name">Имя</label>
+                <input type="text" id="name" name="name" placeholder="Ваше имя" required />
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Ваш email" required />
+
+                <label for="message">Сообщение</label>
+                <textarea id="message" name="message" placeholder="Ваше сообщение" rows="5" required></textarea>
+
+                <button type="submit">Отправить</button>
+                <p id="form-status" role="alert" aria-live="polite"></p>
+            </form>
+        </section>
+    </main>
 
     <footer>
         <p>© 2025 Ludvig2457. Все права защищены.</p>
