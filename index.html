@@ -1,39 +1,122 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ludvig2457</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ludvig2457 | Главная</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #f0f0f0;
+      --bg-dark: #1e1e1e;
+      --text-light: #111;
+      --text-dark: #f9f9f9;
+      --accent: #00bcd4;
+    }
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    body {
+      font-family: 'Rubik', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: all 0.3s ease;
+    }
 
-<link rel="stylesheet" href="css/styles.css" />
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    header {
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toggle-theme {
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border: none;
+      background: var(--accent);
+      color: white;
+      border-radius: 10px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin: 1rem;
+    }
+
+    .projects {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      padding: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      transition: transform 0.2s;
+    }
+
+    .dark .card {
+      background: #2e2e2e;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 500px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <div class="container header-container">
-    <h1 class="logo">Ludvig<span class="highlight">2457</span></h1>
-    <nav class="nav-links">
-      <a href="#about">Обо мне</a>
-      <a href="#projects">Проекты</a>
-      <a href="#contact">Контакты</a>
-      <button id="theme-toggle" aria-label="Переключить тему">🌙</button>
-    </nav>
-  </div>
-</header>
+  <header>
+    <h1>Ludvig2457</h1>
+    <button class="toggle-theme">🌙 Тема</button>
+  </header>
 
-<main class="container">
-  <section id="about" class="section fade-in">
-    <h2>Привет! Я Ludvig2457</h2>
-    <p>Разработчик и энтузиаст, который создаёт крутые проекты и делится ими с миром.</p>
-  </section>
-</main>
+  <main>
+    <section class="projects">
+      <div class="card">
+        <h2>SuperLauncher</h2>
+        <p>Лаунчер Minecraft с поддержкой Forge, Fabric и серверов.</p>
+      </div>
+      <div class="card">
+        <h2>Модуль LudvigOS</h2>
+        <p>Мини-ОС на Python для внутреннего пользования.</p>
+      </div>
+      <div class="card">
+        <h2>GitHub Pages</h2>
+        <p>Сайт-портфолио, полностью на HTML/CSS/JS.</p>
+      </div>
+    </section>
+  </main>
 
-<footer>
-  <p>© 2025 Ludvig2457. Все права защищены.</p>
-</footer>
+  <footer>
+    &copy; 2025 Ludvig2457. Все права защищены.
+  </footer>
 
-<script src="js/script.js"></script>
+  <script>
+    const btn = document.querySelector('.toggle-theme');
+    btn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+    });
+  </script>
 </body>
 </html>
