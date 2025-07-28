@@ -1,122 +1,124 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ludvig2457 | Главная</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-light: #f0f0f0;
-      --bg-dark: #1e1e1e;
-      --text-light: #111;
-      --text-dark: #f9f9f9;
-      --accent: #00bcd4;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Компания Ludvig2457 — IT-решения и разработки</title>
+<style>
+  body {
+    margin: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  header {
+    background: #0a74da;
+    color: white;
+    padding: 20px 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2.5rem;
+  }
+  nav {
+    margin-top: 10px;
+  }
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 20px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: color 0.3s;
+  }
+  nav a:hover {
+    color: #ffd54f;
+  }
+  main {
+    flex-grow: 1;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 15px;
+  }
+  section {
+    margin-bottom: 50px;
+  }
+  h2 {
+    color: #0a74da;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #0a74da;
+    padding-bottom: 5px;
+  }
+  p {
+    line-height: 1.6;
+    font-size: 1.1rem;
+  }
+  a.link {
+    color: #0a74da;
+    text-decoration: underline;
+  }
+  footer {
+    background: #222;
+    color: #bbb;
+    text-align: center;
+    padding: 20px 10px;
+    font-size: 0.9rem;
+  }
+  @media (max-width: 600px) {
+    nav a {
+      display: block;
+      margin: 10px 0;
     }
-
-    body {
-      font-family: 'Rubik', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: var(--bg-light);
-      color: var(--text-light);
-      transition: all 0.3s ease;
-    }
-
-    body.dark {
-      background: var(--bg-dark);
-      color: var(--text-dark);
-    }
-
-    header {
-      padding: 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .toggle-theme {
-      cursor: pointer;
-      padding: 0.5rem 1rem;
-      border: none;
-      background: var(--accent);
-      color: white;
-      border-radius: 10px;
-    }
-
-    h1 {
-      font-size: 2.2rem;
-      margin: 1rem;
-    }
-
-    .projects {
-      display: grid;
-      gap: 1.5rem;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      padding: 2rem;
-    }
-
-    .card {
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      transition: transform 0.2s;
-    }
-
-    .dark .card {
-      background: #2e2e2e;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      opacity: 0.7;
-    }
-
-    @media (max-width: 500px) {
-      h1 {
-        font-size: 1.5rem;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Ludvig2457</h1>
-    <button class="toggle-theme">🌙 Тема</button>
-  </header>
 
-  <main>
-    <section class="projects">
-      <div class="card">
-        <h2>SuperLauncher</h2>
-        <p>Лаунчер Minecraft с поддержкой Forge, Fabric и серверов.</p>
-      </div>
-      <div class="card">
-        <h2>Модуль LudvigOS</h2>
-        <p>Мини-ОС на Python для внутреннего пользования.</p>
-      </div>
-      <div class="card">
-        <h2>GitHub Pages</h2>
-        <p>Сайт-портфолио, полностью на HTML/CSS/JS.</p>
-      </div>
-    </section>
-  </main>
+<header>
+  <h1>Компания Ludvig2457</h1>
+  <nav>
+    <a href="#products">Продукты</a>
+    <a href="#services">Услуги</a>
+    <a href="#about">О компании</a>
+    <a href="#contacts">Контакты</a>
+  </nav>
+</header>
 
-  <footer>
-    &copy; 2025 Ludvig2457. Все права защищены.
-  </footer>
+<main>
+  <section id="products">
+    <h2>Наши продукты</h2>
+    <p><strong>SuperLauncher</strong> — легкий и быстрый лаунчер для Minecraft с автоматическим обновлением и поддержкой модификаций. Проект с открытым исходным кодом на <a href="https://github.com/ludvig2457/SuperLauncher" target="_blank" class="link" rel="noopener noreferrer">GitHub</a>.</p>
+    <p>Также разрабатываем собственную операционную систему и другие IT-решения на базе современных технологий.</p>
+  </section>
 
-  <script>
-    const btn = document.querySelector('.toggle-theme');
-    btn.addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-    });
-  </script>
+  <section id="services">
+    <h2>Наши услуги</h2>
+    <p>Разработка программного обеспечения любой сложности: от игровых лаунчеров до системного ПО и embedded-систем.</p>
+    <p>Консалтинг и поддержка IT-проектов, помощь в интеграции современных технологий.</p>
+  </section>
+
+  <section id="about">
+    <h2>О компании</h2>
+    <p>Компания Ludvig2457 — команда профессионалов и энтузиастов, работающих над созданием качественного и надежного программного обеспечения. Мы верим в силу открытого кода и инноваций.</p>
+  </section>
+
+  <section id="contacts">
+    <h2>Контакты</h2>
+    <p>Почта: <a href="mailto:contact@ludvig2457.com" class="link">contact@ludvig2457.com</a></p>
+    <p>GitHub: <a href="https://github.com/ludvig2457" target="_blank" class="link" rel="noopener noreferrer">github.com/ludvig2457</a></p>
+  </section>
+</main>
+
+<footer>
+  &copy; 2025 Ludvig2457. Все права защищены.
+</footer>
+
 </body>
 </html>
+
