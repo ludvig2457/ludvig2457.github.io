@@ -1,124 +1,567 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Компания Ludvig2457 — IT-решения и разработки</title>
-<style>
-  body {
-    margin: 0; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f7fa;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  header {
-    background: #0a74da;
-    color: white;
-    padding: 20px 10px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
-  }
-  header h1 {
-    margin: 0;
-    font-weight: 700;
-    font-size: 2.5rem;
-  }
-  nav {
-    margin-top: 10px;
-  }
-  nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0 20px;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: color 0.3s;
-  }
-  nav a:hover {
-    color: #ffd54f;
-  }
-  main {
-    flex-grow: 1;
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 15px;
-  }
-  section {
-    margin-bottom: 50px;
-  }
-  h2 {
-    color: #0a74da;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #0a74da;
-    padding-bottom: 5px;
-  }
-  p {
-    line-height: 1.6;
-    font-size: 1.1rem;
-  }
-  a.link {
-    color: #0a74da;
-    text-decoration: underline;
-  }
-  footer {
-    background: #222;
-    color: #bbb;
-    text-align: center;
-    padding: 20px 10px;
-    font-size: 0.9rem;
-  }
-  @media (max-width: 600px) {
-    nav a {
-      display: block;
-      margin: 10px 0;
-    }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ludvig2457 - SuperLauncher & LudvigOS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
+        }
+        .hero-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .download-btn {
+            transition: all 0.3s ease;
+        }
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #3b82f6;
+        }
+        .os-dev-banner {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="font-sans bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-cube text-blue-600 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-gray-900">Ludvig2457</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="#home" class="border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Home</a>
+                        <a href="#superlauncher" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">SuperLauncher</a>
+                        <a href="#ludvigos" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">LudvigOS</a>
+                        <a href="#features" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Features</a>
+                        <a href="#contact" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Contact</a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+                        Download SuperLauncher
+                    </button>
+                </div>
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
 
-<header>
-  <h1>Компания Ludvig2457</h1>
-  <nav>
-    <a href="#products">Продукты</a>
-    <a href="#services">Услуги</a>
-    <a href="#about">О компании</a>
-    <a href="#contacts">Контакты</a>
-  </nav>
-</header>
+        <!-- Mobile menu -->
+        <div class="hidden sm:hidden" id="mobile-menu">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="#home" class="bg-blue-50 border-blue-500 text-blue-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Home</a>
+                <a href="#superlauncher" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">SuperLauncher</a>
+                <a href="#ludvigos" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">LudvigOS</a>
+                <a href="#features" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Features</a>
+                <a href="#contact" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Contact</a>
+                <div class="mt-4 pl-3 pr-4">
+                    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+                        Download SuperLauncher
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-<main>
-  <section id="products">
-    <h2>Наши продукты</h2>
-    <p><strong>SuperLauncher</strong> — легкий и быстрый лаунчер для Minecraft с автоматическим обновлением и поддержкой модификаций. Проект с открытым исходным кодом на <a href="https://github.com/ludvig2457/SuperLauncher" target="_blank" class="link" rel="noopener noreferrer">GitHub</a>.</p>
-    <p>Также разрабатываем собственную операционную систему и другие IT-решения на базе современных технологий.</p>
-  </section>
+    <!-- Hero Section -->
+    <section id="home" class="gradient-bg hero-pattern text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:flex lg:items-center lg:justify-between">
+                <div class="lg:w-1/2">
+                    <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+                        <span class="block">Next Generation</span>
+                        <span class="block text-blue-200">Gaming Experience</span>
+                    </h1>
+                    <p class="mt-3 text-xl text-blue-100 max-w-lg">
+                        SuperLauncher - The ultimate Minecraft launcher with Windows & Linux support. Plus, get ready for LudvigOS - The future of operating systems.
+                    </p>
+                    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                        <a href="#superlauncher" class="download-btn bg-white text-blue-600 px-8 py-3 rounded-md text-lg font-semibold shadow-lg hover:bg-blue-50 text-center">
+                            Get SuperLauncher
+                        </a>
+                        <a href="#ludvigos" class="download-btn bg-blue-800 bg-opacity-60 text-white px-8 py-3 rounded-md text-lg font-semibold shadow-lg hover:bg-opacity-70 text-center">
+                            Learn About LudvigOS
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 mt-10 lg:mt-0 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <div class="absolute -top-10 -left-10 w-32 h-32 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+                        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+                        <div class="relative bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white border-opacity-20">
+                            <img src="assets/SuperLauncher.png" alt="SuperLauncher Preview" class="rounded-lg shadow-lg">
+                            <div class="mt-4 flex justify-between items-center">
+                                <span class="text-blue-200 font-medium">v1.4.0.5 Latest</span>
+                                <div class="flex space-x-2">
+                                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold">Windows</span>
+                                    <span class="bg-green-600 text-white px-2 py-1 rounded text-xs font-bold">Linux</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <section id="services">
-    <h2>Наши услуги</h2>
-    <p>Разработка программного обеспечения любой сложности: от игровых лаунчеров до системного ПО и embedded-систем.</p>
-    <p>Консалтинг и поддержка IT-проектов, помощь в интеграции современных технологий.</p>
-  </section>
+    <!-- SuperLauncher Section -->
+    <section id="superlauncher" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                    <span class="block">SuperLauncher</span>
+                    <span class="block text-blue-600">Your Ultimate Minecraft Companion</span>
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+                    Experience Minecraft like never before with our feature-packed launcher supporting both Windows and Linux platforms.
+                </p>
+            </div>
 
-  <section id="about">
-    <h2>О компании</h2>
-    <p>Компания Ludvig2457 — команда профессионалов и энтузиастов, работающих над созданием качественного и надежного программного обеспечения. Мы верим в силу открытого кода и инноваций.</p>
-  </section>
+            <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Feature 1 -->
+                <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Lightning Fast</h3>
+                    <p class="text-gray-600">
+                        Optimized for performance with quick startup times and smooth gameplay experience.
+                    </p>
+                </div>
 
-  <section id="contacts">
-    <h2>Контакты</h2>
-    <p>Почта: <a href="mailto:contact@ludvig2457.com" class="link">contact@ludvig2457.com</a></p>
-    <p>GitHub: <a href="https://github.com/ludvig2457" target="_blank" class="link" rel="noopener noreferrer">github.com/ludvig2457</a></p>
-  </section>
-</main>
+                <!-- Feature 2 -->
+                <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Cross-Platform</h3>
+                    <p class="text-gray-600">
+                        Works seamlessly on both Windows and Linux operating systems.
+                    </p>
+                </div>
 
-<footer>
-  &copy; 2025 Ludvig2457. Все права защищены.
-</footer>
+                <!-- Feature 3 -->
+                <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Mod Support</h3>
+                    <p class="text-gray-600">
+                        Easy mod management with one-click installation and updates.
+                    </p>
+                </div>
 
+                <!-- Feature 4 -->
+                <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Customizable UI</h3>
+                    <p class="text-gray-600">
+                        Personalize your launcher with themes, layouts, and color schemes.
+                    </p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Secure</h3>
+                    <p class="text-gray-600">
+                        Built with security in mind to protect your Minecraft accounts.
+                    </p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-cloud-download-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Auto Updates</h3>
+                    <p class="text-gray-600">
+                        Always stay up-to-date with the latest features and improvements.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-16 text-center">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Download SuperLauncher</h3>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#" class="download-btn bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-lg flex items-center justify-center">
+                        <i class="fab fa-windows mr-2 text-xl"></i> Windows (64-bit)
+                    </a>
+                    <a href="#" class="download-btn bg-gray-800 hover:bg-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-lg flex items-center justify-center">
+                        <i class="fab fa-linux mr-2 text-xl"></i> Linux (.deb)
+                    </a>
+                    <a href="#" class="download-btn bg-gray-600 hover:bg-gray-700 text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-lg flex items-center justify-center">
+                        <i class="fab fa-linux mr-2 text-xl"></i> Linux (.rpm)
+                    </a>
+                </div>
+                <p class="mt-4 text-gray-500 text-sm">
+                    System Requirements: Windows 10/11 or Linux (64-bit), 4GB RAM, 2GB disk space
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- LudvigOS Section -->
+    <section id="ludvigos" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:flex lg:items-center lg:justify-between">
+                <div class="lg:w-1/2">
+                    <div class="os-dev-banner bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-r">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <p class="font-bold">Currently in Development</p>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                        <span class="block">LudvigOS</span>
+                        <span class="block text-blue-600">The Future of Operating Systems</span>
+                    </h2>
+                    <p class="mt-4 text-xl text-gray-600">
+                        We're building a revolutionary operating system designed for performance, security, and seamless integration with Ludvig2457 products.
+                    </p>
+                    <div class="mt-8">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Coming Features:</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span class="text-gray-700">Built-in SuperLauncher integration</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span class="text-gray-700">Lightweight and optimized for gaming</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span class="text-gray-700">Modern, customizable user interface</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span class="text-gray-700">Advanced security features</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span class="text-gray-700">Cross-platform compatibility</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-8">
+                        <button class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-md text-lg font-medium transition duration-300 opacity-50 cursor-not-allowed" disabled>
+                            Coming Soon - Join Waitlist
+                        </button>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 mt-10 lg:mt-0 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <div class="absolute -top-10 -left-10 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+                        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+                        <div class="relative bg-white p-6 rounded-2xl shadow-xl border border-gray-200">
+                            <div class="bg-gray-800 rounded-t-lg p-2 flex items-center">
+                                <div class="flex space-x-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="text-white text-sm font-mono mx-auto">
+                                    LudvigOS Terminal
+                                </div>
+                            </div>
+                            <div class="bg-gray-900 text-green-400 font-mono p-4 rounded-b-lg h-64 overflow-auto">
+                                <p class="text-sm">$ ludvigos --version</p>
+                                <p class="text-sm mt-2">LudvigOS 0.1.0-alpha (development build)</p>
+                                <p class="text-sm mt-4">$ system status</p>
+                                <p class="text-sm mt-2">CPU: 2% | Memory: 1.2GB/16GB | Disk: 15%</p>
+                                <p class="text-sm mt-4">$ start superlauncher</p>
+                                <p class="text-sm mt-2">Initializing SuperLauncher v1.4.0.5...</p>
+                                <p class="text-sm mt-2">Minecraft authentication complete</p>
+                                <p class="text-sm mt-2">Ready to play!</p>
+                                <p class="text-sm mt-4 blink">█</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                    Why Choose Ludvig2457 Products?
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+                    We're committed to delivering high-quality software with innovative features.
+                </p>
+            </div>
+
+            <div class="mt-16">
+                <div class="lg:flex lg:items-center lg:justify-between">
+                    <div class="lg:w-1/2 mt-10 lg:mt-0 lg:pl-16">
+                        <div class="space-y-10">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                                    <i class="fas fa-bolt text-blue-500 mr-3"></i>
+                                    Performance Optimized
+                                </h3>
+                                <p class="mt-2 text-gray-600">
+                                    Our products are designed to use minimal system resources while delivering maximum performance, perfect for gaming and productivity.
+                                </p>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                                    <i class="fas fa-users-cog text-blue-500 mr-3"></i>
+                                    User-Centric Design
+                                </h3>
+                                <p class="mt-2 text-gray-600">
+                                    Intuitive interfaces with customizable options to suit your preferences and workflow.
+                                </p>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                                    <i class="fas fa-heart text-blue-500 mr-3"></i>
+                                    Passion-Driven Development
+                                </h3>
+                                <p class="mt-2 text-gray-600">
+                                    Created by gamers and tech enthusiasts for gamers and tech enthusiasts. We build what we love to use.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:flex lg:items-center lg:justify-between">
+                <div class="lg:w-1/2">
+                    <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                        Get In Touch
+                    </h2>
+                    <p class="mt-4 text-xl text-gray-600">
+                        Have questions or feedback? We'd love to hear from you!
+                    </p>
+                    <div class="mt-8">
+                        <div class="flex items-start mb-6">
+                            <div class="flex-shrink-0 bg-blue-100 p-3 rounded-lg">
+                                <i class="fas fa-envelope text-blue-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">Email Us</h3>
+                                <p class="mt-1 text-gray-600">support@ludvig2457.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 bg-blue-100 p-3 rounded-lg">
+                                <i class="fas fa-comment-alt text-blue-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">Community</h3>
+                                <div class="mt-2 flex space-x-4">
+                                    <a href="#" class="text-gray-600 hover:text-blue-600">
+                                        <i class="fab fa-discord text-2xl"></i>
+                                    </a>
+                                    <a href="#" class="text-gray-600 hover:text-blue-600">
+                                        <i class="fab fa-twitter text-2xl"></i>
+                                    </a>
+                                    <a href="#" class="text-gray-600 hover:text-blue-600">
+                                        <i class="fab fa-reddit text-2xl"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 mt-10 lg:mt-0">
+                    <form class="bg-gray-50 p-6 rounded-xl shadow-lg">
+                        <div class="mb-4">
+                            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                            <input type="text" id="name" name="name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="email" name="email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="subject" class="block text-sm font-medium text-gray-700">Subject</label>
+                            <select id="subject" name="subject" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option>General Inquiry</option>
+                                <option>SuperLauncher Support</option>
+                                <option>LudvigOS Information</option>
+                                <option>Partnership Opportunity</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                            <textarea id="message" name="message" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                        </div>
+                        <div class="mt-6">
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Products</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#superlauncher" class="text-gray-400 hover:text-white">SuperLauncher</a></li>
+                        <li><a href="#ludvigos" class="text-gray-400 hover:text-white">LudvigOS</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Future Projects</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Documentation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tutorials</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">API</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center">
+                    <i class="fas fa-cube text-blue-500 text-2xl mr-2"></i>
+                    <span class="text-xl font-bold">Ludvig2457</span>
+                </div>
+                <div class="mt-4 md:mt-0 text-gray-400 text-sm">
+                    &copy; 2023 Ludvig2457. All rights reserved.
+                </div>
+                <div class="mt-4 md:mt-0 flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+
+        // Add animation class when elements come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fadeIn');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.card-hover, .download-btn, .feature-icon').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Blinking cursor animation for terminal
+        setInterval(() => {
+            const cursor = document.querySelector('.blink');
+            if (cursor) {
+                cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+            }
+        }, 500);
+    </script>
 </body>
 </html>
-
