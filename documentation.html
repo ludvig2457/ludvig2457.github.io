@@ -1,154 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ludvig2457 Documentation</title>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
-<style>
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; }
-    
-    .gradient-bg {
-        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
-    }
-    .hero-pattern {
-        background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-        background-size: 20px 20px;
-    }
-    .card-hover {
-        transition: all 0.4s ease;
-        backdrop-filter: blur(10px);
-        background-color: rgba(255, 255, 255, 0.15);
-    }
-    .card-hover:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 25px 35px rgba(0, 0, 0, 0.15);
-    }
-    .download-btn {
-        transition: all 0.3s ease;
-    }
-    .download-btn:hover {
-        transform: scale(1.08);
-    }
-    .feature-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        color: #3b82f6;
-        transition: transform 0.3s ease;
-    }
-    .feature-icon:hover {
-        transform: rotate(15deg);
-    }
-    .gradient-text {
-        background: linear-gradient(to right, #2563eb, #3b82f6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ludvig2457 Documentation - SuperLauncher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); }
+        .download-btn { transition: all 0.3s ease; }
+        .download-btn:hover { transform: scale(1.05); }
+        .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%); }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body class="font-sans bg-gray-50">
 
-<!-- Header -->
-<header class="bg-white shadow sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-6 flex justify-between items-center h-16">
-    <div class="text-2xl font-bold gradient-text">Ludvig2457</div>
-    <nav class="space-x-6 font-medium">
-      <a href="index.html" class="hover:text-blue-600">Home</a>
-      <a href="superlauncher.html" class="hover:text-blue-600">SuperLauncher</a>
-      <a href="ludvigos.html" class="hover:text-blue-600">LudvigOS</a>
-      <a href="#download" class="hover:text-blue-600 font-semibold">Documentation</a>
-      <a href="#support" class="hover:text-blue-600">Contact</a>
-    </nav>
-  </div>
-</header>
+<!-- Navigation -->
+<nav class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <i class="fas fa-cube text-blue-600 text-2xl mr-2"></i>
+                    <span class="text-xl font-bold text-gray-900">Ludvig2457 Docs</span>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                    <a href="/index.html" class="text-gray-500 hover:text-gray-900 px-1 pt-1 text-sm font-medium">Home</a>
+                    <a href="#download" class="text-blue-600 font-semibold px-1 pt-1 text-sm border-b-2 border-blue-500">Download</a>
+                    <a href="#installation" class="text-gray-500 hover:text-gray-900 px-1 pt-1 text-sm font-medium">Installation</a>
+                    <a href="#faq" class="text-gray-500 hover:text-gray-900 px-1 pt-1 text-sm font-medium">FAQ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
 
-<!-- Hero -->
-<section class="gradient-bg text-white hero-pattern py-32 text-center">
-  <div class="max-w-3xl mx-auto px-6">
-    <h1 class="text-6xl font-extrabold mb-6 gradient-text">SuperLauncher Documentation</h1>
-    <p class="text-xl mb-10 text-gray-100">Download, install, and set up the ultimate Minecraft launcher for Windows and Linux</p>
-    <a href="#download" class="download-btn bg-white text-blue-600 py-3 px-8 rounded-xl font-semibold hover:bg-gray-100">Go to Download</a>
-  </div>
+<!-- Hero Section -->
+<section class="gradient-bg text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl sm:text-5xl font-extrabold mb-4">SuperLauncher Documentation</h1>
+        <p class="text-xl text-blue-100 max-w-2xl mx-auto">
+            Step-by-step guide to download and install SuperLauncher for Windows and Linux.
+        </p>
+        <div class="mt-8 flex justify-center gap-4">
+            <a href="#download" class="download-btn bg-white text-blue-600 px-6 py-3 rounded-md text-lg font-semibold hover:bg-blue-50">Get Started</a>
+        </div>
+    </div>
 </section>
 
 <!-- Download Section -->
-<section id="download" class="py-24">
-  <div class="max-w-6xl mx-auto px-6 space-y-16">
-    <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold gradient-text">Download SuperLauncher</h2>
-      <p class="mt-4 text-gray-600 text-lg">Choose the version for your system</p>
+<section id="download" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-8">Download SuperLauncher</h2>
+        <div class="flex flex-col sm:flex-row justify-center gap-6">
+            <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.7/SuperLauncher1.4.0.7.exe"
+               class="download-btn bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 rounded-lg shadow-lg flex flex-col items-center">
+                <i class="fab fa-windows text-4xl mb-2"></i>
+                <span class="font-bold">Windows (64-bit)</span>
+            </a>
+            <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.5/SuperLauncher_1.4.0.5-ubuntu_or_debian.deb"
+               class="download-btn bg-gray-800 hover:bg-gray-900 text-white px-8 py-6 rounded-lg shadow-lg flex flex-col items-center">
+                <i class="fab fa-linux text-4xl mb-2"></i>
+                <span class="font-bold">Linux (.deb)</span>
+            </a>
+            <a href="#"
+               class="download-btn bg-gray-600 hover:bg-gray-700 text-white px-8 py-6 rounded-lg shadow-lg flex flex-col items-center">
+                <i class="fab fa-linux text-4xl mb-2"></i>
+                <span class="font-bold">Linux (.rpm)</span>
+            </a>
+        </div>
+        <p class="mt-4 text-gray-500 text-sm">Requirements: Windows 10/11 or Linux 64-bit, 4GB RAM, 2GB disk space</p>
     </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-      <div class="card-hover p-8 rounded-2xl shadow-lg text-center">
-        <i class="fa-brands fa-windows feature-icon"></i>
-        <h3 class="text-2xl font-bold mb-2">Windows (64-bit)</h3>
-        <p class="text-gray-200 mb-6">Latest version for Windows 10/11</p>
-        <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.7/SuperLauncher1.4.0.7.exe" class="download-btn inline-block bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 font-semibold">Download</a>
-      </div>
-      <div class="card-hover p-8 rounded-2xl shadow-lg text-center">
-        <i class="fa-brands fa-linux feature-icon"></i>
-        <h3 class="text-2xl font-bold mb-2">Linux (.deb)</h3>
-        <p class="text-gray-200 mb-6">Debian/Ubuntu package</p>
-        <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.5/SuperLauncher_1.4.0.5-ubuntu_or_debian.deb" class="download-btn inline-block bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 font-semibold">Download</a>
-      </div>
-      <div class="card-hover p-8 rounded-2xl shadow-lg text-center">
-        <i class="fa-brands fa-linux feature-icon"></i>
-        <h3 class="text-2xl font-bold mb-2">Linux (.rpm)</h3>
-        <p class="text-gray-200 mb-6">Fedora/RedHat package</p>
-        <a href="#" class="download-btn inline-block bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 font-semibold">Download</a>
-      </div>
-    </div>
-  </div>
 </section>
 
 <!-- Installation Section -->
-<section id="installation" class="py-24 bg-gray-100">
-  <div class="max-w-6xl mx-auto px-6 space-y-12">
-    <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold gradient-text">Installing SuperLauncher</h2>
-      <p class="mt-4 text-gray-700 text-lg">Step-by-step instructions for each operating system</p>
+<section id="installation" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">Installation Guide</h2>
+        <div class="grid gap-8 md:grid-cols-3">
+            <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <i class="fas fa-download text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Step 1: Download</h3>
+                <p class="text-gray-600">Click the download button for your platform above to get the latest SuperLauncher installer.</p>
+            </div>
+            <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <i class="fas fa-cogs text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Step 2: Install</h3>
+                <p class="text-gray-600">Run the installer and follow the on-screen instructions. For Linux, use your package manager.</p>
+            </div>
+            <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <i class="fas fa-play text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Step 3: Launch</h3>
+                <p class="text-gray-600">Open SuperLauncher, log in with your Minecraft account, and start playing immediately.</p>
+            </div>
+        </div>
     </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-      <div class="card-hover p-8 rounded-2xl shadow-lg">
-        <h3 class="text-2xl font-bold mb-4">Windows</h3>
-        <ol class="list-decimal ml-6 space-y-2 text-gray-700">
-          <li>Download <code>SuperLauncher-Win.exe</code>.</li>
-          <li>Run the installer and follow the instructions.</li>
-          <li>Open SuperLauncher and log in with your Minecraft account.</li>
-        </ol>
-      </div>
-      <div class="card-hover p-8 rounded-2xl shadow-lg">
-        <h3 class="text-2xl font-bold mb-4">Linux (.deb / .rpm)</h3>
-        <ol class="list-decimal ml-6 space-y-2 text-gray-700">
-          <li>Download the corresponding package (.deb or .rpm).</li>
-          <li>For .deb: <code>sudo dpkg -i SuperLauncher.deb</code></li>
-          <li>For .rpm: <code>sudo rpm -i SuperLauncher.rpm</code></li>
-          <li>Launch the launcher from the menu or terminal.</li>
-        </ol>
-      </div>
-    </div>
-  </div>
 </section>
 
-<!-- Support Section -->
-<section id="support" class="py-24 text-center">
-  <div class="max-w-4xl mx-auto px-6 space-y-6">
-    <h2 class="text-4xl font-bold gradient-text">Support</h2>
-    <p class="text-gray-700 text-lg">Need help or have questions? Reach out to us!</p>
-    <a href="mailto:artemludvig@gmail.com" class="bg-blue-600 text-white py-3 px-8 rounded-xl hover:bg-blue-700 font-semibold transition">Email Support</a>
-  </div>
+<!-- FAQ Section -->
+<section id="faq" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">FAQ</h2>
+        <div class="space-y-6 max-w-4xl mx-auto">
+            <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                <h3 class="font-bold text-gray-900 mb-2">Is SuperLauncher safe to use?</h3>
+                <p class="text-gray-600">Yes, it's built with security in mind to protect your Minecraft account.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                <h3 class="font-bold text-gray-900 mb-2">Can I install mods?</h3>
+                <p class="text-gray-600">Yes! SuperLauncher has built-in support for mods with easy installation.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                <h3 class="font-bold text-gray-900 mb-2">Which platforms are supported?</h3>
+                <p class="text-gray-600">Windows 10/11 and Linux (Debian/Ubuntu and RPM-based distros).</p>
+            </div>
+        </div>
+    </div>
 </section>
 
 <!-- Footer -->
-<footer class="bg-gray-900 text-gray-200 py-12 mt-16">
-  <div class="max-w-6xl mx-auto px-6 text-center space-y-4">
-    <p>© 2025 Ludvig2457. All rights reserved.</p>
-    <p>Contact: <a href="mailto:artemludvig@gmail.com" class="text-blue-400 hover:underline">artemludvig@gmail.com</a></p>
-  </div>
+<footer class="bg-gray-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        &copy; 2025 Ludvig2457. All rights reserved.
+    </div>
 </footer>
 
 </body>
