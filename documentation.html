@@ -7,11 +7,36 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .card-hover { transition: all 0.3s ease; }
-        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); }
-        .download-btn { transition: all 0.3s ease; }
-        .download-btn:hover { transform: scale(1.05); }
-        .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%); }
+        html {
+            scroll-behavior: smooth;
+        }
+        .card-hover { 
+            transition: all 0.3s ease; 
+        }
+        .card-hover:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); 
+        }
+        .download-btn { 
+            transition: all 0.3s ease; 
+        }
+        .download-btn:hover { 
+            transform: scale(1.05); 
+        }
+        .gradient-bg { 
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%); 
+        }
+
+        /* Fade-in animation for sections */
+        section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="font-sans bg-gray-50">
@@ -125,6 +150,20 @@
         &copy; 2025 Ludvig2457. All rights reserved.
     </div>
 </footer>
+
+<script>
+    // Simple fade-in sections when scrolling
+    const sections = document.querySelectorAll("section");
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting){
+                entry.target.classList.add("visible");
+            }
+        });
+    }, { threshold: 0.1 });
+
+    sections.forEach(section => observer.observe(section));
+</script>
 
 </body>
 </html>
