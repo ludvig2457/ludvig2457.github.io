@@ -7,164 +7,461 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="assets/cube.svg" />
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        html {
-            scroll-behavior: smooth;
+        .gradient-bg {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #8a2be2, #6b46c1);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
         }
-        .card-hover { 
-            transition: all 0.3s ease; 
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea, #8a2be2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradient 8s ease infinite;
         }
-        .card-hover:hover { 
-            transform: translateY(-5px); 
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); 
+        .hero-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
-        .download-btn { 
-            transition: all 0.3s ease; 
+        .card-hover {
+            transition: all 0.3s ease;
         }
-        .download-btn:hover { 
-            transform: scale(1.05); 
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
-        .gradient-bg { 
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%); 
+        .download-btn {
+            transition: all 0.3s ease;
         }
-
-        /* Fade-in animation for sections */
-        section {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s ease-out;
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        section.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .theme-toggle {
+            transition: all 0.3s ease;
+        }
+        .theme-toggle:hover {
+            transform: rotate(12deg);
+        }
+        .dark .gradient-bg {
+            background: linear-gradient(-45deg, #4c51bf, #7e22ce, #a855f7, #5b21b6);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark .glass-effect {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #8a2be2 }
         }
     </style>
 </head>
-<body class="font-sans bg-gray-50">
+<body class="font-sans bg-white dark:bg-gray-900 transition-colors duration-300">
+    <!-- Theme Toggle -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="themeToggle" class="theme-toggle bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl">
+            <i class="fas fa-moon text-gray-600 dark:text-yellow-400 text-lg"></i>
+        </button>
+    </div>
 
-<!-- Navigation -->
-<nav class="bg-white shadow-lg sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex items-center">
-                <div class="flex-shrink-0 flex items-center">
-                    <i class="fas fa-cube text-blue-600 text-2xl mr-2"></i>
-                    <span class="text-xl font-bold text-gray-900">Ludvig2457 Docs</span>
+    <!-- Navigation -->
+    <nav class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg sticky top-0 z-40 transition-colors duration-300 border-b border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-cube gradient-text text-2xl mr-3"></i>
+                        <span class="text-xl font-bold text-gray-900 dark:text-white">Ludvig2457 Docs</span>
+                    </div>
+                    <div class="hidden sm:ml-8 sm:flex sm:space-x-8">
+                        <a href="/index.html" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Home</a>
+                        <a href="#download" class="border-purple-500 text-gray-900 dark:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Download</a>
+                        <a href="#installation" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Installation</a>
+                        <a href="#faq" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">FAQ</a>
+                    </div>
                 </div>
-                <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                    <a href="/index.html" class="text-gray-500 hover:text-gray-900 px-1 pt-1 text-sm font-medium">Home</a>
-                    <a href="#download" class="text-blue-600 font-semibold px-1 pt-1 text-sm border-b-2 border-blue-500">Download</a>
-                    <a href="#installation" class="text-gray-500 hover:text-gray-900 px-1 pt-1 text-sm font-medium">Installation</a>
-                    <a href="#faq" class="text-gray-500 hover:text-gray-900 px-1 pt-1 text-sm font-medium">FAQ</a>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <a href="#download" class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        Download Now
+                    </a>
+                </div>
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 transition duration-300">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
-</nav>
 
-<!-- Hero Section -->
-<section class="gradient-bg text-white py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-4xl sm:text-5xl font-extrabold mb-4">SuperLauncher Documentation</h1>
-        <p class="text-xl text-blue-100 max-w-2xl mx-auto">
-            Step-by-step guide to download and install SuperLauncher for Windows and Linux.
-        </p>
-        <div class="mt-8 flex justify-center gap-4">
-            <a href="#download" class="download-btn bg-white text-blue-600 px-6 py-3 rounded-md text-lg font-semibold hover:bg-blue-50">Get Started</a>
-        </div>
-    </div>
-</section>
-
-<!-- Download Section -->
-<section id="download" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-extrabold text-gray-900 mb-8">Download SuperLauncher</h2>
-        <div class="flex flex-col sm:flex-row justify-center gap-6">
-            <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.7/SuperLauncher1.4.0.7.exe"
-               class="download-btn bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 rounded-lg shadow-lg flex flex-col items-center">
-                <i class="fab fa-windows text-4xl mb-2"></i>
-                <span class="font-bold">Windows (64-bit)</span>
-            </a>
-            <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.5/SuperLauncher_1.4.0.5-ubuntu_or_debian.deb"
-               class="download-btn bg-gray-800 hover:bg-gray-900 text-white px-8 py-6 rounded-lg shadow-lg flex flex-col items-center">
-                <i class="fab fa-linux text-4xl mb-2"></i>
-                <span class="font-bold">Linux (.deb)</span>
-            </a>
-            <a href="#"
-               class="download-btn bg-gray-600 hover:bg-gray-700 text-white px-8 py-6 rounded-lg shadow-lg flex flex-col items-center">
-                <i class="fab fa-linux text-4xl mb-2"></i>
-                <span class="font-bold">Linux (.rpm)</span>
-            </a>
-        </div>
-        <p class="mt-4 text-gray-500 text-sm">Requirements: Windows 10/11 or Linux 64-bit, 4GB RAM, 2GB disk space</p>
-    </div>
-</section>
-
-<!-- Installation Section -->
-<section id="installation" class="py-20 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">Installation Guide</h2>
-        <div class="grid gap-8 md:grid-cols-3">
-            <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                <i class="fas fa-download text-blue-600 text-3xl mb-4"></i>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">Step 1: Download</h3>
-                <p class="text-gray-600">Click the download button for your platform above to get the latest SuperLauncher installer.</p>
-            </div>
-            <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                <i class="fas fa-cogs text-blue-600 text-3xl mb-4"></i>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">Step 2: Install</h3>
-                <p class="text-gray-600">Run the installer and follow the on-screen instructions. For Linux, use your package manager.</p>
-            </div>
-            <div class="card-hover bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                <i class="fas fa-play text-blue-600 text-3xl mb-4"></i>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">Step 3: Launch</h3>
-                <p class="text-gray-600">Open SuperLauncher, log in with your Minecraft account, and start playing immediately.</p>
+        <!-- Mobile menu -->
+        <div class="hidden sm:hidden backdrop-blur-md bg-white/95 dark:bg-gray-800/95" id="mobile-menu">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="/index.html" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Home</a>
+                <a href="#download" class="bg-purple-50 dark:bg-purple-900 border-purple-500 text-purple-700 dark:text-purple-300 block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Download</a>
+                <a href="#installation" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Installation</a>
+                <a href="#faq" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">FAQ</a>
+                <div class="mt-4 pl-3 pr-4 pb-3">
+                    <a href="#download" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-3 rounded-lg text-base font-medium transition duration-300 shadow-lg hover:shadow-xl block text-center">
+                        Download SuperLauncher
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </nav>
 
-<!-- FAQ Section -->
-<section id="faq" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-extrabold text-gray-900 mb-8 text-center">FAQ</h2>
-        <div class="space-y-6 max-w-4xl mx-auto">
-            <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg transition">
-                <h3 class="font-bold text-gray-900 mb-2">Is SuperLauncher safe to use?</h3>
-                <p class="text-gray-600">Yes, it's built with security in mind to protect your Minecraft account.</p>
-            </div>
-            <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg transition">
-                <h3 class="font-bold text-gray-900 mb-2">Can I install mods?</h3>
-                <p class="text-gray-600">Yes! SuperLauncher has built-in support for mods with easy installation.</p>
-            </div>
-            <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-lg transition">
-                <h3 class="font-bold text-gray-900 mb-2">Which platforms are supported?</h3>
-                <p class="text-gray-600">Windows 10/11 and Linux (Debian/Ubuntu and RPM-based distros).</p>
+    <!-- Hero Section -->
+    <section class="gradient-bg hero-pattern text-white py-24 lg:py-32 relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/10"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h1 class="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl mb-6">
+                <span class="block mb-2">SuperLauncher</span>
+                <span class="block text-purple-200 typewriter">Documentation</span>
+            </h1>
+            <p class="text-xl lg:text-2xl text-purple-100 max-w-3xl mx-auto mb-8 leading-relaxed">
+                Complete guide to download, install, and master SuperLauncher - the ultimate Minecraft experience.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="#download" class="download-btn bg-white text-purple-600 px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl hover:bg-purple-50 text-center group">
+                    <span class="flex items-center justify-center">
+                        <i class="fas fa-rocket mr-3 group-hover:animate-bounce"></i>
+                        Get Started
+                    </span>
+                </a>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Footer -->
-<footer class="bg-gray-900 text-white py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        &copy; 2025 Ludvig2457. All rights reserved.
-    </div>
-</footer>
+    <!-- Download Section -->
+    <section id="download" class="py-24 bg-white dark:bg-gray-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl mb-8">
+                Download SuperLauncher
+            </h2>
+            <p class="text-xl lg:text-2xl text-gray-500 dark:text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed">
+                Choose your platform and get started with the ultimate Minecraft launcher experience.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-8 max-w-6xl mx-auto">
+                <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.7/SuperLauncher1.4.0.7.exe"
+                   class="download-btn bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-12 py-8 rounded-2xl shadow-2xl flex flex-col items-center group transform hover:scale-105 transition-all duration-300">
+                    <i class="fab fa-windows text-5xl mb-4 group-hover:animate-bounce"></i>
+                    <span class="font-bold text-2xl">Windows (64-bit)</span>
+                    <span class="text-purple-100 mt-2">v1.4.0.7 Latest</span>
+                </a>
+                <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.5/SuperLauncher_1.4.0.5-ubuntu_or_debian.deb"
+                   class="download-btn bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white px-12 py-8 rounded-2xl shadow-2xl flex flex-col items-center group transform hover:scale-105 transition-all duration-300">
+                    <i class="fab fa-linux text-5xl mb-4 group-hover:animate-bounce"></i>
+                    <span class="font-bold text-2xl">Linux (.deb)</span>
+                    <span class="text-gray-300 mt-2">Ubuntu/Debian</span>
+                </a>
+            </div>
+            <p class="mt-8 text-gray-500 dark:text-gray-400 text-lg">
+                System Requirements: Windows 10/11 or Linux (64-bit), 4GB RAM, 2GB disk space
+            </p>
+        </div>
+    </section>
 
-<script>
-    // Simple fade-in sections when scrolling
-    const sections = document.querySelectorAll("section");
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if(entry.isIntersecting){
-                entry.target.classList.add("visible");
+    <!-- Installation Section -->
+    <section id="installation" class="py-24 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900/20 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl mb-12 text-center">
+                Installation Guide
+            </h2>
+            <div class="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+                <div class="card-hover bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
+                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Step 1: Download</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                        Click the download button for your platform and save the installer to your computer.
+                    </p>
+                </div>
+                <div class="card-hover bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
+                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Step 2: Install</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                        Run the installer and follow the on-screen instructions. For Linux, use your package manager.
+                    </p>
+                </div>
+                <div class="card-hover bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
+                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Step 3: Launch</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                        Open SuperLauncher, log in with your Minecraft account, and start playing immediately.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Platform Specific Instructions -->
+            <div class="mt-20 grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                        <i class="fab fa-windows text-blue-600 mr-4 text-3xl"></i>
+                        Windows Installation
+                    </h3>
+                    <ol class="space-y-4 text-gray-600 dark:text-gray-300 text-lg">
+                        <li class="flex items-start">
+                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">1</span>
+                            Download the .exe file from the link above
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">2</span>
+                            Run the installer as Administrator
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">3</span>
+                            Follow the installation wizard steps
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">4</span>
+                            Launch SuperLauncher from Start Menu or Desktop
+                        </li>
+                    </ol>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                        <i class="fab fa-linux text-gray-800 dark:text-gray-200 mr-4 text-3xl"></i>
+                        Linux Installation
+                    </h3>
+                    <ol class="space-y-4 text-gray-600 dark:text-gray-300 text-lg">
+                        <li class="flex items-start">
+                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">1</span>
+                            Download the .deb package for Debian/Ubuntu
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">2</span>
+                            Install using: <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">sudo dpkg -i SuperLauncher_1.4.0.5-ubuntu_or_debian.deb</code>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">3</span>
+                            Fix dependencies if needed: <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">sudo apt-get install -f</code>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">4</span>
+                            Launch from applications menu or terminal
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-24 bg-white dark:bg-gray-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl mb-12 text-center">
+                Frequently Asked Questions
+            </h2>
+            <div class="space-y-6 max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-600 group hover:scale-105">
+                    <h3 class="font-bold text-gray-900 dark:text-white text-xl mb-4 flex items-center">
+                        <i class="fas fa-shield-alt text-green-500 mr-4 group-hover:animate-pulse"></i>
+                        Is SuperLauncher safe to use?
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                        Yes! SuperLauncher is built with security as a top priority. We use industry-standard encryption 
+                        to protect your Minecraft account credentials and ensure your gaming experience remains secure.
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-600 group hover:scale-105">
+                    <h3 class="font-bold text-gray-900 dark:text-white text-xl mb-4 flex items-center">
+                        <i class="fas fa-puzzle-piece text-blue-500 mr-4 group-hover:animate-pulse"></i>
+                        Can I install mods with SuperLauncher?
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                        Absolutely! SuperLauncher features built-in mod support with one-click installation. 
+                        You can easily manage your mods, create profiles, and switch between different mod configurations.
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-600 group hover:scale-105">
+                    <h3 class="font-bold text-gray-900 dark:text-white text-xl mb-4 flex items-center">
+                        <i class="fas fa-desktop text-purple-500 mr-4 group-hover:animate-pulse"></i>
+                        Which platforms are supported?
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                        SuperLauncher currently supports Windows 10/11 (64-bit) and Linux (Debian/Ubuntu distributions). 
+                        We're actively working on expanding to more platforms in future updates.
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-600 group hover:scale-105">
+                    <h3 class="font-bold text-gray-900 dark:text-white text-xl mb-4 flex items-center">
+                        <i class="fas fa-sync-alt text-yellow-500 mr-4 group-hover:animate-pulse"></i>
+                        How do I update SuperLauncher?
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                        SuperLauncher includes automatic update functionality. You'll be notified when new versions are available, 
+                        and you can update with a single click. Manual updates can be done by downloading the latest version from our website.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center mb-8">
+                <i class="fas fa-cube text-purple-500 text-3xl mr-3"></i>
+                <span class="text-2xl font-bold">Ludvig2457 Documentation</span>
+            </div>
+            <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+                Complete documentation and support for all Ludvig2457 products and projects.
+            </p>
+            <div class="flex justify-center space-x-6 mb-8">
+                <a href="https://discord.com/invite/awzHqy2mUn" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
+                    <i class="fab fa-discord"></i>
+                </a>
+                <a href="https://github.com/ludvig2457" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://www.reddit.com/user/Beneficial_Gold829/" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
+                    <i class="fab fa-reddit"></i>
+                </a>
+            </div>
+            <div class="pt-8 border-t border-gray-800">
+                <div class="text-gray-400 text-lg">
+                    &copy; 2025 Ludvig2457. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme or prefer-color-scheme
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+            themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            if (document.documentElement.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
+            } else {
+                localStorage.theme = 'light';
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                themeIcon.classList.replace('text-yellow-400', 'text-gray-600');
             }
         });
-    }, { threshold: 0.1 });
 
-    sections.forEach(section => observer.observe(section));
-</script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
 
+        // Smooth scrolling with offset for fixed header
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const offsetTop = targetElement.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+
+        // Add scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.card-hover, .download-btn').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
 </body>
 </html>
