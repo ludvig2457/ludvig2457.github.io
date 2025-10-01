@@ -241,16 +241,25 @@
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Linux</h3>
                     <p class="text-gray-600 dark:text-gray-300 text-lg mb-6 leading-relaxed">
-                        Native Linux support for Ubuntu/Debian with terminal integration and package management.
+                        Native Linux support for Ubuntu/Debian and Arch with terminal integration and package management.
                     </p>
-                    <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.5/SuperLauncher_1.4.0.5-ubuntu_or_debian.deb"
-                       class="download-btn bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white px-6 py-3 rounded-xl font-semibold shadow-lg inline-block w-full text-center group">
-                        <span class="flex items-center justify-center">
-                            <i class="fas fa-download mr-2 group-hover:animate-bounce"></i>
-                            Download for Linux
-                        </span>
-                    </a>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-3">.deb package • Ubuntu/Debian</p>
+                    <div class="space-y-3">
+                        <a href="https://github.com/ludvig2457/SuperLauncherMC/releases/download/v1.4.0.8/SuperLauncher1.4.0.8.deb"
+                           class="download-btn bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white px-4 py-3 rounded-xl font-semibold shadow-lg inline-block w-full text-center group text-sm">
+                            <span class="flex items-center justify-center">
+                                <i class="fas fa-download mr-2 group-hover:animate-bounce"></i>
+                                Ubuntu/Debian (.deb)
+                            </span>
+                        </a>
+                        <a href="https://github.com/ludvig2457/SuperLauncherMC/releases/download/v1.4.0.8/superlauncher-1.4.0.8-1-x86_64.pkg.tar.zst"
+                           class="download-btn bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-3 rounded-xl font-semibold shadow-lg inline-block w-full text-center group text-sm">
+                            <span class="flex items-center justify-center">
+                                <i class="fas fa-download mr-2 group-hover:animate-bounce"></i>
+                                Arch Linux (.pkg.tar.zst)
+                            </span>
+                        </a>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-3">v1.4.0.8 Latest • Both distributions</p>
                 </div>
 
                 <!-- Android Card -->
@@ -320,24 +329,40 @@
                         <i class="fab fa-linux text-gray-800 dark:text-gray-200 mr-4 text-3xl"></i>
                         Linux Installation
                     </h3>
-                    <ol class="space-y-4 text-gray-600 dark:text-gray-300 text-lg">
-                        <li class="flex items-start">
-                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">1</span>
-                            Download the .deb package for Debian/Ubuntu
-                        </li>
-                        <li class="flex items-start">
-                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">2</span>
-                            Install using: <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-sm">sudo dpkg -i SuperLauncher_1.4.0.5-ubuntu_or_debian.deb</code>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">3</span>
-                            Fix dependencies if needed: <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-sm">sudo apt-get install -f</code>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">4</span>
-                            Launch from applications menu or terminal
-                        </li>
-                    </ol>
+                    <div class="mb-4">
+                        <h4 class="font-bold text-gray-900 dark:text-white mb-2">Ubuntu/Debian:</h4>
+                        <ol class="space-y-2 text-gray-600 dark:text-gray-300 text-sm">
+                            <li class="flex items-start">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0 text-xs">1</span>
+                                Download the .deb package
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0 text-xs">2</span>
+                                <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">sudo dpkg -i SuperLauncher1.4.0.8.deb</code>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0 text-xs">3</span>
+                                Fix dependencies: <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">sudo apt-get install -f</code>
+                            </li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900 dark:text-white mb-2">Arch Linux:</h4>
+                        <ol class="space-y-2 text-gray-600 dark:text-gray-300 text-sm">
+                            <li class="flex items-start">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0 text-xs">1</span>
+                                Download the .pkg.tar.zst package
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0 text-xs">2</span>
+                                <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs">sudo pacman -U superlauncher-1.4.0.8-1-x86_64.pkg.tar.zst</code>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300 rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0 text-xs">3</span>
+                                Launch from applications menu or terminal
+                            </li>
+                        </ol>
+                    </div>
                 </div>
 
                 <!-- Android Installation -->
@@ -402,7 +427,7 @@
                         Which platforms are supported?
                     </h3>
                     <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-                        SuperLauncher now supports Windows 10/11 (64-bit), Linux (Debian/Ubuntu distributions), and Android 7.0+. 
+                        SuperLauncher now supports Windows 10/11 (64-bit), Linux (Debian/Ubuntu and Arch distributions), and Android 7.0+. 
                         We're continuously working to expand platform support and improve cross-platform compatibility.
                     </p>
                 </div>
