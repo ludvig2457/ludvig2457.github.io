@@ -1,35 +1,297 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SuperLauncher Auth</title>
-</head>
-<body>
-    <h2>Авторизация SuperLauncher...</h2>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperLauncher Auth • Ludvig2457</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="https://ludvig2457.github.io/assets/cube.svg" />
     <script>
-        // Получаем OAuth код из URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const authCode = urlParams.get('code');
-        const state = urlParams.get('state');
-        
-        // Передаём код в лаунчер
-        if (authCode) {
-            // Вариант 1: через localStorage (для тестов)
-            localStorage.setItem('modrinth_auth_code', authCode);
-            
-            // Вариант 2: через window.opener (для десктоп приложения)
-            if (window.opener && !window.opener.closed) {
-                window.opener.postMessage({
-                    type: 'modrinth_oauth_callback',
-                    code: authCode,
-                    state: state
-                }, '*');
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                        }
+                    }
+                }
             }
-            
-            // Закрываем окно или показываем сообщение
-            setTimeout(() => {
-                window.close();
-            }, 1000);
         }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #8a2be2, #6b46c1);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea, #8a2be2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradient 8s ease infinite;
+        }
+        .hero-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark .glass-effect {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .success-glow {
+            box-shadow: 0 0 30px rgba(72, 187, 120, 0.5);
+        }
+        .error-glow {
+            box-shadow: 0 0 30px rgba(245, 101, 101, 0.5);
+        }
+    </style>
+</head>
+<body class="font-sans bg-white dark:bg-gray-900 transition-colors duration-300 min-h-screen">
+    <!-- Theme Toggle -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="themeToggle" class="bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:rotate-12">
+            <i class="fas fa-moon text-gray-600 dark:text-yellow-400 text-lg"></i>
+        </button>
+    </div>
+
+    <!-- Main Auth Container -->
+    <div class="gradient-bg hero-pattern text-white min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/10"></div>
+        
+        <!-- Animated Background Elements -->
+        <div class="absolute -top-20 -left-20 w-64 h-64 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+        <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 1s;"></div>
+        <div class="absolute top-1/2 left-1/4 w-32 h-32 bg-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 2s;"></div>
+        
+        <div class="max-w-md w-full relative z-10">
+            <!-- Header -->
+            <div class="text-center mb-8 animate-float">
+                <div class="flex items-center justify-center mb-6">
+                    <i class="fas fa-cube text-4xl mr-3 text-purple-200"></i>
+                    <span class="text-3xl font-bold text-white">SuperLauncher</span>
+                </div>
+                <h1 class="text-2xl font-bold text-purple-100 mb-2">Modrinth Authorization</h1>
+                <p class="text-purple-200">Connecting to your Modrinth account</p>
+            </div>
+
+            <!-- Auth Status Card -->
+            <div id="authCard" class="glass-effect rounded-3xl p-8 shadow-2xl border border-white/20 transition-all duration-500">
+                <!-- Loading State -->
+                <div id="loadingState" class="text-center">
+                    <div class="flex justify-center mb-6">
+                        <div class="relative">
+                            <div class="w-20 h-20 border-4 border-purple-200 border-t-transparent rounded-full animate-spin"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fas fa-rocket text-purple-300 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Connecting to Modrinth...</h3>
+                    <p class="text-purple-200 mb-4">Please wait while we authenticate your account</p>
+                    <div class="flex justify-center space-x-2">
+                        <div class="w-2 h-2 bg-purple-300 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                        <div class="w-2 h-2 bg-purple-300 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                        <div class="w-2 h-2 bg-purple-300 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+                    </div>
+                </div>
+
+                <!-- Success State -->
+                <div id="successState" class="text-center hidden">
+                    <div class="flex justify-center mb-6">
+                        <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center success-glow">
+                            <i class="fas fa-check text-white text-2xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Authorization Successful! 🎉</h3>
+                    <p class="text-purple-200 mb-6">Your Modrinth account has been successfully connected to SuperLauncher</p>
+                    <div class="bg-green-500/20 border border-green-400/30 rounded-2xl p-4 mb-6">
+                        <p class="text-green-200 text-sm">You can now manage your mods, create projects, and access all Modrinth features directly from SuperLauncher!</p>
+                    </div>
+                    <p class="text-purple-200 text-sm">This window will close automatically...</p>
+                </div>
+
+                <!-- Error State -->
+                <div id="errorState" class="text-center hidden">
+                    <div class="flex justify-center mb-6">
+                        <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center error-glow">
+                            <i class="fas fa-exclamation text-white text-2xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3" id="errorTitle">Authorization Failed</h3>
+                    <p class="text-purple-200 mb-4" id="errorMessage">An error occurred during authentication</p>
+                    <div class="space-y-3">
+                        <button onclick="window.close()" class="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-semibold transition duration-300 transform hover:scale-105">
+                            Close Window
+                        </button>
+                        <button onclick="retryAuth()" class="w-full glass-effect hover:bg-white/20 text-white py-3 rounded-xl font-semibold transition duration-300">
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Preview -->
+            <div class="mt-8 glass-effect rounded-2xl p-6">
+                <h4 class="text-lg font-bold text-white mb-4 text-center">Now you can:</h4>
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div class="flex items-center text-purple-200">
+                        <i class="fas fa-cube mr-2 text-purple-300"></i>
+                        <span>Manage Mods</span>
+                    </div>
+                    <div class="flex items-center text-purple-200">
+                        <i class="fas fa-plus mr-2 text-purple-300"></i>
+                        <span>Create Projects</span>
+                    </div>
+                    <div class="flex items-center text-purple-200">
+                        <i class="fas fa-cloud-upload-alt mr-2 text-purple-300"></i>
+                        <span>Upload Versions</span>
+                    </div>
+                    <div class="flex items-center text-purple-200">
+                        <i class="fas fa-users mr-2 text-purple-300"></i>
+                        <span>Join Teams</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-8">
+                <p class="text-purple-200 text-sm">
+                    Powered by <span class="font-bold">SuperLauncher</span> • 
+                    <a href="https://ludvig2457.github.io" class="underline hover:text-white transition duration-300">ludvig2457.github.io</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle (как на основном сайте)
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+            themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            if (document.documentElement.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
+            } else {
+                localStorage.theme = 'light';
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                themeIcon.classList.replace('text-yellow-400', 'text-gray-600');
+            }
+        });
+
+        // OAuth Processing
+        function processOAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const authCode = urlParams.get('code');
+            const error = urlParams.get('error');
+            const errorDescription = urlParams.get('error_description');
+            const state = urlParams.get('state');
+
+            const loadingState = document.getElementById('loadingState');
+            const successState = document.getElementById('successState');
+            const errorState = document.getElementById('errorState');
+            const authCard = document.getElementById('authCard');
+
+            if (error) {
+                // Show error state
+                loadingState.classList.add('hidden');
+                errorState.classList.remove('hidden');
+                document.getElementById('errorTitle').textContent = 'Authorization Failed';
+                document.getElementById('errorMessage').textContent = errorDescription || error;
+                authCard.classList.add('error-glow');
+            } else if (authCode) {
+                // Show success state
+                loadingState.classList.add('hidden');
+                successState.classList.remove('hidden');
+                authCard.classList.add('success-glow');
+
+                // Send message to SuperLauncher
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage({
+                        type: 'modrinth_oauth_callback',
+                        code: authCode,
+                        state: state,
+                        source: 'modrinth_auth',
+                        timestamp: Date.now()
+                    }, '*');
+                } else {
+                    // Fallback: store in localStorage for manual retrieval
+                    localStorage.setItem('modrinth_auth_code', authCode);
+                    localStorage.setItem('modrinth_auth_state', state);
+                    localStorage.setItem('modrinth_auth_timestamp', Date.now());
+                }
+
+                // Close window after delay
+                setTimeout(() => {
+                    window.close();
+                }, 3000);
+            } else {
+                // No code or error - probably direct access
+                loadingState.classList.add('hidden');
+                errorState.classList.remove('hidden');
+                document.getElementById('errorTitle').textContent = 'Invalid Access';
+                document.getElementById('errorMessage').textContent = 'This page should be accessed through SuperLauncher authorization flow.';
+            }
+        }
+
+        function retryAuth() {
+            // Redirect back to Modrinth auth
+            const authUrl = `https://modrinth.com/auth/authorize?client_id=nHcb9Csv&redirect_uri=${encodeURIComponent('https://ludvig2457.github.io/SuperLauncher/auth/callback.html')}&response_type=code&scope=read:user%20write:user%20read:mods%20write:mods`;
+            window.location.href = authUrl;
+        }
+
+        // Add some visual effects
+        function addParticles() {
+            const container = document.querySelector('.gradient-bg');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'absolute w-2 h-2 bg-white/30 rounded-full animate-float';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (3 + Math.random() * 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            addParticles();
+            setTimeout(processOAuthCallback, 1500); // Small delay for better UX
+        });
+
+        // Handle page visibility
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                document.title = "SuperLauncher Auth • Connected";
+            }
+        });
     </script>
 </body>
 </html>
