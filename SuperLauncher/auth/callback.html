@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SuperLauncher Auth</title>
+</head>
+<body>
+    <h2>Авторизация SuperLauncher...</h2>
+    <script>
+        // Получаем OAuth код из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const authCode = urlParams.get('code');
+        const state = urlParams.get('state');
+        
+        // Передаём код в лаунчер
+        if (authCode) {
+            // Вариант 1: через localStorage (для тестов)
+            localStorage.setItem('modrinth_auth_code', authCode);
+            
+            // Вариант 2: через window.opener (для десктоп приложения)
+            if (window.opener && !window.opener.closed) {
+                window.opener.postMessage({
+                    type: 'modrinth_oauth_callback',
+                    code: authCode,
+                    state: state
+                }, '*');
+            }
+            
+            // Закрываем окно или показываем сообщение
+            setTimeout(() => {
+                window.close();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
