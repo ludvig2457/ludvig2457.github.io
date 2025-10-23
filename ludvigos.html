@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LudvigOS - Революционная 64-bit операционная система</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'terminal-blink': 'terminal-blink 1s infinite',
+                        'hacker-glow': 'hacker-glow 2s ease-in-out infinite alternate',
+                        'matrix-fall': 'matrix-fall 20s linear infinite',
+                    },
+                    keyframes: {
+                        'terminal-blink': {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0' }
+                        },
+                        'hacker-glow': {
+                            '0%': { 'text-shadow': '0 0 5px #00ff00, 0 0 10px #00ff00' },
+                            '100%': { 'text-shadow': '0 0 20px #00ff00, 0 0 30px #00ff00' }
+                        },
+                        'matrix-fall': {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100vh)' }
+                        }
+                    },
+                    colors: {
+                        'hacker-green': '#00ff00',
+                        'matrix-green': '#00cc00',
+                        'terminal-black': '#0a0a0a'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .matrix-bg {
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 255, 0, 0.05) 0%, transparent 50%),
+                linear-gradient(45deg, #0a0a0a 0%, #111 50%, #0a0a0a 100%);
+        }
+        
+        .terminal-font {
+            font-family: 'Courier New', Monaco, monospace;
+        }
+        
+        .hacker-text {
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .glow-border {
+            border: 1px solid #00ff00;
+            box-shadow: 0 0 10px #00ff00, inset 0 0 10px rgba(0, 255, 0, 0.1);
+        }
+        
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .matrix-char {
+            position: absolute;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            animation: matrix-fall linear infinite;
+        }
+        
+        .lur-command {
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 4px solid #00ff00;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .feature-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2) rotate(5deg);
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .download-btn {
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            border: none;
+            color: #000;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.3);
+            background: linear-gradient(45deg, #00cc00, #00ff00);
+        }
+        
+        .cyber-grid {
+            background-image: 
+                linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+    </style>
+</head>
+<body class="terminal-font bg-terminal-black text-white">
+    <!-- Matrix Rain Background -->
+    <div class="matrix-rain" id="matrixRain"></div>
+
+    <!-- Navigation -->
+    <nav class="bg-terminal-black/90 backdrop-blur-md border-b border-hacker-green/30 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-terminal hacker-text text-2xl mr-3"></i>
+                        <span class="text-xl font-bold hacker-text animate-hacker-glow">LudvigOS</span>
+                    </div>
+                    <div class="hidden sm:ml-8 sm:flex sm:space-x-8">
+                        <a href="#hero" class="border-hacker-green text-hacker-green inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Главная</a>
+                        <a href="#features" class="border-transparent text-gray-400 hover:text-hacker-green hover:border-hacker-green inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Фичи</a>
+                        <a href="#lur" class="border-transparent text-gray-400 hover:text-hacker-green hover:border-hacker-green inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">LUR Пакеты</a>
+                        <a href="#download" class="border-transparent text-gray-400 hover:text-hacker-green hover:border-hacker-green inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Установка</a>
+                        <a href="#terminal" class="border-transparent text-gray-400 hover:text-hacker-green hover:border-hacker-green inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Терминал</a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <div class="hacker-text text-sm mr-4">
+                        <i class="fas fa-microchip mr-1"></i>
+                        <span>64-bit ONLY</span>
+                    </div>
+                    <a href="#download" class="download-btn px-6 py-2 rounded-lg text-sm shadow-lg">
+                        <i class="fas fa-download mr-2"></i>
+                        Установить
+                    </a>
+                </div>
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-hacker-green hover:bg-gray-800 focus:outline-none transition duration-300">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="matrix-bg cyber-grid min-h-screen flex items-center relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+            <!-- Анимированный терминал -->
+            <div class="glow-border rounded-2xl p-8 mb-12 max-w-4xl mx-auto bg-terminal-black/80 backdrop-blur-md">
+                <div class="text-left">
+                    <div class="flex items-center mb-4">
+                        <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                        <span class="text-gray-400 ml-2">root@ludvigos:~</span>
+                    </div>
+                    <div class="space-y-2 hacker-text">
+                        <div class="flex items-center">
+                            <span class="text-green-400 mr-2">$</span>
+                            <span class="animate-terminal-blink">_</span>
+                        </div>
+                        <div class="text-green-300">LudvigOS Kernel 1.2 - 64-bit Architecture</div>
+                        <div class="text-blue-300">Minecraft Integration: ENABLED</div>
+                        <div class="text-yellow-300">32-bit Support: TERMINATED (2038)</div>
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="text-6xl sm:text-8xl font-bold hacker-text animate-hacker-glow mb-6">
+                LUDVIG<span class="text-white">OS</span>
+            </h1>
+            <p class="text-2xl sm:text-3xl text-gray-300 mb-8">
+                Революционная <span class="hacker-text">64-bit</span> операционная система
+            </p>
+            <p class="text-xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
+                ⚡ Мгновенная загрузка 0.8с | 🎮 Minecraft в ядре | 🚀 64-bit архитектура | 🛡️ Безопасность
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <a href="#download" class="download-btn px-8 py-4 rounded-xl text-lg font-bold flex items-center group">
+                    <i class="fas fa-bolt mr-3 group-hover:animate-pulse"></i>
+                    Установить LudvigOS
+                </a>
+                <a href="#terminal" class="glow-border px-8 py-4 rounded-xl text-lg font-bold text-hacker-green hover:bg-hacker-green/10 transition duration-300 flex items-center group">
+                    <i class="fas fa-terminal mr-3"></i>
+                    Попробовать Терминал
+                </a>
+            </div>
+
+            <!-- Статистика -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 max-w-2xl mx-auto">
+                <div class="text-center">
+                    <div class="hacker-text text-3xl font-bold">9.9<span class="text-white text-lg">КБ</span></div>
+                    <div class="text-gray-400 text-sm">Размер ядра</div>
+                </div>
+                <div class="text-center">
+                    <div class="hacker-text text-3xl font-bold">0.8<span class="text-white text-lg">с</span></div>
+                    <div class="text-gray-400 text-sm">Загрузка</div>
+                </div>
+                <div class="text-center">
+                    <div class="hacker-text text-3xl font-bold">64<span class="text-white text-lg">bit</span></div>
+                    <div class="text-gray-400 text-sm">Архитектура</div>
+                </div>
+                <div class="text-center">
+                    <div class="hacker-text text-3xl font-bold">∞</div>
+                    <div class="text-gray-400 text-sm">Minecraft FPS</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 bg-terminal-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl font-bold hacker-text animate-hacker-glow mb-6">
+                    УНИКАЛЬНЫЕ ВОЗМОЖНОСТИ
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    LudvigOS - это не просто ОС, это революция в мире операционных систем
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card glow-border rounded-2xl p-8 bg-terminal-black/50 hover:bg-terminal-black/80 transition duration-300 group">
+                    <div class="feature-icon text-4xl hacker-text mb-6 text-center">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 text-center">Мгновенная Загрузка</h3>
+                    <p class="text-gray-400 text-center leading-relaxed">
+                        0.8 секунд от включения до рабочего стола. Windows 11 грузится дольше, чем ты читаешь это!
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card glow-border rounded-2xl p-8 bg-terminal-black/50 hover:bg-terminal-black/80 transition duration-300 group">
+                    <div class="feature-icon text-4xl hacker-text mb-6 text-center">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 text-center">Minecraft в Ядре</h3>
+                    <p class="text-gray-400 text-center leading-relaxed">
+                        Встроенная поддержка Minecraft на уровне операционной системы. FPS: ∞
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card glow-border rounded-2xl p-8 bg-terminal-black/50 hover:bg-terminal-black/80 transition duration-300 group">
+                    <div class="feature-icon text-4xl hacker-text mb-6 text-center">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 text-center">64-bit Архитектура</h3>
+                    <p class="text-gray-400 text-center leading-relaxed">
+                        Только современные технологии. 32-bit осталось в 2000-х вместе с Windows XP
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="feature-card glow-border rounded-2xl p-8 bg-terminal-black/50 hover:bg-terminal-black/80 transition duration-300 group">
+                    <div class="feature-icon text-4xl hacker-text mb-6 text-center">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 text-center">Безопасность</h3>
+                    <p class="text-gray-400 text-center leading-relaxed">
+                        Никакой телеметрии, шпионажа и принудительных обновлений. Ты контролируешь свою систему!
+                    </p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="feature-card glow-border rounded-2xl p-8 bg-terminal-black/50 hover:bg-terminal-black/80 transition duration-300 group">
+                    <div class="feature-icon text-4xl hacker-text mb-6 text-center">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 text-center">LUR Менеджер</h3>
+                    <p class="text-gray-400 text-center leading-relaxed">
+                        Мощный менеджер пакетов. Установка программ одной командой!
+                    </p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="feature-card glow-border rounded-2xl p-8 bg-terminal-black/50 hover:bg-terminal-black/80 transition duration-300 group">
+                    <div class="feature-icon text-4xl hacker-text mb-6 text-center">
+                        <i class="fas fa-skull-crossbones"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 text-center">Самоуничтожение</h3>
+                    <p class="text-gray-400 text-center leading-relaxed">
+                        32-bit версия элегантно удалится 1 января 2038. Готовься к будущему!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LUR Package Manager Section -->
+    <section id="lur" class="py-24 matrix-bg cyber-grid">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl font-bold hacker-text animate-hacker-glow mb-6">
+                    LUR - LUDVIG UNIVERSAL REPOSITORY
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Мощный менеджер пакетов для настоящих гиков
+                </p>
+            </div>
+
+            <div class="glow-border rounded-2xl p-8 bg-terminal-black/80 backdrop-blur-md max-w-4xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-bold text-white mb-6">Доступные команды:</h3>
+                        
+                        <div class="lur-command">
+                            <div class="text-green-400 font-bold">$ lur install minecraft</div>
+                            <div class="text-gray-400 text-sm mt-1">Установить Minecraft (встроен в систему)</div>
+                        </div>
+                        
+                        <div class="lur-command">
+                            <div class="text-green-400 font-bold">$ lur install superlauncher</div>
+                            <div class="text-gray-400 text-sm mt-1">Установить SuperLauncher</div>
+                        </div>
+                        
+                        <div class="lur-command">
+                            <div class="text-green-400 font-bold">$ lur update</div>
+                            <div class="text-gray-400 text-sm mt-1">Обновить все пакеты</div>
+                        </div>
+                        
+                        <div class="lur-command">
+                            <div class="text-green-400 font-bold">$ lur remove 32bit-crap</div>
+                            <div class="text-gray-400 text-sm mt-1">Удалить 32-bit пакеты (рекомендуется)</div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-bold text-white mb-6">Популярные пакеты:</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-4 glow-border rounded-lg">
+                                <div>
+                                    <div class="text-white font-bold">minecraft-kernel</div>
+                                    <div class="text-gray-400 text-sm">Minecraft на уровне ядра</div>
+                                </div>
+                                <span class="hacker-text text-sm">v1.2</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-4 glow-border rounded-lg">
+                                <div>
+                                    <div class="text-white font-bold">superlauncher</div>
+                                    <div class="text-gray-400 text-sm">Игровой лаунчер</div>
+                                </div>
+                                <span class="hacker-text text-sm">v1.4.0.8</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-4 glow-border rounded-lg">
+                                <div>
+                                    <div class="text-white font-bold">64bit-only</div>
+                                    <div class="text-gray-400 text-sm">Запрет 32-bit приложений</div>
+                                </div>
+                                <span class="hacker-text text-sm">v2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-6 bg-hacker-green/10 rounded-xl border border-hacker-green/30">
+                    <div class="flex items-start">
+                        <i class="fas fa-exclamation-triangle text-yellow-400 mt-1 mr-3"></i>
+                        <div>
+                            <h4 class="text-yellow-400 font-bold mb-2">Внимание 32-bit пользователям!</h4>
+                            <p class="text-gray-400 text-sm">
+                                LudvigOS прекратит поддержку 32-bit архитектуры 1 января 2038 года. 
+                                Обновите железо пока не поздно!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="py-24 bg-terminal-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl font-bold hacker-text animate-hacker-glow mb-6">
+                    УСТАНОВИТЬ LUDVIGOS
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Присоединяйся к революции! Выбери свою версию:
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Minimal Version -->
+                <div class="glow-border rounded-2xl p-8 bg-terminal-black/50 text-center hover:bg-terminal-black/80 transition duration-300 group">
+                    <div class="text-4xl hacker-text mb-4">
+                        <i class="fas fa-compress-arrows-alt"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">MINIMAL</h3>
+                    <div class="hacker-text text-3xl font-bold mb-2">9.9 КБ</div>
+                    <p class="text-gray-400 text-sm mb-6">Только ядро + Minecraft</p>
+                    <ul class="text-gray-400 text-left space-y-2 mb-6">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2 text-sm"></i>
+                            Базовое ядро
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2 text-sm"></i>
+                            Minecraft
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-times text-red-400 mr-2 text-sm"></i>
+                            LUR менеджер
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-times text-red-400 mr-2 text-sm"></i>
+                            Графический интерфейс
+                        </li>
+                    </ul>
+                    <button class="download-btn w-full py-3 rounded-lg font-bold">
+                        <i class="fas fa-download mr-2"></i>
+                        Скачать Minimal
+                    </button>
+                </div>
+
+                <!-- Standard Version -->
+                <div class="glow-border rounded-2xl p-8 bg-terminal-black/50 text-center hover:bg-terminal-black/80 transition duration-300 group scale-105 relative">
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                        <span class="bg-hacker-green text-black px-3 py-1 rounded-full text-sm font-bold">РЕКОМЕНДУЕМ</span>
+                    </div>
+                    <div class="text-4xl hacker-text mb-4">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">STANDARD</h3>
+                    <div class="hacker-text text-3xl font-bold mb-2">29.4 МБ</div>
+                    <p class="text-gray-400 text-sm mb-6">Полная версия</p>
+                    <ul class="text-gray-400 text-left space-y-2 mb-6">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2 text-sm"></i>
+                            Полное ядро
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2 text-sm"></i>
+                            Minecraft + SuperLauncher
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2 text-sm"></i>
+                            LUR менеджер
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2 text-sm"></i>
+                            Графический интерфейс
+                        </li>
+                    </ul>
+                    <button class="download-btn w-full py-3 rounded-lg font-bold">
+                        <i class="fas fa-bolt mr-2"></i>
+                        Скачать Standard
+                    </button>
+                </div>
+
+                <!-- Gamer Edition -->
+                <div class="glow-border rounded-2xl p-8 bg-terminal-black/50 text-center hover:bg-terminal-black/80 transition duration-300 group">
+                    <div class="text-4xl hacker-text mb-4">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">GAMER EDITION</h3>
+                    <div class="hacker-text text-3xl font-bold mb-2">64 МБ</div>
+                    <p class="text-gray-400 text-sm mb-6">Для настоящих геймеров</p>
+                    <ul class="text-gray-400 text-left space-y-2 mb-6">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2 text-sm"></i>
+                            Оптимизированное ядро
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2 text-sm"></i>
+                            Minecraft (FPS: ∞)
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2 text-sm"></i>
+                            Игровые утилиты
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-400 mr-2 text-sm"></i>
+                            Overclocking tools
+                        </li>
+                    </ul>
+                    <button class="download-btn w-full py-3 rounded-lg font-bold">
+                        <i class="fas fa-rocket mr-2"></i>
+                        Скачать Gamer
+                    </button>
+                </div>
+            </div>
+
+            <!-- System Requirements -->
+            <div class="mt-16 glow-border rounded-2xl p-8 max-w-3xl mx-auto bg-terminal-black/50">
+                <h3 class="text-2xl font-bold text-white mb-6 text-center">СИСТЕМНЫЕ ТРЕБОВАНИЯ</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-green-400 font-bold mb-4">✅ МИНИМАЛЬНЫЕ:</h4>
+                        <ul class="text-gray-400 space-y-2">
+                            <li>64-bit процессор (обязательно!)</li>
+                            <li>4 ГБ ОЗУ</li>
+                            <li>2 ГБ места на диске</li>
+                            <li>Любая видеокарта</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-red-400 font-bold mb-4">❌ НЕ ПОДДЕРЖИВАЕТСЯ:</h4>
+                        <ul class="text-gray-400 space-y-2">
+                            <li>32-bit процессоры (устарели в 2000-х)</li>
+                            <li>Windows (используйте LudvigOS!)</li>
+                            <li>Старое железо (обновитесь!)</li>
+                            <li>MAX Corp продукты (это мусор)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Terminal -->
+    <section id="terminal" class="py-24 matrix-bg cyber-grid">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold hacker-text animate-hacker-glow mb-6">
+                    ИНТЕРАКТИВНЫЙ ТЕРМИНАЛ
+                </h2>
+                <p class="text-xl text-gray-400">
+                    Попробуй команды LudvigOS прямо в браузере!
+                </p>
+            </div>
+
+            <div class="glow-border rounded-2xl overflow-hidden bg-terminal-black/90 backdrop-blur-md">
+                <!-- Terminal Header -->
+                <div class="bg-gray-800 px-4 py-3 flex items-center">
+                    <div class="flex space-x-2 mr-4">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <span class="text-gray-300 terminal-font">root@ludvigos:~</span>
+                </div>
+                
+                <!-- Terminal Content -->
+                <div class="p-6 terminal-font" id="terminalContent">
+                    <div class="space-y-2" id="terminalOutput">
+                        <div class="text-green-400">LudvigOS Terminal v1.2 (64-bit)</div>
+                        <div class="text-blue-400">Добро пожаловать в интерактивный терминал!</div>
+                        <div class="text-gray-400">Введите 'help' для списка команд</div>
+                        <br>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <span class="text-green-400 mr-2">$</span>
+                        <input type="text" id="terminalInput" class="flex-1 bg-transparent outline-none text-white terminal-font" 
+                               placeholder="Введите команду..." autocomplete="off">
+                        <div class="w-2 h-5 bg-green-400 animate-terminal-blink ml-2" id="cursor"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Commands -->
+            <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="executeCommand('lur install minecraft')" class="glow-border py-3 rounded-lg text-gray-400 hover:text-hacker-green transition duration-300">
+                    lur install minecraft
+                </button>
+                <button onclick="executeCommand('ludvigos --version')" class="glow-border py-3 rounded-lg text-gray-400 hover:text-hacker-green transition duration-300">
+                    ludvigos --version
+                </button>
+                <button onclick="executeCommand('system-status')" class="glow-border py-3 rounded-lg text-gray-400 hover:text-hacker-green transition duration-300">
+                    system-status
+                </button>
+                <button onclick="executeCommand('start minecraft')" class="glow-border py-3 rounded-lg text-gray-400 hover:text-hacker-green transition duration-300">
+                    start minecraft
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-terminal-black border-t border-hacker-green/30 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-terminal hacker-text text-2xl mr-3"></i>
+                        <span class="text-xl font-bold hacker-text">LudvigOS</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Революционная 64-bit операционная система для тех, кто смотрит в будущее.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold mb-4">Продукты</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-hacker-green text-sm transition duration-300">LudvigOS</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-hacker-green text-sm transition duration-300">SuperLauncher</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-hacker-green text-sm transition duration-300">LUR Менеджер</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold mb-4">Поддержка</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-hacker-green text-sm transition duration-300">Документация</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-hacker-green text-sm transition duration-300">Сообщество</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-hacker-green text-sm transition duration-300">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold mb-4">Контакты</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-hacker-green transition duration-300">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-hacker-green transition duration-300">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-hacker-green transition duration-300">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-gray-800 text-center">
+                <p class="text-gray-400 text-sm">
+                    &copy; 2024 LudvigOS. Все права защищены. | 
+                    <span class="hacker-text">64-bit или ничего!</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Matrix Rain Effect
+        function createMatrixRain() {
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            const container = document.getElementById('matrixRain');
+            
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + 'vw';
+                char.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                char.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(char);
+            }
+        }
+
+        createMatrixRain();
+
+        // Terminal functionality
+        const terminalInput = document.getElementById('terminalInput');
+        const terminalOutput = document.getElementById('terminalOutput');
+
+        const commands = {
+            'help': 'Доступные команды: help, ludvigos --version, system-status, lur install [пакет], start minecraft',
+            'ludvigos --version': 'LudvigOS 1.2 Stable Release (64-bit)\nKernel: 9.9 KB\nArchitecture: x86_64',
+            'system-status': 'CPU: 2% | RAM: 1.2GB/16GB | DISK: 15% | UPTIME: 5d 12h\nMinecraft: READY',
+            'start minecraft': '⚡ Запуск Minecraft в режиме ядра...\n🎮 FPS: 9999+\n✅ Minecraft успешно запущен!',
+            'lur install minecraft': '❌ Пакет minecraft уже установлен в ядре системы!\n💡 Используйте: start minecraft'
+        };
+
+        function executeCommand(cmd) {
+            terminalInput.value = cmd;
+            handleTerminalInput();
+        }
+
+        function handleTerminalInput() {
+            const command = terminalInput.value.trim();
+            if (!command) return;
+
+            // Add command to output
+            const commandElement = document.createElement('div');
+            commandElement.innerHTML = `<span class="text-green-400">$ ${command}</span>`;
+            terminalOutput.appendChild(commandElement);
+
+            // Add output
+            const outputElement = document.createElement('div');
+            if (commands[command]) {
+                outputElement.innerHTML = commands[command].split('\n').map(line => 
+                    `<div class="text-blue-300">${line}</div>`
+                ).join('');
+            } else {
+                outputElement.innerHTML = `<div class="text-red-400">Команда не найдена: ${command}</div>`;
+            }
+            terminalOutput.appendChild(outputElement);
+
+            // Clear input and scroll to bottom
+            terminalInput.value = '';
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        terminalInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleTerminalInput();
+            }
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add glitch effect randomly
+        setInterval(() => {
+            if (Math.random() < 0.02) {
+                document.body.style.transform = 'translateX(' + (Math.random() * 4 - 2) + 'px)';
+                setTimeout(() => {
+                    document.body.style.transform = 'translateX(0)';
+                }, 50);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
