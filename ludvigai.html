@@ -55,188 +55,297 @@
             0%, 60%, 100% { transform: translateY(0); }
             30% { transform: translateY(-10px); }
         }
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body class="font-sans bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-    <!-- Theme Toggle -->
-    <div class="fixed top-4 right-4 z-50">
-        <button id="themeToggle" class="bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
-            <i class="fas fa-moon text-gray-600 dark:text-yellow-400 text-lg"></i>
-        </button>
-    </div>
+    <!-- Auth Modal -->
+    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 w-96 max-w-md mx-4 shadow-2xl">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-brain text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">LudvigAI</h2>
+                <p class="text-gray-600 dark:text-gray-400">Ваш русский AI-ассистент</p>
+            </div>
 
-    <div class="flex h-screen">
-        <!-- Sidebar -->
-        <div id="sidebar" class="sidebar-transition w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full">
-            <!-- Sidebar Header -->
-            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-brain text-white text-lg"></i>
+            <div id="loginForm">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                        <input type="email" id="loginEmail" 
+                               class="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300">
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-gray-900 dark:text-white">LudvigAI</h1>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Ваш русский ассистент</p>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Пароль</label>
+                        <input type="password" id="loginPassword" 
+                               class="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300">
                     </div>
+                    <button onclick="login()" 
+                            class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        Войти
+                    </button>
+                </div>
+                <div class="mt-4 text-center">
+                    <button onclick="toggleAuthForm()" class="text-purple-600 dark:text-purple-400 hover:underline text-sm">
+                        Нет аккаунта? Зарегистрироваться
+                    </button>
+                </div>
+                <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <button onclick="enterAsGuest()" 
+                            class="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-3 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-300">
+                        Войти как гость
+                    </button>
                 </div>
             </div>
 
-            <!-- New Chat Button -->
-            <div class="p-4">
-                <button id="newChatBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    <i class="fas fa-plus mr-2"></i>
-                    Новый чат
-                </button>
-            </div>
-
-            <!-- Chat History -->
-            <div class="flex-1 overflow-y-auto p-4 space-y-2">
-                <div class="chat-history-item bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded-lg p-3 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors duration-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-message text-purple-600 dark:text-purple-400"></i>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Привет! Как дела?</span>
-                        </div>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">12:30</span>
+            <div id="registerForm" class="hidden">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Имя</label>
+                        <input type="text" id="registerName" 
+                               class="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300">
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                        <input type="email" id="registerEmail" 
+                               class="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Пароль</label>
+                        <input type="password" id="registerPassword" 
+                               class="w-full border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300">
+                    </div>
+                    <button onclick="register()" 
+                            class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        Зарегистрироваться
+                    </button>
                 </div>
-                
-                <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-message text-gray-600 dark:text-gray-400"></i>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Помоги с программированием</span>
-                        </div>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">Вчера</span>
-                    </div>
-                </div>
-
-                <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-message text-gray-600 dark:text-gray-400"></i>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Расскажи о нейросетях</span>
-                        </div>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">2 дня назад</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- User Profile -->
-            <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
-                        <span class="text-white text-sm font-bold">Л</span>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">Ludvig2457</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Разработчик</p>
-                    </div>
-                    <button class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200">
-                        <i class="fas fa-cog"></i>
+                <div class="mt-4 text-center">
+                    <button onclick="toggleAuthForm()" class="text-purple-600 dark:text-purple-400 hover:underline text-sm">
+                        Уже есть аккаунт? Войти
                     </button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Mobile Sidebar Toggle -->
-        <button id="sidebarToggle" class="lg:hidden fixed top-4 left-4 z-50 bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700">
-            <i class="fas fa-bars text-gray-600 dark:text-gray-400"></i>
-        </button>
-
-        <!-- Main Chat Area -->
-        <div class="flex-1 flex flex-col h-full">
-            <!-- Chat Header -->
-            <div class="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-brain text-white text-sm"></i>
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 w-96 max-w-md mx-4 shadow-2xl">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Настройки</h3>
+                <button onclick="closeSettings()" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Внешний вид</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700 dark:text-gray-300">Темная тема</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="darkModeToggle" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
                     </div>
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">LudvigAI</h2>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Готов помочь с любыми вопросами</p>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">AI Настройки</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Температура ответов</label>
+                            <input type="range" id="temperature" min="0" max="100" value="50" 
+                                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                            <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                                <span>Более точные</span>
+                                <span>Более креативные</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Аккаунт</h4>
+                    <div class="space-y-3">
+                        <div id="userInfo" class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <p class="text-sm text-gray-600 dark:text-gray-400" id="userStatus"></p>
+                        </div>
+                        <button onclick="logout()" 
+                                class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition duration-300">
+                            Выйти
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <!-- Theme Toggle -->
+        <div class="fixed top-4 right-4 z-50">
+            <button id="themeToggle" class="bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
+                <i class="fas fa-moon text-gray-600 dark:text-yellow-400 text-lg"></i>
+            </button>
+        </div>
+
+        <div class="flex h-screen">
+            <!-- Sidebar -->
+            <div id="sidebar" class="sidebar-transition w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full">
+                <!-- Sidebar Header -->
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-brain text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900 dark:text-white">LudvigAI</h1>
+                            <p class="text-sm text-gray-500 dark:text-gray-400" id="userGreeting">Ваш русский ассистент</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Chat Button -->
+                <div class="p-4">
+                    <button id="newChatBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-plus mr-2"></i>
+                        Новый чат
+                    </button>
+                </div>
+
+                <!-- Chat History -->
+                <div id="chatHistory" class="flex-1 overflow-y-auto p-4 space-y-2">
+                    <!-- Chat history will be populated here -->
+                </div>
+
+                <!-- User Profile -->
+                <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center space-x-3">
+                        <div id="userAvatar" class="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+                            <span class="text-white text-sm font-bold">Г</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-900 dark:text-white" id="userName">Гость</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400" id="userType">Гостевой режим</p>
+                        </div>
+                        <button onclick="openSettings()" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200">
+                            <i class="fas fa-cog"></i>
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Messages Container -->
-            <div id="messagesContainer" class="flex-1 overflow-y-auto p-6 space-y-6">
-                <!-- Welcome Message -->
-                <div class="message-enter flex justify-start">
+            <!-- Mobile Sidebar Toggle -->
+            <button id="sidebarToggle" class="lg:hidden fixed top-4 left-4 z-50 bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700">
+                <i class="fas fa-bars text-gray-600 dark:text-gray-400"></i>
+            </button>
+
+            <!-- Main Chat Area -->
+            <div class="flex-1 flex flex-col h-full">
+                <!-- Chat Header -->
+                <div class="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-brain text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">LudvigAI</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Готов помочь с любыми вопросами</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div id="messagesContainer" class="flex-1 overflow-y-auto p-6 space-y-6">
+                    <!-- Welcome Message -->
+                    <div class="message-enter flex justify-start">
+                        <div class="flex space-x-3 max-w-4xl">
+                            <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-brain text-white text-sm"></i>
+                            </div>
+                            <div class="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg border border-gray-200 dark:border-gray-600">
+                                <p class="text-gray-900 dark:text-white text-lg leading-relaxed">
+                                    Привет! Я LudvigAI - ваш русский AI-ассистент. 🤖<br><br>
+                                    Я могу помочь вам с:
+                                    • Ответами на вопросы<br>
+                                    • Программированием<br>
+                                    • Творческими задачами<br>
+                                    • И многим другим!<br><br>
+                                    Чем могу помочь?
+                                </p>
+                                <div class="flex flex-wrap gap-2 mt-4">
+                                    <button class="suggestion-btn bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-purple-200 dark:border-purple-700">
+                                        Расскажи о себе
+                                    </button>
+                                    <button class="suggestion-btn bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-blue-200 dark:border-blue-700">
+                                        Помоги с кодом
+                                    </button>
+                                    <button class="suggestion-btn bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-green-200 dark:border-green-700">
+                                        Что нового?
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typing Indicator -->
+                <div id="typingIndicator" class="hidden px-6 py-4">
                     <div class="flex space-x-3 max-w-4xl">
                         <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-brain text-white text-sm"></i>
                         </div>
                         <div class="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg border border-gray-200 dark:border-gray-600">
-                            <p class="text-gray-900 dark:text-white text-lg leading-relaxed">
-                                Привет! Я LudvigAI - ваш русский AI-ассистент. 🤖<br><br>
-                                Я могу помочь вам с:
-                                • Ответами на вопросы<br>
-                                • Программированием<br>
-                                • Творческими задачами<br>
-                                • И многим другим!<br><br>
-                                Чем могу помочь?
-                            </p>
-                            <div class="flex flex-wrap gap-2 mt-4">
-                                <button class="suggestion-btn bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-purple-200 dark:border-purple-700">
-                                    Расскажи о себе
-                                </button>
-                                <button class="suggestion-btn bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-blue-200 dark:border-blue-700">
-                                    Помоги с кодом
-                                </button>
-                                <button class="suggestion-btn bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-green-200 dark:border-green-700">
-                                    Что нового?
-                                </button>
+                            <div class="typing-dots">
+                                <span class="text-2xl">●</span>
+                                <span class="text-2xl">●</span>
+                                <span class="text-2xl">●</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Typing Indicator -->
-            <div id="typingIndicator" class="hidden px-6 py-4">
-                <div class="flex space-x-3 max-w-4xl">
-                    <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-brain text-white text-sm"></i>
-                    </div>
-                    <div class="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg border border-gray-200 dark:border-gray-600">
-                        <div class="typing-dots">
-                            <span class="text-2xl">●</span>
-                            <span class="text-2xl">●</span>
-                            <span class="text-2xl">●</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Input Area -->
-            <div class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
-                <div class="max-w-4xl mx-auto">
-                    <div class="flex space-x-4">
-                        <div class="flex-1 relative">
-                            <textarea 
-                                id="messageInput" 
-                                placeholder="Напишите сообщение..." 
-                                rows="1"
-                                class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl py-4 px-6 pr-12 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 text-lg max-h-32"
-                                oninput="autoResize(this)"
-                            ></textarea>
-                            <button id="sendButton" class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-2 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                                <i class="fas fa-paper-plane text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center mt-3 text-sm text-gray-500 dark:text-gray-400">
+                <!-- Input Area -->
+                <div class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
+                    <div class="max-w-4xl mx-auto">
                         <div class="flex space-x-4">
-                            <button class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200">
-                                <i class="fas fa-robot mr-1"></i> AI
-                            </button>
-                            <button class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200">
-                                <i class="fas fa-wand-magic-sparkles mr-1"></i> Креатив
-                            </button>
+                            <div class="flex-1 relative">
+                                <textarea 
+                                    id="messageInput" 
+                                    placeholder="Напишите сообщение..." 
+                                    rows="1"
+                                    class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl py-4 px-6 pr-12 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 text-lg max-h-32"
+                                    oninput="autoResize(this)"
+                                ></textarea>
+                                <button id="sendButton" class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-2 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i class="fas fa-paper-plane text-sm"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div>
-                            <span>LudvigAI v1.0</span>
+                        <div class="flex justify-between items-center mt-3 text-sm text-gray-500 dark:text-gray-400">
+                            <div class="flex space-x-4">
+                                <button class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200">
+                                    <i class="fas fa-robot mr-1"></i> AI
+                                </button>
+                                <button class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200">
+                                    <i class="fas fa-wand-magic-sparkles mr-1"></i> Креатив
+                                </button>
+                            </div>
+                            <div>
+                                <span>LudvigAI v1.0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -245,6 +354,18 @@
     </div>
 
     <script>
+        // State management
+        let currentUser = null;
+        let currentChatId = 'default';
+        let chats = {
+            'default': {
+                id: 'default',
+                title: 'Новый чат',
+                messages: [],
+                createdAt: new Date().toISOString()
+            }
+        };
+
         // База знаний нейросети LudvigAI
         const responseTemplates = {
             'привет': [
@@ -332,11 +453,236 @@
             "Не совсем понял. Можешь объяснить по-другому? 🔄"
         ];
 
-        // Функция для получения ответа от AI
+        // Auth functions
+        function toggleAuthForm() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            loginForm.classList.toggle('hidden');
+            registerForm.classList.toggle('hidden');
+        }
+
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+
+            // Simulate login
+            currentUser = {
+                id: '1',
+                name: email.split('@')[0],
+                email: email,
+                type: 'registered'
+            };
+
+            loadUserData();
+            showMainApp();
+        }
+
+        function register() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            if (!name || !email || !password) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+
+            // Simulate registration
+            currentUser = {
+                id: '1',
+                name: name,
+                email: email,
+                type: 'registered'
+            };
+
+            loadUserData();
+            showMainApp();
+        }
+
+        function enterAsGuest() {
+            currentUser = {
+                id: 'guest',
+                name: 'Гость',
+                email: null,
+                type: 'guest'
+            };
+
+            loadUserData();
+            showMainApp();
+        }
+
+        function logout() {
+            currentUser = null;
+            chats = {
+                'default': {
+                    id: 'default',
+                    title: 'Новый чат',
+                    messages: [],
+                    createdAt: new Date().toISOString()
+                }
+            };
+            currentChatId = 'default';
+            
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            closeSettings();
+        }
+
+        function loadUserData() {
+            // Load user data from localStorage if exists
+            const savedUser = localStorage.getItem('ludvigai_user');
+            const savedChats = localStorage.getItem('ludvigai_chats');
+            
+            if (savedUser && currentUser.type === 'registered') {
+                currentUser = JSON.parse(savedUser);
+            }
+            
+            if (savedChats) {
+                chats = JSON.parse(savedChats);
+            }
+
+            updateUI();
+        }
+
+        function saveUserData() {
+            if (currentUser.type === 'registered') {
+                localStorage.setItem('ludvigai_user', JSON.stringify(currentUser));
+                localStorage.setItem('ludvigai_chats', JSON.stringify(chats));
+            }
+        }
+
+        function updateUI() {
+            // Update user info
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userType').textContent = currentUser.type === 'guest' ? 'Гостевой режим' : 'Зарегистрирован';
+            document.getElementById('userGreeting').textContent = `Привет, ${currentUser.name}!`;
+            document.getElementById('userStatus').textContent = currentUser.type === 'guest' 
+                ? 'Гостевой режим - данные не сохраняются' 
+                : `Зарегистрирован как ${currentUser.email}`;
+
+            // Update avatar
+            const avatar = document.getElementById('userAvatar');
+            avatar.innerHTML = `<span class="text-white text-sm font-bold">${currentUser.name[0].toUpperCase()}</span>`;
+
+            // Update chat history
+            renderChatHistory();
+            
+            // Load current chat
+            loadChat(currentChatId);
+        }
+
+        function showMainApp() {
+            document.getElementById('authModal').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            saveUserData();
+        }
+
+        // Chat management
+        function createNewChat() {
+            const chatId = 'chat_' + Date.now();
+            chats[chatId] = {
+                id: chatId,
+                title: 'Новый чат',
+                messages: [],
+                createdAt: new Date().toISOString()
+            };
+            currentChatId = chatId;
+            renderChatHistory();
+            loadChat(chatId);
+            saveUserData();
+        }
+
+        function switchChat(chatId) {
+            currentChatId = chatId;
+            loadChat(chatId);
+        }
+
+        function renderChatHistory() {
+            const chatHistory = document.getElementById('chatHistory');
+            chatHistory.innerHTML = '';
+
+            Object.values(chats).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(chat => {
+                const chatElement = document.createElement('div');
+                chatElement.className = `chat-history-item ${chat.id === currentChatId ? 'bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700' : 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600'} border rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200`;
+                chatElement.onclick = () => switchChat(chat.id);
+                
+                const lastMessage = chat.messages[chat.messages.length - 1];
+                const title = lastMessage ? lastMessage.text.substring(0, 30) + (lastMessage.text.length > 30 ? '...' : '') : 'Новый чат';
+                
+                chatElement.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-message ${chat.id === currentChatId ? 'text-purple-600 dark:text-purple-400' : 'text-gray-600 dark:text-gray-400'}"></i>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">${chat.title}</span>
+                        </div>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">${formatTime(chat.createdAt)}</span>
+                    </div>
+                `;
+                
+                chatHistory.appendChild(chatElement);
+            });
+        }
+
+        function loadChat(chatId) {
+            const chat = chats[chatId];
+            const messagesContainer = document.getElementById('messagesContainer');
+            
+            messagesContainer.innerHTML = '';
+            
+            if (chat.messages.length === 0) {
+                // Show welcome message for empty chat
+                messagesContainer.innerHTML = `
+                    <div class="message-enter flex justify-start">
+                        <div class="flex space-x-3 max-w-4xl">
+                            <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-brain text-white text-sm"></i>
+                            </div>
+                            <div class="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg border border-gray-200 dark:border-gray-600">
+                                <p class="text-gray-900 dark:text-white text-lg leading-relaxed">
+                                    Привет! Я LudvigAI - ваш русский AI-ассистент. 🤖<br><br>
+                                    Чем могу помочь?
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                chat.messages.forEach(message => {
+                    addMessageToUI(message.text, message.isUser);
+                });
+            }
+        }
+
+        // Settings functions
+        function openSettings() {
+            document.getElementById('settingsModal').classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        // Utility functions
+        function formatTime(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 24 * 60 * 60 * 1000) {
+                return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            } else {
+                return date.toLocaleDateString('ru-RU');
+            }
+        }
+
         function getAIResponse(userInput) {
             userInput = userInput.toLowerCase().trim();
             
-            // Ищем ключевые слова в сообщении пользователя
             for (const keyword in responseTemplates) {
                 if (userInput.includes(keyword)) {
                     const responses = responseTemplates[keyword];
@@ -344,11 +690,10 @@
                 }
             }
             
-            // Ответ по умолчанию
             return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
         }
 
-        // DOM элементы
+        // DOM elements and event handlers
         const messagesContainer = document.getElementById('messagesContainer');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
@@ -356,16 +701,15 @@
         const newChatBtn = document.getElementById('newChatBtn');
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('sidebar');
+        const darkModeToggle = document.getElementById('darkModeToggle');
 
-        // Авто-ресайз текстового поля
         function autoResize(textarea) {
             textarea.style.height = 'auto';
             textarea.style.height = Math.min(textarea.scrollHeight, 128) + 'px';
             sendButton.disabled = textarea.value.trim() === '';
         }
 
-        // Добавление сообщения в чат
-        function addMessage(text, isUser = false) {
+        function addMessageToUI(text, isUser = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message-enter flex ${isUser ? 'justify-end' : 'justify-start'}`;
             
@@ -384,30 +728,50 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
-        // Отправка сообщения
         function sendMessage() {
             const message = messageInput.value.trim();
             if (!message) return;
 
-            // Добавляем сообщение пользователя
-            addMessage(message, true);
+            // Add user message to chat
+            addMessageToUI(message, true);
+            chats[currentChatId].messages.push({
+                text: message,
+                isUser: true,
+                timestamp: new Date().toISOString()
+            });
+
+            // Update chat title if it's the first message
+            if (chats[currentChatId].messages.length === 1) {
+                chats[currentChatId].title = message.substring(0, 30) + (message.length > 30 ? '...' : '');
+                renderChatHistory();
+            }
+
             messageInput.value = '';
             autoResize(messageInput);
             sendButton.disabled = true;
 
-            // Показываем индикатор набора
+            // Show typing indicator
             typingIndicator.classList.remove('hidden');
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-            // Имитация задержки ответа AI
+            // Simulate AI response
             setTimeout(() => {
                 typingIndicator.classList.add('hidden');
                 const aiResponse = getAIResponse(message);
-                addMessage(aiResponse, false);
+                addMessageToUI(aiResponse, false);
+                
+                // Add AI response to chat
+                chats[currentChatId].messages.push({
+                    text: aiResponse,
+                    isUser: false,
+                    timestamp: new Date().toISOString()
+                });
+
+                saveUserData();
             }, 1000 + Math.random() * 1000);
         }
 
-        // Обработчики событий
+        // Event listeners
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -417,7 +781,6 @@
 
         sendButton.addEventListener('click', sendMessage);
 
-        // Кнопки быстрых ответов
         document.querySelectorAll('.suggestion-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 messageInput.value = btn.textContent.trim();
@@ -426,33 +789,15 @@
             });
         });
 
-        // Новая беседа
-        newChatBtn.addEventListener('click', () => {
-            messagesContainer.innerHTML = `
-                <div class="message-enter flex justify-start">
-                    <div class="flex space-x-3 max-w-4xl">
-                        <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-brain text-white text-sm"></i>
-                        </div>
-                        <div class="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg border border-gray-200 dark:border-gray-600">
-                            <p class="text-gray-900 dark:text-white text-lg leading-relaxed">
-                                Привет! Начнем новую беседу! 🎉<br><br>
-                                Чем могу помочь сегодня?
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
+        newChatBtn.addEventListener('click', createNewChat);
 
-        // Переключение сайдбара на мобильных
         sidebarToggle.addEventListener('click', () => {
             sidebar.classList.toggle('hidden');
             sidebar.classList.toggle('absolute');
             sidebar.classList.toggle('z-40');
         });
 
-        // Переключение темы
+        // Theme toggle
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = themeToggle.querySelector('i');
         
@@ -460,6 +805,7 @@
             document.documentElement.classList.add('dark');
             themeIcon.classList.replace('fa-moon', 'fa-sun');
             themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
+            darkModeToggle.checked = true;
         }
         
         themeToggle.addEventListener('click', () => {
@@ -468,15 +814,39 @@
                 localStorage.theme = 'dark';
                 themeIcon.classList.replace('fa-moon', 'fa-sun');
                 themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
+                darkModeToggle.checked = true;
             } else {
+                localStorage.theme = 'light';
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                themeIcon.classList.replace('text-yellow-400', 'text-gray-600');
+                darkModeToggle.checked = false;
+            }
+        });
+
+        darkModeToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
+            } else {
+                document.documentElement.classList.remove('dark');
                 localStorage.theme = 'light';
                 themeIcon.classList.replace('fa-sun', 'fa-moon');
                 themeIcon.classList.replace('text-yellow-400', 'text-gray-600');
             }
         });
 
-        // Инициализация
+        // Initialize
         messageInput.focus();
+
+        // Check if user is already logged in
+        const savedUser = localStorage.getItem('ludvigai_user');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            loadUserData();
+            showMainApp();
+        }
     </script>
 </body>
 </html>
