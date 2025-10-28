@@ -55,6 +55,46 @@
             0%, 60%, 100% { transform: translateY(0); }
             30% { transform: translateY(-10px); }
         }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .auth-modal.active {
+            display: flex;
+        }
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .settings-modal.active {
+            display: flex;
+        }
+        .search-results {
+            max-height: 300px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body class="font-sans bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -63,6 +103,116 @@
         <button id="themeToggle" class="bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
             <i class="fas fa-moon text-gray-600 dark:text-yellow-400 text-lg"></i>
         </button>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Вход в LudvigAI</h2>
+                <button id="closeAuthModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="authTabs" class="flex mb-6 border-b border-gray-200 dark:border-gray-700">
+                <button class="auth-tab active py-2 px-4 font-medium text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400" data-tab="login">Вход</button>
+                <button class="auth-tab py-2 px-4 font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" data-tab="register">Регистрация</button>
+            </div>
+            
+            <form id="loginForm" class="auth-form active">
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваш email" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="loginPassword">Пароль</label>
+                    <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваш пароль" required>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg mb-4">
+                    Войти
+                </button>
+                <button type="button" id="guestLogin" class="w-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg">
+                    Войти как гость
+                </button>
+            </form>
+            
+            <form id="registerForm" class="auth-form">
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="registerName">Имя</label>
+                    <input type="text" id="registerName" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваше имя" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваш email" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="registerPassword">Пароль</label>
+                    <input type="password" id="registerPassword" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Придумайте пароль" required>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg">
+                    Зарегистрироваться
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="settings-modal">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Настройки</h2>
+                <button id="closeSettingsModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Тема</h3>
+                    <div class="flex space-x-4">
+                        <button class="theme-option flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-theme="light">
+                            <i class="fas fa-sun text-yellow-500 mb-2"></i>
+                            <p class="font-medium text-gray-900 dark:text-white">Светлая</p>
+                        </button>
+                        <button class="theme-option flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-theme="dark">
+                            <i class="fas fa-moon text-indigo-500 mb-2"></i>
+                            <p class="font-medium text-gray-900 dark:text-white">Темная</p>
+                        </button>
+                        <button class="theme-option flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-theme="auto">
+                            <i class="fas fa-desktop text-blue-500 mb-2"></i>
+                            <p class="font-medium text-gray-900 dark:text-white">Авто</p>
+                        </button>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Язык</h3>
+                    <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option>Русский</option>
+                        <option>English</option>
+                        <option>Español</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Уведомления</h3>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700 dark:text-gray-300">Push-уведомления</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <button id="logoutBtn" class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg">
+                        Выйти
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="flex h-screen">
@@ -81,43 +231,74 @@
                 </div>
             </div>
 
-            <!-- New Chat Button -->
-            <div class="p-4">
-                <button id="newChatBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    <i class="fas fa-plus mr-2"></i>
-                    Новый чат
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-200 dark:border-gray-700">
+                <button class="tab-btn flex-1 py-3 text-center font-medium text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400" data-tab="chat">
+                    <i class="fas fa-comment mr-2"></i>Чат
+                </button>
+                <button class="tab-btn flex-1 py-3 text-center font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" data-tab="search">
+                    <i class="fas fa-search mr-2"></i>Поиск
                 </button>
             </div>
 
-            <!-- Chat History -->
-            <div class="flex-1 overflow-y-auto p-4 space-y-2">
-                <div class="chat-history-item bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded-lg p-3 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors duration-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-message text-purple-600 dark:text-purple-400"></i>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Привет! Как дела?</span>
+            <!-- Chat Tab Content -->
+            <div id="chatTab" class="tab-content active flex-1 flex flex-col">
+                <!-- New Chat Button -->
+                <div class="p-4">
+                    <button id="newChatBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-plus mr-2"></i>
+                        Новый чат
+                    </button>
+                </div>
+
+                <!-- Chat History -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-2">
+                    <div class="chat-history-item bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded-lg p-3 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors duration-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-message text-purple-600 dark:text-purple-400"></i>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Привет! Как дела?</span>
+                            </div>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">12:30</span>
                         </div>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">12:30</span>
+                    </div>
+                    
+                    <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-message text-gray-600 dark:text-gray-400"></i>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Помоги с программированием</span>
+                            </div>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">Вчера</span>
+                        </div>
+                    </div>
+
+                    <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-message text-gray-600 dark:text-gray-400"></i>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Расскажи о нейросетях</span>
+                            </div>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">2 дня назад</span>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-message text-gray-600 dark:text-gray-400"></i>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Помоги с программированием</span>
-                        </div>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">Вчера</span>
+            </div>
+
+            <!-- Search Tab Content -->
+            <div id="searchTab" class="tab-content flex-1 flex flex-col">
+                <!-- Search Input -->
+                <div class="p-4">
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="Поиск в истории..." class="w-full border border-gray-300 dark:border-gray-600 rounded-lg py-3 px-4 pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300">
+                        <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                     </div>
                 </div>
 
-                <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-message text-gray-600 dark:text-gray-400"></i>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Расскажи о нейросетях</span>
-                        </div>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">2 дня назад</span>
+                <!-- Search Results -->
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div class="search-results space-y-3">
+                        <!-- Search results will be populated here -->
                     </div>
                 </div>
             </div>
@@ -126,13 +307,13 @@
             <div class="p-4 border-t border-gray-200 dark:border-gray-700">
                 <div class="flex items-center space-x-3">
                     <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
-                        <span class="text-white text-sm font-bold">Л</span>
+                        <span class="text-white text-sm font-bold" id="userInitial">Г</span>
                     </div>
                     <div class="flex-1">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">Ludvig2457</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">Разработчик</p>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white" id="userName">Гость</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400" id="userRole">Неавторизован</p>
                     </div>
-                    <button class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200">
+                    <button id="settingsBtn" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200">
                         <i class="fas fa-cog"></i>
                     </button>
                 </div>
@@ -356,6 +537,85 @@
         const newChatBtn = document.getElementById('newChatBtn');
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('sidebar');
+        const authModal = document.getElementById('authModal');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeAuthModal = document.getElementById('closeAuthModal');
+        const closeSettingsModal = document.getElementById('closeSettingsModal');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const guestLogin = document.getElementById('guestLogin');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.querySelector('.search-results');
+        const userName = document.getElementById('userName');
+        const userRole = document.getElementById('userRole');
+        const userInitial = document.getElementById('userInitial');
+
+        // Данные пользователя
+        let currentUser = null;
+
+        // Инициализация приложения
+        function initApp() {
+            // Проверяем, авторизован ли пользователь
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUserUI();
+            } else {
+                // Если пользователь не авторизован, показываем модальное окно входа
+                setTimeout(() => {
+                    authModal.classList.add('active');
+                }, 500);
+            }
+
+            // Инициализация вкладок
+            initTabs();
+        }
+
+        // Инициализация вкладок
+        function initTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    
+                    // Обновляем активную кнопку
+                    tabBtns.forEach(b => {
+                        b.classList.remove('text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+                        b.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+                    });
+                    
+                    btn.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+                    btn.classList.add('text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+                    
+                    // Показываем активный контент
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    document.getElementById(`${tabId}Tab`).classList.add('active');
+                    
+                    // Если переключились на вкладку поиска, фокусируемся на поле ввода
+                    if (tabId === 'search') {
+                        searchInput.focus();
+                    }
+                });
+            });
+        }
+
+        // Обновление UI пользователя
+        function updateUserUI() {
+            if (currentUser) {
+                userName.textContent = currentUser.name;
+                userRole.textContent = currentUser.role;
+                userInitial.textContent = currentUser.name.charAt(0).toUpperCase();
+            } else {
+                userName.textContent = 'Гость';
+                userRole.textContent = 'Неавторизован';
+                userInitial.textContent = 'Г';
+            }
+        }
 
         // Авто-ресайз текстового поля
         function autoResize(textarea) {
@@ -407,6 +667,50 @@
             }, 1000 + Math.random() * 1000);
         }
 
+        // Поиск в истории чата
+        function performSearch(query) {
+            // Очищаем предыдущие результаты
+            searchResults.innerHTML = '';
+            
+            if (!query.trim()) {
+                searchResults.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-4">Введите запрос для поиска</p>';
+                return;
+            }
+            
+            // Имитация поиска по истории
+            const mockResults = [
+                { text: 'Привет! Как дела?', time: '12:30', matches: 2 },
+                { text: 'Помоги с программированием', time: 'Вчера', matches: 1 },
+                { text: 'Расскажи о нейросетях', time: '2 дня назад', matches: 1 }
+            ];
+            
+            if (mockResults.length === 0) {
+                searchResults.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-4">Ничего не найдено</p>';
+                return;
+            }
+            
+            // Отображаем результаты
+            mockResults.forEach(result => {
+                const resultElement = document.createElement('div');
+                resultElement.className = 'bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200';
+                
+                resultElement.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-message text-purple-600 dark:text-purple-400"></i>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">${result.text}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 px-2 py-1 rounded">${result.matches} совпад.</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">${result.time}</span>
+                        </div>
+                    </div>
+                `;
+                
+                searchResults.appendChild(resultElement);
+            });
+        }
+
         // Обработчики событий
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -423,6 +727,7 @@
                 messageInput.value = btn.textContent.trim();
                 autoResize(messageInput);
                 sendButton.disabled = false;
+                messageInput.focus();
             });
         });
 
@@ -452,30 +757,161 @@
             sidebar.classList.toggle('z-40');
         });
 
+        // Закрытие модальных окон
+        closeAuthModal.addEventListener('click', () => {
+            authModal.classList.remove('active');
+        });
+
+        closeSettingsModal.addEventListener('click', () => {
+            settingsModal.classList.remove('active');
+        });
+
+        // Открытие настроек
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.classList.add('active');
+        });
+
+        // Выход из системы
+        logoutBtn.addEventListener('click', () => {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            updateUserUI();
+            settingsModal.classList.remove('active');
+            authModal.classList.add('active');
+        });
+
+        // Вход как гость
+        guestLogin.addEventListener('click', () => {
+            currentUser = {
+                name: 'Гость',
+                role: 'Временный пользователь',
+                email: 'guest@example.com'
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateUserUI();
+            authModal.classList.remove('active');
+        });
+
+        // Обработка форм авторизации
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Обновляем активную вкладку
+                document.querySelectorAll('.auth-tab').forEach(t => {
+                    t.classList.remove('active', 'text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+                    t.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+                });
+                
+                tab.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+                tab.classList.add('active', 'text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+                
+                // Показываем активную форму
+                document.querySelectorAll('.auth-form').forEach(form => {
+                    form.classList.remove('active');
+                });
+                
+                document.getElementById(`${tabId}Form`).classList.add('active');
+            });
+        });
+
+        // Обработка формы входа
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Имитация успешного входа
+            currentUser = {
+                name: 'Ludvig2457',
+                role: 'Разработчик',
+                email: email
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateUserUI();
+            authModal.classList.remove('active');
+            
+            // Очищаем форму
+            document.getElementById('loginForm').reset();
+        });
+
+        // Обработка формы регистрации
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            // Имитация успешной регистрации
+            currentUser = {
+                name: name,
+                role: 'Новый пользователь',
+                email: email
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateUserUI();
+            authModal.classList.remove('active');
+            
+            // Очищаем форму
+            document.getElementById('registerForm').reset();
+        });
+
+        // Поиск при вводе
+        searchInput.addEventListener('input', (e) => {
+            performSearch(e.target.value);
+        });
+
         // Переключение темы
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = themeToggle.querySelector('i');
         
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            themeIcon.classList.replace('fa-moon', 'fa-sun');
-            themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            if (document.documentElement.classList.contains('dark')) {
-                localStorage.theme = 'dark';
+        // Функция для установки темы
+        function setTheme(theme) {
+            if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
                 themeIcon.classList.replace('fa-moon', 'fa-sun');
                 themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
             } else {
-                localStorage.theme = 'light';
+                document.documentElement.classList.remove('dark');
                 themeIcon.classList.replace('fa-sun', 'fa-moon');
                 themeIcon.classList.replace('text-yellow-400', 'text-gray-600');
             }
+            
+            localStorage.setItem('theme', theme);
+        }
+        
+        // Инициализация темы
+        const savedTheme = localStorage.getItem('theme') || 'auto';
+        setTheme(savedTheme);
+        
+        // Обработчик переключения темы
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = localStorage.getItem('theme') || 'auto';
+            let newTheme;
+            
+            if (currentTheme === 'light') {
+                newTheme = 'dark';
+            } else if (currentTheme === 'dark') {
+                newTheme = 'auto';
+            } else {
+                newTheme = 'light';
+            }
+            
+            setTheme(newTheme);
+        });
+        
+        // Обработчики выбора темы в настройках
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const theme = option.getAttribute('data-theme');
+                setTheme(theme);
+            });
         });
 
-        // Инициализация
+        // Инициализация приложения
+        initApp();
         messageInput.focus();
     </script>
 </body>
