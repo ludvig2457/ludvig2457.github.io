@@ -1,35 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevCodeHub - Платформа для разработчиков</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'gradient': 'gradient 8s ease infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        },
-                        gradient: {
-                            '0%, 100%': { 'background-position': '0% 50%' },
-                            '50%': { 'background-position': '100% 50%' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         .gradient-bg {
             background: linear-gradient(-45deg, #667eea, #764ba2, #8a2be2, #6b46c1);
@@ -40,8 +17,6 @@
             background: linear-gradient(135deg, #667eea, #8a2be2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-size: 200% 200%;
-            animation: gradient 8s ease infinite;
         }
         .hero-pattern {
             background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
@@ -54,27 +29,11 @@
             transform: translateY(-10px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
-        .download-btn {
-            transition: all 0.3s ease;
-        }
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        .theme-toggle {
-            transition: all 0.3s ease;
-        }
         .theme-toggle:hover {
             transform: rotate(12deg);
         }
         .dark .gradient-bg {
             background: linear-gradient(-45deg, #4c51bf, #7e22ce, #a855f7, #5b21b6);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
         }
         .glass-effect {
             background: rgba(255, 255, 255, 0.1);
@@ -83,7 +42,6 @@
         }
         .dark .glass-effect {
             background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .typewriter {
             overflow: hidden;
@@ -99,20 +57,33 @@
             from, to { border-color: transparent }
             50% { border-color: #8a2be2 }
         }
-        #editor {
-            height: 400px;
-            border: 1px solid #ccc;
+        .code-output {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 16px;
             border-radius: 8px;
+            overflow: auto;
+            height: 100%;
         }
-        .tab-button {
-            transition: all 0.3s ease;
+        .lesson-content {
+            max-height: 400px;
+            overflow-y: auto;
         }
-        .tab-button.active {
-            background: linear-gradient(135deg, #667eea, #8a2be2);
-            color: white;
+        .blink {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
         .hidden {
             display: none;
+        }
+        .active {
+            background: linear-gradient(135deg, #667eea, #8a2be2);
+            color: white;
         }
     </style>
 </head>
@@ -138,16 +109,25 @@
                         <a href="#editor-section" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Редактор</a>
                         <a href="#projects" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Проекты</a>
                         <a href="#learning" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Обучение</a>
-                        <a href="#contact" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Контакты</a>
+                        <a href="#profile" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Профиль</a>
                     </div>
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
-                    <button id="loginBtn" class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                        Войти
-                    </button>
-                    <button id="registerBtn" class="bg-white text-purple-600 border border-purple-600 hover:bg-purple-50 px-6 py-2 rounded-lg text-sm font-medium transition duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                        Регистрация
-                    </button>
+                    <div id="userInfo" class="hidden items-center space-x-3">
+                        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold" id="userAvatar"></div>
+                        <span id="userName" class="text-gray-700 dark:text-gray-300 font-medium"></span>
+                        <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
+                            Выйти
+                        </button>
+                    </div>
+                    <div id="authButtons">
+                        <button id="loginBtn" class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                            Войти
+                        </button>
+                        <button id="registerBtn" class="bg-white text-purple-600 border border-purple-600 hover:bg-purple-50 px-6 py-2 rounded-lg text-sm font-medium transition duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                            Регистрация
+                        </button>
+                    </div>
                 </div>
                 <div class="-mr-2 flex items-center sm:hidden">
                     <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 transition duration-300">
@@ -165,14 +145,23 @@
                 <a href="#editor-section" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Редактор</a>
                 <a href="#projects" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Проекты</a>
                 <a href="#learning" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Обучение</a>
-                <a href="#contact" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Контакты</a>
+                <a href="#profile" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Профиль</a>
                 <div class="mt-4 pl-3 pr-4 pb-3 space-y-3">
-                    <button id="mobileLoginBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-3 rounded-lg text-base font-medium transition duration-300 shadow-lg hover:shadow-xl block text-center">
-                        Войти
-                    </button>
-                    <button id="mobileRegisterBtn" class="w-full bg-white text-purple-600 border border-purple-600 hover:bg-purple-50 px-4 py-3 rounded-lg text-base font-medium transition duration-300 shadow-lg hover:shadow-xl block text-center">
-                        Регистрация
-                    </button>
+                    <div id="mobileUserInfo" class="hidden items-center space-x-3 p-3 bg-purple-50 dark:bg-purple-900 rounded-lg">
+                        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold" id="mobileUserAvatar"></div>
+                        <span id="mobileUserName" class="text-purple-700 dark:text-purple-300 font-medium"></span>
+                        <button id="mobileLogoutBtn" class="ml-auto bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium transition duration-300">
+                            Выйти
+                        </button>
+                    </div>
+                    <div id="mobileAuthButtons">
+                        <button id="mobileLoginBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-3 rounded-lg text-base font-medium transition duration-300 shadow-lg hover:shadow-xl block text-center">
+                            Войти
+                        </button>
+                        <button id="mobileRegisterBtn" class="w-full bg-white text-purple-600 border border-purple-600 hover:bg-purple-50 px-4 py-3 rounded-lg text-base font-medium transition duration-300 shadow-lg hover:shadow-xl block text-center">
+                            Регистрация
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -266,7 +255,7 @@
                     </div>
                 </div>
                 <div class="lg:w-1/2 mt-12 lg:mt-0 flex justify-center">
-                    <div class="relative w-full max-w-lg animate-float">
+                    <div class="relative w-full max-w-lg">
                         <div class="absolute -top-6 -left-6 w-40 h-40 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
                         <div class="absolute -bottom-6 -right-6 w-40 h-40 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 1s;"></div>
                         <div class="relative glass-effect rounded-3xl p-8 shadow-2xl border border-white/20">
@@ -326,13 +315,13 @@
                                     <i class="fas fa-play mr-2"></i>Запустить
                                 </button>
                             </div>
-                            <div id="editor" class="h-96"></div>
+                            <textarea id="codeEditor" class="w-full h-96 bg-gray-900 text-white font-mono p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" spellcheck="false"></textarea>
                         </div>
                     </div>
                     <div>
                         <div class="bg-gray-800 rounded-xl p-4 h-full">
                             <h3 class="text-white font-semibold mb-2">Результат</h3>
-                            <div id="output" class="bg-white dark:bg-gray-900 rounded-lg p-4 h-96 overflow-auto">
+                            <div id="output" class="code-output">
                                 <p class="text-gray-500 dark:text-gray-400 text-center py-16">Запустите код, чтобы увидеть результат</p>
                             </div>
                         </div>
@@ -364,66 +353,13 @@
                 </p>
             </div>
 
-            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
-                <div class="card-hover bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-plus-circle"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Новый проект</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-4">
-                        Начните новый проект с чистого листа или выберите шаблон.
-                    </p>
-                    <button class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 rounded-lg text-base font-medium transition duration-300">
-                        Создать проект
-                    </button>
-                </div>
-
-                <div class="card-hover bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Мой сайт-портфолио</h3>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm">HTML/CSS/JS • 2 дня назад</p>
-                        </div>
-                        <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 px-2 py-1 rounded-full text-xs font-medium">Активный</span>
-                    </div>
-                    <p class="text-gray-600 dark:text-gray-300 mb-4">
-                        Персональный сайт-портфолио с анимациями и адаптивным дизайном.
-                    </p>
-                    <div class="flex space-x-2">
-                        <button class="flex-1 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 py-2 rounded-lg text-sm font-medium transition duration-300">
-                            Открыть
-                        </button>
-                        <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium transition duration-300">
-                            Поделиться
-                        </button>
-                    </div>
-                </div>
-
-                <div class="card-hover bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Калькулятор на Python</h3>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm">Python • 1 неделю назад</p>
-                        </div>
-                        <span class="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300 px-2 py-1 rounded-full text-xs font-medium">На проверке</span>
-                    </div>
-                    <p class="text-gray-600 dark:text-gray-300 mb-4">
-                        Консольный калькулятор с базовыми математическими операциями.
-                    </p>
-                    <div class="flex space-x-2">
-                        <button class="flex-1 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 py-2 rounded-lg text-sm font-medium transition duration-300">
-                            Открыть
-                        </button>
-                        <button class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg text-sm font-medium transition duration-300">
-                            Редактировать
-                        </button>
-                    </div>
-                </div>
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12" id="projectsGrid">
+                <!-- Projects will be loaded here -->
             </div>
 
             <div class="text-center">
-                <button class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl transition duration-300 transform hover:scale-105">
-                    <i class="fas fa-folder-plus mr-3"></i>Показать все проекты
+                <button id="createProjectBtn" class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl transition duration-300 transform hover:scale-105">
+                    <i class="fas fa-plus mr-3"></i>Создать новый проект
                 </button>
             </div>
         </div>
@@ -442,172 +378,57 @@
                 </p>
             </div>
 
-            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
-                <div class="card-hover bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                            <i class="fab fa-html5"></i>
-                        </div>
-                        <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 px-2 py-1 rounded-full text-xs font-medium">Для начинающих</span>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">HTML & CSS</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-4">
-                        Основы веб-разработки: структура страницы, стили и адаптивный дизайн.
-                    </p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-500 dark:text-gray-400">15 уроков</span>
-                        <button class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
-                            Начать
-                        </button>
-                    </div>
-                </div>
-
-                <div class="card-hover bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                            <i class="fab fa-js"></i>
-                        </div>
-                        <span class="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300 px-2 py-1 rounded-full text-xs font-medium">Средний уровень</span>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">JavaScript</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-4">
-                        Интерактивность на веб-страницах: от основ до продвинутых концепций.
-                    </p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-500 dark:text-gray-400">20 уроков</span>
-                        <button class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
-                            Начать
-                        </button>
-                    </div>
-                </div>
-
-                <div class="card-hover bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                            <i class="fab fa-python"></i>
-                        </div>
-                        <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 px-2 py-1 rounded-full text-xs font-medium">Для начинающих</span>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Python</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-4">
-                        Универсальный язык для веб-разработки, анализа данных и автоматизации.
-                    </p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-500 dark:text-gray-400">25 уроков</span>
-                        <button class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
-                            Начать
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center">
-                <button class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl transition duration-300 transform hover:scale-105">
-                    <i class="fas fa-book-open mr-3"></i>Показать все курсы
-                </button>
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12" id="lessonsGrid">
+                <!-- Lessons will be loaded here -->
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-24 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Profile Section -->
+    <section id="profile" class="py-24 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="lg:flex lg:items-center lg:justify-between">
-                <div class="lg:w-1/2">
-                    <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl mb-6">
-                        Свяжитесь с нами
-                    </h2>
-                    <p class="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                        Есть вопросы, предложения или хотите сотрудничать? Мы будем рады услышать вас!
-                    </p>
-                    <div class="space-y-6">
-                        <div class="flex items-start group">
-                            <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-900 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                                <i class="fas fa-envelope gradient-text text-2xl"></i>
-                            </div>
-                            <div class="ml-6">
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Email</h3>
-                                <p class="text-lg text-gray-600 dark:text-gray-300">support@devcodehub.com</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start group">
-                            <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-900 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                                <i class="fas fa-comments gradient-text text-2xl"></i>
-                            </div>
-                            <div class="ml-6">
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Сообщество</h3>
-                                <div class="flex space-x-4 mt-2">
-                                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition duration-300 text-2xl">
-                                        <i class="fab fa-discord"></i>
-                                    </a>
-                                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition duration-300 text-2xl">
-                                        <i class="fab fa-telegram"></i>
-                                    </a>
-                                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition duration-300 text-2xl">
-                                        <i class="fab fa-github"></i>
-                                    </a>
-                                </div>
-                            </div>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl mb-6">
+                    <span class="block">Ваш профиль</span>
+                    <span class="block gradient-text">Управление аккаунтом</span>
+                </h2>
+            </div>
+
+            <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+                <div id="profileContent" class="text-center">
+                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-6">Войдите в систему, чтобы просмотреть свой профиль</p>
+                    <button id="profileLoginBtn" class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg text-base font-medium transition duration-300">
+                        Войти в аккаунт
+                    </button>
+                </div>
+                <div id="profileInfo" class="hidden">
+                    <div class="flex items-center space-x-6 mb-8">
+                        <div class="w-20 h-20 bg-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold" id="profileAvatar"></div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white" id="profileName"></h3>
+                            <p class="text-gray-600 dark:text-gray-400" id="profileEmail"></p>
                         </div>
                     </div>
-                </div>
-
-                <!-- Contact Form -->
-                <div class="lg:w-1/2 mt-12 lg:mt-0">
-                    <form action="https://formspree.io/f/mpwdvlbb" method="POST"
-                          class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
-                        <div class="mb-6">
-                            <label for="name" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Имя</label>
-                            <input type="text" id="name" name="name" required
-                                class="w-full border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm py-4 px-4 
-                                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-lg
-                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
-                                       transition duration-300">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-xl text-center">
+                            <div class="text-2xl font-bold text-purple-600 dark:text-purple-400" id="projectsCount">0</div>
+                            <div class="text-gray-600 dark:text-gray-400">Проектов</div>
                         </div>
-
-                        <div class="mb-6">
-                            <label for="email" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Email</label>
-                            <input type="email" id="email" name="email" required
-                                class="w-full border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm py-4 px-4 
-                                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-lg
-                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
-                                       transition duration-300">
+                        <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-xl text-center">
+                            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="lessonsCompleted">0</div>
+                            <div class="text-gray-600 dark:text-gray-400">Уроков пройдено</div>
                         </div>
-
-                        <div class="mb-6">
-                            <label for="subject" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Тема</label>
-                            <select id="subject" name="subject" required
-                                class="w-full border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm py-4 px-4 
-                                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-lg
-                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
-                                       transition duration-300">
-                                <option>Общий вопрос</option>
-                                <option>Техническая поддержка</option>
-                                <option>Предложение по улучшению</option>
-                                <option>Сообщение об ошибке</option>
-                                <option>Сотрудничество</option>
-                            </select>
+                        <div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-xl text-center">
+                            <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="daysActive">1</div>
+                            <div class="text-gray-600 dark:text-gray-400">Дней с нами</div>
                         </div>
-
-                        <div class="mb-6">
-                            <label for="message" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Сообщение</label>
-                            <textarea id="message" name="message" rows="5" required
-                                class="w-full border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm py-4 px-4 
-                                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-lg
-                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
-                                       transition duration-300"></textarea>
+                    </div>
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Последняя активность</h4>
+                        <div id="recentActivity" class="space-y-3">
+                            <!-- Activity will be loaded here -->
                         </div>
-
-                        <div class="mt-8">
-                            <button type="submit"
-                                class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 
-                                       text-white py-4 px-6 rounded-xl shadow-lg text-lg font-semibold 
-                                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500
-                                       transition duration-300 transform hover:scale-105">
-                                Отправить сообщение
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -670,138 +491,451 @@
     </footer>
 
     <script>
-        // Theme toggle
-        const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = themeToggle.querySelector('i');
-        
-        // Check for saved theme or prefer-color-scheme
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            themeIcon.classList.replace('fa-moon', 'fa-sun');
-            themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            if (document.documentElement.classList.contains('dark')) {
-                localStorage.theme = 'dark';
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-                themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
-            } else {
-                localStorage.theme = 'light';
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
-                themeIcon.classList.replace('text-yellow-400', 'text-gray-600');
+        // ========== СИСТЕМА ХРАНЕНИЯ ДАННЫХ ==========
+        class DataStorage {
+            constructor() {
+                this.usersKey = 'devcodehub_users';
+                this.currentUserKey = 'devcodehub_current_user';
+                this.projectsKey = 'devcodehub_projects';
+                this.lessonsKey = 'devcodehub_lessons';
+                this.init();
             }
-        });
 
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        });
-
-        // Auth modals
-        const loginBtn = document.getElementById('loginBtn');
-        const registerBtn = document.getElementById('registerBtn');
-        const mobileLoginBtn = document.getElementById('mobileLoginBtn');
-        const mobileRegisterBtn = document.getElementById('mobileRegisterBtn');
-        const loginModal = document.getElementById('loginModal');
-        const registerModal = document.getElementById('registerModal');
-        const closeLoginModal = document.getElementById('closeLoginModal');
-        const closeRegisterModal = document.getElementById('closeRegisterModal');
-        const switchToRegister = document.getElementById('switchToRegister');
-        const switchToLogin = document.getElementById('switchToLogin');
-
-        function openLoginModal() {
-            loginModal.classList.remove('hidden');
-            registerModal.classList.add('hidden');
-        }
-
-        function openRegisterModal() {
-            registerModal.classList.remove('hidden');
-            loginModal.classList.add('hidden');
-        }
-
-        function closeModals() {
-            loginModal.classList.add('hidden');
-            registerModal.classList.add('hidden');
-        }
-
-        loginBtn.addEventListener('click', openLoginModal);
-        mobileLoginBtn.addEventListener('click', openLoginModal);
-        registerBtn.addEventListener('click', openRegisterModal);
-        mobileRegisterBtn.addEventListener('click', openRegisterModal);
-        closeLoginModal.addEventListener('click', closeModals);
-        closeRegisterModal.addEventListener('click', closeModals);
-        switchToRegister.addEventListener('click', openRegisterModal);
-        switchToLogin.addEventListener('click', openLoginModal);
-
-        // Form submissions
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Вход выполнен! (Это демо-версия)');
-            closeModals();
-        });
-
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Регистрация завершена! (Это демо-версия)');
-            closeModals();
-        });
-
-        // Smooth scrolling with offset for fixed header
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    const offsetTop = targetElement.offsetTop - 80;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Close mobile menu if open
-                    const mobileMenu = document.getElementById('mobile-menu');
-                    if (!mobileMenu.classList.contains('hidden')) {
-                        mobileMenu.classList.add('hidden');
-                    }
+            init() {
+                if (!localStorage.getItem(this.usersKey)) {
+                    localStorage.setItem(this.usersKey, JSON.stringify([]));
                 }
-            });
-        });
+                if (!localStorage.getItem(this.projectsKey)) {
+                    localStorage.setItem(this.projectsKey, JSON.stringify([]));
+                }
+                if (!localStorage.getItem(this.lessonsKey)) {
+                    this.initLessons();
+                }
+            }
 
-        // Tab switching in editor
-        const tabButtons = document.querySelectorAll('.tab-button');
-        tabButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // Remove active class from all buttons
-                tabButtons.forEach(btn => {
-                    btn.classList.remove('active');
-                    btn.classList.add('bg-gray-200', 'dark:bg-gray-600', 'text-gray-700', 'dark:text-gray-300');
-                    btn.classList.remove('bg-gradient-to-r', 'from-purple-600', 'to-blue-600', 'text-white');
-                });
-                
-                // Add active class to clicked button
-                this.classList.add('active');
-                this.classList.remove('bg-gray-200', 'dark:bg-gray-600', 'text-gray-700', 'dark:text-gray-300');
-                this.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-blue-600', 'text-white');
-                
-                // Update editor content based on tab
-                const tab = this.getAttribute('data-tab');
-                updateEditorContent(tab);
-            });
-        });
+            initLessons() {
+                const lessons = [
+                    {
+                        id: 1,
+                        title: "Основы HTML",
+                        description: "Изучите базовые теги HTML для создания веб-страниц",
+                        language: "html",
+                        content: `<h1>Основы HTML</h1>
+<p>HTML (HyperText Markup Language) - это язык разметки для создания веб-страниц.</p>
 
-        // Update editor content based on selected tab
-        function updateEditorContent(tab) {
-            let content = '';
-            
-            switch(tab) {
-                case 'html':
-                    content = `<!DOCTYPE html>
+<h2>Базовые теги:</h2>
+<ul>
+    <li><code>&lt;h1&gt; - &lt;h6&gt;</code> - заголовки</li>
+    <li><code>&lt;p&gt;</code> - параграф</li>
+    <li><code>&lt;div&gt;</code> - блочный контейнер</li>
+    <li><code>&lt;span&gt;</code> - строчный контейнер</li>
+</ul>
+
+<h2>Пример кода:</h2>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Моя страница&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Привет, мир!&lt;/h1&gt;
+    &lt;p&gt;Это моя первая веб-страница.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>`,
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Моя страница</title>
+</head>
+<body>
+    <h1>Привет, мир!</h1>
+    <p>Это моя первая веб-страница.</p>
+</body>
+</html>`,
+                        completed: false
+                    },
+                    {
+                        id: 2,
+                        title: "Основы CSS",
+                        description: "Научитесь стилизовать веб-страницы с помощью CSS",
+                        language: "css",
+                        content: `<h1>Основы CSS</h1>
+<p>CSS (Cascading Style Sheets) - язык стилей для оформления HTML-документов.</p>
+
+<h2>Основные концепции:</h2>
+<ul>
+    <li>Селекторы - выбор элементов для стилизации</li>
+    <li>Свойства - атрибуты стиля (цвет, размер, отступы)</li>
+    <li>Значения - конкретные настройки свойств</li>
+</ul>
+
+<h2>Пример кода:</h2>
+<pre><code>body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}</code></pre>`,
+                        code: `body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}`,
+                        completed: false
+                    },
+                    {
+                        id: 3,
+                        title: "Основы JavaScript",
+                        description: "Изучите базовый синтаксис JavaScript",
+                        language: "js",
+                        content: `<h1>Основы JavaScript</h1>
+<p>JavaScript - язык программирования для создания интерактивных веб-страниц.</p>
+
+<h2>Основные концепции:</h2>
+<ul>
+    <li>Переменные (let, const)</li>
+    <li>Функции</li>
+    <li>Условия (if/else)</li>
+    <li>Циклы (for, while)</li>
+</ul>
+
+<h2>Пример кода:</h2>
+<pre><code>// Переменные
+let name = "Мир";
+const greeting = "Привет";
+
+// Функция
+function sayHello(person) {
+    return greeting + ", " + person + "!";
+}
+
+// Использование функции
+console.log(sayHello(name));
+
+// Условия
+let hour = new Date().getHours();
+if (hour < 12) {
+    console.log("Доброе утро!");
+} else {
+    console.log("Добрый день!");
+}</code></pre>`,
+                        code: `// Переменные
+let name = "Мир";
+const greeting = "Привет";
+
+// Функция
+function sayHello(person) {
+    return greeting + ", " + person + "!";
+}
+
+// Использование функции
+console.log(sayHello(name));
+
+// Условия
+let hour = new Date().getHours();
+if (hour < 12) {
+    console.log("Доброе утро!");
+} else {
+    console.log("Добрый день!");
+}`,
+                        completed: false
+                    },
+                    {
+                        id: 4,
+                        title: "Основы Python",
+                        description: "Познакомьтесь с синтаксисом Python",
+                        language: "python",
+                        content: `<h1>Основы Python</h1>
+<p>Python - мощный и простой в изучении язык программирования.</p>
+
+<h2>Основные концепции:</h2>
+<ul>
+    <li>Переменные и типы данных</li>
+    <li>Функции (def)</li>
+    <li>Условия (if/elif/else)</li>
+    <li>Циклы (for, while)</li>
+</ul>
+
+<h2>Пример кода:</h2>
+<pre><code># Переменные и вывод
+name = "Мир"
+print(f"Привет, {name}!")
+
+# Функция
+def calculate_sum(a, b):
+    return a + b
+
+# Использование функции
+result = calculate_sum(5, 3)
+print(f"Сумма: {result}")
+
+# Условия
+age = 18
+if age >= 18:
+    print("Вы совершеннолетний")
+else:
+    print("Вы несовершеннолетний")
+
+# Цикл
+for i in range(5):
+    print(f"Число: {i}")</code></pre>`,
+                        code: `# Переменные и вывод
+name = "Мир"
+print(f"Привет, {name}!")
+
+# Функция
+def calculate_sum(a, b):
+    return a + b
+
+# Использование функции
+result = calculate_sum(5, 3)
+print(f"Сумма: {result}")
+
+# Условия
+age = 18
+if age >= 18:
+    print("Вы совершеннолетний")
+else:
+    print("Вы несовершеннолетний")
+
+# Цикл
+for i in range(5):
+    print(f"Число: {i}")`,
+                        completed: false
+                    }
+                ];
+                localStorage.setItem(this.lessonsKey, JSON.stringify(lessons));
+            }
+
+            // Работа с пользователями
+            getUsers() {
+                return JSON.parse(localStorage.getItem(this.usersKey)) || [];
+            }
+
+            saveUser(user) {
+                const users = this.getUsers();
+                users.push(user);
+                localStorage.setItem(this.usersKey, JSON.stringify(users));
+            }
+
+            findUserByEmail(email) {
+                const users = this.getUsers();
+                return users.find(user => user.email === email);
+            }
+
+            // Текущий пользователь
+            getCurrentUser() {
+                return JSON.parse(localStorage.getItem(this.currentUserKey));
+            }
+
+            setCurrentUser(user) {
+                localStorage.setItem(this.currentUserKey, JSON.stringify(user));
+            }
+
+            clearCurrentUser() {
+                localStorage.removeItem(this.currentUserKey);
+            }
+
+            // Проекты
+            getProjects() {
+                return JSON.parse(localStorage.getItem(this.projectsKey)) || [];
+            }
+
+            saveProject(project) {
+                const projects = this.getProjects();
+                projects.push(project);
+                localStorage.setItem(this.projectsKey, JSON.stringify(projects));
+            }
+
+            getUserProjects(userId) {
+                const projects = this.getProjects();
+                return projects.filter(project => project.userId === userId);
+            }
+
+            // Уроки
+            getLessons() {
+                return JSON.parse(localStorage.getItem(this.lessonsKey)) || [];
+            }
+
+            updateLesson(lessonId, updates) {
+                const lessons = this.getLessons();
+                const index = lessons.findIndex(lesson => lesson.id === lessonId);
+                if (index !== -1) {
+                    lessons[index] = { ...lessons[index], ...updates };
+                    localStorage.setItem(this.lessonsKey, JSON.stringify(lessons));
+                }
+            }
+        }
+
+        // ========== СИСТЕМА АУТЕНТИФИКАЦИИ ==========
+        class AuthSystem {
+            constructor(storage) {
+                this.storage = storage;
+                this.currentUser = null;
+                this.init();
+            }
+
+            init() {
+                this.currentUser = this.storage.getCurrentUser();
+                this.updateUI();
+            }
+
+            register(name, email, password) {
+                if (this.storage.findUserByEmail(email)) {
+                    return { success: false, message: 'Пользователь с таким email уже существует' };
+                }
+
+                const user = {
+                    id: Date.now().toString(),
+                    name,
+                    email,
+                    password, // В реальном приложении пароль должен хэшироваться
+                    createdAt: new Date().toISOString(),
+                    avatar: name.charAt(0).toUpperCase()
+                };
+
+                this.storage.saveUser(user);
+                this.login(email, password);
+
+                return { success: true, message: 'Регистрация успешна' };
+            }
+
+            login(email, password) {
+                const user = this.storage.findUserByEmail(email);
+                if (!user || user.password !== password) {
+                    return { success: false, message: 'Неверный email или пароль' };
+                }
+
+                this.currentUser = user;
+                this.storage.setCurrentUser(user);
+                this.updateUI();
+
+                return { success: true, message: 'Вход выполнен успешно' };
+            }
+
+            logout() {
+                this.currentUser = null;
+                this.storage.clearCurrentUser();
+                this.updateUI();
+            }
+
+            updateUI() {
+                const userInfo = document.getElementById('userInfo');
+                const authButtons = document.getElementById('authButtons');
+                const mobileUserInfo = document.getElementById('mobileUserInfo');
+                const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+                const profileContent = document.getElementById('profileContent');
+                const profileInfo = document.getElementById('profileInfo');
+
+                if (this.currentUser) {
+                    userInfo.classList.remove('hidden');
+                    authButtons.classList.add('hidden');
+                    mobileUserInfo.classList.remove('hidden');
+                    mobileAuthButtons.classList.add('hidden');
+                    profileContent.classList.add('hidden');
+                    profileInfo.classList.remove('hidden');
+
+                    document.getElementById('userName').textContent = this.currentUser.name;
+                    document.getElementById('userAvatar').textContent = this.currentUser.avatar;
+                    document.getElementById('mobileUserName').textContent = this.currentUser.name;
+                    document.getElementById('mobileUserAvatar').textContent = this.currentUser.avatar;
+
+                    // Обновление профиля
+                    this.updateProfile();
+                } else {
+                    userInfo.classList.add('hidden');
+                    authButtons.classList.remove('hidden');
+                    mobileUserInfo.classList.add('hidden');
+                    mobileAuthButtons.classList.remove('hidden');
+                    profileContent.classList.remove('hidden');
+                    profileInfo.classList.add('hidden');
+                }
+            }
+
+            updateProfile() {
+                if (!this.currentUser) return;
+
+                document.getElementById('profileName').textContent = this.currentUser.name;
+                document.getElementById('profileEmail').textContent = this.currentUser.email;
+                document.getElementById('profileAvatar').textContent = this.currentUser.avatar;
+
+                // Статистика
+                const userProjects = this.storage.getUserProjects(this.currentUser.id);
+                document.getElementById('projectsCount').textContent = userProjects.length;
+
+                const completedLessons = this.storage.getLessons().filter(lesson => lesson.completed).length;
+                document.getElementById('lessonsCompleted').textContent = completedLessons;
+
+                const daysActive = Math.floor((new Date() - new Date(this.currentUser.createdAt)) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById('daysActive').textContent = daysActive;
+
+                // Активность
+                this.updateRecentActivity();
+            }
+
+            updateRecentActivity() {
+                const activityContainer = document.getElementById('recentActivity');
+                const activities = [
+                    { text: 'Зарегистрировался в системе', time: 'Только что' },
+                    { text: 'Начал изучение HTML', time: '5 минут назад' },
+                    { text: 'Создал первый проект', time: '10 минут назад' }
+                ];
+
+                activityContainer.innerHTML = activities.map(activity => `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <span class="text-gray-700 dark:text-gray-300">${activity.text}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">${activity.time}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // ========== СИСТЕМА ЗАПУСКА КОДА ==========
+        class CodeRunner {
+            constructor() {
+                this.currentLanguage = 'html';
+                this.init();
+            }
+
+            init() {
+                this.setDefaultCode();
+            }
+
+            setLanguage(language) {
+                this.currentLanguage = language;
+                this.setDefaultCode();
+            }
+
+            setDefaultCode() {
+                const codeExamples = {
+                    html: `<!DOCTYPE html>
 <html>
 <head>
     <title>Мой сайт</title>
@@ -810,32 +944,45 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f0f0f0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
         }
         h1 {
-            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #8a2be2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #7b1fa2;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Добро пожаловать на мой сайт!</h1>
-        <p>Это пример HTML-кода.</p>
+        <h1>Добро пожаловать в DevCodeHub!</h1>
+        <p>Это пример HTML-страницы. Измените код и нажмите "Запустить".</p>
         <button onclick="alert('Привет, мир!')">Нажми меня</button>
     </div>
 </body>
-</html>`;
-                    break;
-                case 'css':
-                    content = `/* Стили для красивого сайта */
+</html>`,
+
+                    css: `/* Стили для красивого сайта */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -878,10 +1025,9 @@ h1 {
 .button:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}`;
-                    break;
-                case 'js':
-                    content = `// JavaScript пример: Интерактивный список задач
+}`,
+
+                    js: `// JavaScript пример: Интерактивный список задач
 const taskInput = document.getElementById('taskInput');
 const addTaskBtn = document.getElementById('addTaskBtn');
 const taskList = document.getElementById('taskList');
@@ -929,15 +1075,14 @@ function renderTasks() {
     });
 }
 
-addTaskBtn.addEventListener('click', addTask);
-taskInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') addTask();
-});
+// Инициализация
+console.log('Добро пожаловать в JavaScript!');
+document.write('<h2>Список задач</h2>');
+document.write('<input type="text" id="taskInput" placeholder="Новая задача">');
+document.write('<button id="addTaskBtn" onclick="addTask()">Добавить</button>');
+document.write('<ul id="taskList"></ul>');`,
 
-console.log('Добро пожаловать в JavaScript!');`;
-                    break;
-                case 'python':
-                    content = `# Простой калькулятор на Python
+                    python: `# Простой калькулятор на Python
 def calculator():
     print("Добро пожаловать в калькулятор!")
     print("Доступные операции: +, -, *, /")
@@ -976,46 +1121,511 @@ def calculator():
             print(f"Произошла ошибка: {e}")
 
 # Запуск калькулятора
-if __name__ == "__main__":
-    calculator()`;
-                    break;
+calculator()`
+                };
+
+                document.getElementById('codeEditor').value = codeExamples[this.currentLanguage];
             }
-            
-            // Update the editor content
-            if (window.monacoEditor) {
-                window.monacoEditor.setValue(content);
-            } else {
-                document.getElementById('editor').textContent = content;
+
+            runCode() {
+                const code = document.getElementById('codeEditor').value;
+                const output = document.getElementById('output');
+
+                try {
+                    switch (this.currentLanguage) {
+                        case 'html':
+                            output.innerHTML = code;
+                            break;
+                        case 'css':
+                            output.innerHTML = `<style>${code}</style><div class="container"><h1>Результат CSS</h1><p>Стили применены к этой странице</p></div>`;
+                            break;
+                        case 'js':
+                            output.innerHTML = '';
+                            // Безопасное выполнение JavaScript
+                            try {
+                                eval(code);
+                            } catch (jsError) {
+                                output.innerHTML = `<div style="color: red;">Ошибка JavaScript: ${jsError.message}</div>`;
+                            }
+                            break;
+                        case 'python':
+                            // Эмуляция Python в браузере
+                            this.runPythonCode(code, output);
+                            break;
+                    }
+                } catch (error) {
+                    output.innerHTML = `<div style="color: red;">Ошибка: ${error.message}</div>`;
+                }
+            }
+
+            runPythonCode(code, output) {
+                // Простая эмуляция Python в JavaScript
+                let pythonOutput = '';
+                
+                // Эмуляция print
+                const print = (...args) => {
+                    pythonOutput += args.join(' ') + '\n';
+                };
+
+                // Эмуляция input (простая версия)
+                const input = (promptText) => {
+                    return "тестовые данные"; // Для демонстрации
+                };
+
+                // Замена Python синтаксиса на JavaScript
+                let jsCode = code
+                    .replace(/def (\w+)\((.*?)\):/g, 'function $1($2) {')
+                    .replace(/print\((.*?)\)/g, 'print($1)')
+                    .replace(/input\((.*?)\)/g, 'input($1)')
+                    .replace(/if (.*?):/g, 'if ($1) {')
+                    .replace(/elif (.*?):/g, '} else if ($1) {')
+                    .replace(/else:/g, '} else {')
+                    .replace(/for (\w+) in range\((.*?)\):/g, 'for (let $1 = 0; $1 < $2; $1++) {')
+                    .replace(/#.*$/gm, '') // Удаление комментариев
+                    .replace(/    /g, '  '); // Замена отступов
+
+                // Добавление закрывающих скобок
+                const lines = jsCode.split('\n');
+                let indentLevel = 0;
+                let result = [];
+
+                for (let line of lines) {
+                    const trimmed = line.trim();
+                    if (!trimmed) continue;
+
+                    // Уменьшаем уровень отступа при закрытии блоков
+                    if (trimmed.startsWith('}') || trimmed === '} else {' || trimmed.startsWith('} else if')) {
+                        indentLevel--;
+                    }
+
+                    // Добавляем строку с правильным отступом
+                    result.push('  '.repeat(indentLevel) + trimmed);
+
+                    // Увеличиваем уровень отступа для новых блоков
+                    if (trimmed.endsWith('{')) {
+                        indentLevel++;
+                    }
+                }
+
+                jsCode = result.join('\n');
+
+                try {
+                    eval(jsCode);
+                    output.innerHTML = `<pre class="text-green-400">${pythonOutput || 'Код выполнен успешно!'}</pre>`;
+                } catch (error) {
+                    output.innerHTML = `<pre class="text-red-400">Ошибка выполнения: ${error.message}</pre>`;
+                }
             }
         }
 
-        // Initialize editor with default content
-        updateEditorContent('html');
+        // ========== СИСТЕМА УРОКОВ ==========
+        class LessonSystem {
+            constructor(storage) {
+                this.storage = storage;
+            }
 
-        // Run code button
-        document.getElementById('runCode').addEventListener('click', function() {
-            const output = document.getElementById('output');
-            output.innerHTML = '<p class="text-green-600 dark:text-green-400 text-center py-16">Код выполнен успешно! (В реальном приложении здесь будет результат выполнения)</p>';
-        });
+            loadLessons() {
+                const lessons = this.storage.getLessons();
+                const container = document.getElementById('lessonsGrid');
+                
+                container.innerHTML = lessons.map(lesson => `
+                    <div class="card-hover bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="text-3xl gradient-text group-hover:scale-110 transition-transform duration-300">
+                                <i class="fab fa-${lesson.language}"></i>
+                            </div>
+                            <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 px-2 py-1 rounded-full text-xs font-medium">
+                                ${lesson.completed ? 'Пройдено' : 'Для начинающих'}
+                            </span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">${lesson.title}</h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-4">
+                            ${lesson.description}
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500 dark:text-gray-400">Урок ${lesson.id}</span>
+                            <button onclick="app.openLesson(${lesson.id})" class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
+                                ${lesson.completed ? 'Повторить' : 'Начать'}
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
 
-        // Save project button
-        document.getElementById('saveProject').addEventListener('click', function() {
-            alert('Проект сохранен! (Это демо-версия)');
-        });
+            openLesson(lessonId) {
+                const lesson = this.storage.getLessons().find(l => l.id === lessonId);
+                if (!lesson) return;
 
-        // Submit for review button
-        document.getElementById('submitForReview').addEventListener('click', function() {
-            alert('Проект отправлен на проверку! (Это демо-версия)');
-        });
+                // Создаем модальное окно для урока
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                modal.innerHTML = `
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+                        <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">${lesson.title}</h3>
+                            <button onclick="this.closest('.fixed').remove()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <div class="p-6 overflow-auto">
+                            <div class="lesson-content mb-6 prose dark:prose-invert max-w-none">
+                                ${lesson.content}
+                            </div>
+                            <div class="bg-gray-800 rounded-xl p-4 mb-4">
+                                <h4 class="text-white font-semibold mb-2">Практическое задание:</h4>
+                                <textarea class="w-full h-48 bg-gray-900 text-white font-mono p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">${lesson.code}</textarea>
+                                <div class="flex justify-between mt-4">
+                                    <button onclick="app.runLessonCode(${lessonId})" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
+                                        <i class="fas fa-play mr-2"></i>Запустить код
+                                    </button>
+                                    <button onclick="app.completeLesson(${lessonId})" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
+                                        <i class="fas fa-check mr-2"></i>Отметить как пройденный
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
 
-        // Add loading animation
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 100);
-        });
+                document.body.appendChild(modal);
+            }
+
+            completeLesson(lessonId) {
+                this.storage.updateLesson(lessonId, { completed: true });
+                this.loadLessons();
+                if (app.auth.currentUser) {
+                    app.auth.updateProfile();
+                }
+                alert('Урок отмечен как пройденный!');
+            }
+
+            runLessonCode(lessonId) {
+                const lesson = this.storage.getLessons().find(l => l.id === lessonId);
+                if (!lesson) return;
+
+                app.codeRunner.setLanguage(lesson.language);
+                document.getElementById('codeEditor').value = lesson.code;
+                app.codeRunner.runCode();
+            }
+        }
+
+        // ========== СИСТЕМА ПРОЕКТОВ ==========
+        class ProjectSystem {
+            constructor(storage, auth) {
+                this.storage = storage;
+                this.auth = auth;
+            }
+
+            loadProjects() {
+                const container = document.getElementById('projectsGrid');
+                let projects = [];
+
+                if (this.auth.currentUser) {
+                    projects = this.storage.getUserProjects(this.auth.currentUser.id);
+                }
+
+                if (projects.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-span-3 text-center py-12">
+                            <i class="fas fa-folder-open text-6xl text-gray-400 mb-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">Пока нет проектов</h3>
+                            <p class="text-gray-500 dark:text-gray-500">Создайте свой первый проект!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = projects.map(project => `
+                    <div class="card-hover bg-white dark:bg-gray-700 p-6 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">${project.name}</h3>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm">${project.language} • ${new Date(project.createdAt).toLocaleDateString()}</p>
+                            </div>
+                            <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 px-2 py-1 rounded-full text-xs font-medium">Активный</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            ${project.description}
+                        </p>
+                        <div class="flex space-x-2">
+                            <button onclick="app.openProject('${project.id}')" class="flex-1 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 py-2 rounded-lg text-sm font-medium transition duration-300">
+                                Открыть
+                            </button>
+                            <button onclick="app.deleteProject('${project.id}')" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg text-sm font-medium transition duration-300">
+                                Удалить
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            createProject() {
+                if (!this.auth.currentUser) {
+                    alert('Пожалуйста, войдите в систему чтобы создавать проекты');
+                    app.openLoginModal();
+                    return;
+                }
+
+                const project = {
+                    id: Date.now().toString(),
+                    userId: this.auth.currentUser.id,
+                    name: 'Новый проект',
+                    description: 'Описание проекта',
+                    language: 'html',
+                    code: document.getElementById('codeEditor').value,
+                    createdAt: new Date().toISOString()
+                };
+
+                this.storage.saveProject(project);
+                this.loadProjects();
+                alert('Проект создан!');
+            }
+
+            deleteProject(projectId) {
+                if (confirm('Вы уверены, что хотите удалить этот проект?')) {
+                    const projects = this.storage.getProjects().filter(p => p.id !== projectId);
+                    localStorage.setItem('devcodehub_projects', JSON.stringify(projects));
+                    this.loadProjects();
+                }
+            }
+
+            openProject(projectId) {
+                const project = this.storage.getProjects().find(p => p.id === projectId);
+                if (!project) return;
+
+                // Переключаемся на язык проекта
+                const tabButton = document.querySelector(`[data-tab="${project.language}"]`);
+                if (tabButton) {
+                    tabButton.click();
+                }
+
+                // Загружаем код проекта
+                document.getElementById('codeEditor').value = project.code;
+                
+                // Прокручиваем к редактору
+                document.getElementById('editor-section').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // ========== ОСНОВНОЕ ПРИЛОЖЕНИЕ ==========
+        class DevCodeHubApp {
+            constructor() {
+                this.storage = new DataStorage();
+                this.auth = new AuthSystem(this.storage);
+                this.codeRunner = new CodeRunner();
+                this.lessonSystem = new LessonSystem(this.storage);
+                this.projectSystem = new ProjectSystem(this.storage, this.auth);
+                this.init();
+            }
+
+            init() {
+                this.initEventListeners();
+                this.lessonSystem.loadLessons();
+                this.projectSystem.loadProjects();
+                this.setDefaultCode();
+            }
+
+            initEventListeners() {
+                // Theme toggle
+                document.getElementById('themeToggle').addEventListener('click', this.toggleTheme);
+
+                // Mobile menu
+                document.getElementById('mobile-menu-button').addEventListener('click', () => {
+                    document.getElementById('mobile-menu').classList.toggle('hidden');
+                });
+
+                // Auth modals
+                document.getElementById('loginBtn').addEventListener('click', () => this.openLoginModal());
+                document.getElementById('registerBtn').addEventListener('click', () => this.openRegisterModal());
+                document.getElementById('mobileLoginBtn').addEventListener('click', () => this.openLoginModal());
+                document.getElementById('mobileRegisterBtn').addEventListener('click', () => this.openRegisterModal());
+                document.getElementById('closeLoginModal').addEventListener('click', this.closeModals);
+                document.getElementById('closeRegisterModal').addEventListener('click', this.closeModals);
+                document.getElementById('switchToRegister').addEventListener('click', () => this.openRegisterModal());
+                document.getElementById('switchToLogin').addEventListener('click', () => this.openLoginModal());
+                document.getElementById('profileLoginBtn').addEventListener('click', () => this.openLoginModal());
+
+                // Logout
+                document.getElementById('logoutBtn').addEventListener('click', () => this.auth.logout());
+                document.getElementById('mobileLogoutBtn').addEventListener('click', () => this.auth.logout());
+
+                // Forms
+                document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
+                document.getElementById('registerForm').addEventListener('submit', (e) => this.handleRegister(e));
+
+                // Code editor
+                document.getElementById('runCode').addEventListener('click', () => this.codeRunner.runCode());
+                document.getElementById('saveProject').addEventListener('click', () => this.projectSystem.createProject());
+                document.getElementById('createProjectBtn').addEventListener('click', () => this.projectSystem.createProject());
+                document.getElementById('submitForReview').addEventListener('click', () => this.submitForReview());
+
+                // Tabs
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        document.querySelectorAll('.tab-button').forEach(btn => {
+                            btn.classList.remove('active');
+                            btn.classList.remove('bg-gradient-to-r', 'from-purple-600', 'to-blue-600', 'text-white');
+                            btn.classList.add('bg-gray-200', 'dark:bg-gray-600', 'text-gray-700', 'dark:text-gray-300');
+                        });
+                        
+                        e.target.classList.add('active');
+                        e.target.classList.remove('bg-gray-200', 'dark:bg-gray-600', 'text-gray-700', 'dark:text-gray-300');
+                        e.target.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-blue-600', 'text-white');
+                        
+                        const language = e.target.getAttribute('data-tab');
+                        this.codeRunner.setLanguage(language);
+                    });
+                });
+
+                // Smooth scrolling
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth' });
+                            document.getElementById('mobile-menu').classList.add('hidden');
+                        }
+                    });
+                });
+            }
+
+            toggleTheme() {
+                const html = document.documentElement;
+                const themeIcon = document.querySelector('#themeToggle i');
+                
+                if (html.classList.contains('dark')) {
+                    html.classList.remove('dark');
+                    localStorage.theme = 'light';
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    themeIcon.classList.replace('text-yellow-400', 'text-gray-600');
+                } else {
+                    html.classList.add('dark');
+                    localStorage.theme = 'dark';
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
+                }
+            }
+
+            openLoginModal() {
+                this.closeModals();
+                document.getElementById('loginModal').classList.remove('hidden');
+            }
+
+            openRegisterModal() {
+                this.closeModals();
+                document.getElementById('registerModal').classList.remove('hidden');
+            }
+
+            closeModals() {
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('registerModal').classList.add('hidden');
+            }
+
+            handleLogin(e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                const result = this.auth.login(email, password);
+                if (result.success) {
+                    this.closeModals();
+                    this.projectSystem.loadProjects();
+                    alert(result.message);
+                } else {
+                    alert(result.message);
+                }
+            }
+
+            handleRegister(e) {
+                e.preventDefault();
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+
+                const result = this.auth.register(name, email, password);
+                if (result.success) {
+                    this.closeModals();
+                    this.projectSystem.loadProjects();
+                    alert(result.message);
+                } else {
+                    alert(result.message);
+                }
+            }
+
+            setDefaultCode() {
+                this.codeRunner.setDefaultCode();
+            }
+
+            submitForReview() {
+                if (!this.auth.currentUser) {
+                    alert('Пожалуйста, войдите в систему чтобы отправить проект на проверку');
+                    this.openLoginModal();
+                    return;
+                }
+
+                // Используем Formspree для отправки
+                const form = document.createElement('form');
+                form.action = 'https://formspree.io/f/mpwdvlbb';
+                form.method = 'POST';
+                
+                const codeInput = document.createElement('input');
+                codeInput.type = 'hidden';
+                codeInput.name = 'code';
+                codeInput.value = document.getElementById('codeEditor').value;
+                
+                const languageInput = document.createElement('input');
+                languageInput.type = 'hidden';
+                languageInput.name = 'language';
+                languageInput.value = this.codeRunner.currentLanguage;
+                
+                const userInput = document.createElement('input');
+                userInput.type = 'hidden';
+                userInput.name = 'user';
+                userInput.value = this.auth.currentUser?.name || 'Аноним';
+                
+                form.appendChild(codeInput);
+                form.appendChild(languageInput);
+                form.appendChild(userInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+                
+                alert('Проект отправлен на проверку! Мы свяжемся с вами в ближайшее время.');
+            }
+
+            // Методы для глобального доступа
+            openLesson(lessonId) {
+                this.lessonSystem.openLesson(lessonId);
+            }
+
+            completeLesson(lessonId) {
+                this.lessonSystem.completeLesson(lessonId);
+            }
+
+            runLessonCode(lessonId) {
+                this.lessonSystem.runLessonCode(lessonId);
+            }
+
+            openProject(projectId) {
+                this.projectSystem.openProject(projectId);
+            }
+
+            deleteProject(projectId) {
+                this.projectSystem.deleteProject(projectId);
+            }
+        }
+
+        // Инициализация приложения
+        const app = new DevCodeHubApp();
+
+        // Инициализация темы
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.querySelector('#themeToggle i').classList.replace('fa-moon', 'fa-sun');
+            document.querySelector('#themeToggle i').classList.replace('text-gray-600', 'text-yellow-400');
+        }
 
         // Blinking cursor
         setInterval(() => {
