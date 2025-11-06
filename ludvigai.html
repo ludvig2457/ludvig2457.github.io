@@ -6,12 +6,15 @@
     <title>LudvigAI - Ваш русский AI-ассистент</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        /* Анимация градиентного фона */
         .gradient-bg {
             background: linear-gradient(-45deg, #667eea, #764ba2, #8a2be2, #6b46c1);
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
         }
+        /* Анимация градиентного текста */
         .gradient-text {
             background: linear-gradient(135deg, #667eea, #8a2be2);
             -webkit-background-clip: text;
@@ -23,9 +26,13 @@
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
         }
+        
+        /* Плавный переход для боковой панели */
         .sidebar-transition {
             transition: all 0.3s ease;
         }
+        
+        /* Анимация появления сообщения */
         .message-enter {
             animation: messageEnter 0.3s ease;
         }
@@ -39,6 +46,8 @@
                 transform: translateY(0);
             }
         }
+        
+        /* Анимация набора текста (точки) */
         .typing-dots {
             display: inline-block;
         }
@@ -55,13 +64,17 @@
             0%, 60%, 100% { transform: translateY(0); }
             30% { transform: translateY(-10px); }
         }
+        
+        /* Стили для вкладок */
         .tab-content {
             display: none;
         }
         .tab-content.active {
-            display: block;
+            display: flex; /* Используем flex для внутренних элементов */
         }
-        .auth-modal {
+        
+        /* Стили для модальных окон */
+        .auth-modal, .settings-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -73,39 +86,40 @@
             align-items: center;
             justify-content: center;
         }
-        .auth-modal.active {
+        .auth-modal.active, .settings-modal.active {
             display: flex;
         }
-        .settings-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .settings-modal.active {
-            display: flex;
-        }
+        
+        /* Стили для результатов поиска */
         .search-results {
             max-height: 300px;
             overflow-y: auto;
         }
+
+        /* Скрытая боковая панель для мобильных устройств */
+        #sidebar.hidden-mobile {
+            transform: translateX(-100%);
+            position: absolute; /* Для мобильных устройств */
+            height: 100%;
+            z-index: 50;
+        }
+        @media (min-width: 1024px) { /* lg breakpoint */
+            #sidebar.hidden-mobile {
+                transform: translateX(0);
+                position: static;
+                z-index: auto;
+            }
+        }
+        
     </style>
 </head>
 <body class="font-sans bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-    <!-- Theme Toggle -->
     <div class="fixed top-4 right-4 z-50">
         <button id="themeToggle" class="bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
             <i class="fas fa-moon text-gray-600 dark:text-yellow-400 text-lg"></i>
         </button>
     </div>
 
-    <!-- Auth Modal -->
     <div id="authModal" class="auth-modal">
         <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl">
             <div class="flex justify-between items-center mb-6">
@@ -116,11 +130,11 @@
             </div>
             
             <div id="authTabs" class="flex mb-6 border-b border-gray-200 dark:border-gray-700">
-                <button class="auth-tab active py-2 px-4 font-medium text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400" data-tab="login">Вход</button>
+                <button class="auth-tab py-2 px-4 font-medium text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400" data-tab="login">Вход</button>
                 <button class="auth-tab py-2 px-4 font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" data-tab="register">Регистрация</button>
             </div>
             
-            <form id="loginForm" class="auth-form active">
+            <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event, 'login')">
                 <div class="mb-4">
                     <label class="block text-gray-700 dark:text-gray-300 mb-2" for="loginEmail">Email</label>
                     <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваш email" required>
@@ -137,7 +151,7 @@
                 </button>
             </form>
             
-            <form id="registerForm" class="auth-form">
+            <form id="registerForm" class="auth-form" onsubmit="handleLogin(event, 'register')">
                 <div class="mb-4">
                     <label class="block text-gray-700 dark:text-gray-300 mb-2" for="registerName">Имя</label>
                     <input type="text" id="registerName" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваше имя" required>
@@ -157,7 +171,6 @@
         </div>
     </div>
 
-    <!-- Settings Modal -->
     <div id="settingsModal" class="settings-modal">
         <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl">
             <div class="flex justify-between items-center mb-6">
@@ -215,11 +228,9 @@
         </div>
     </div>
 
-    <div class="flex h-screen">
-        <!-- Sidebar -->
-        <div id="sidebar" class="sidebar-transition w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full">
-            <!-- Sidebar Header -->
-            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex h-screen overflow-hidden">
+        <div id="sidebar" class="sidebar-transition w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-shrink-0 flex-col h-full hidden-mobile lg:flex">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
                         <i class="fas fa-brain text-white text-lg"></i>
@@ -231,106 +242,95 @@
                 </div>
             </div>
 
-            <!-- Tabs -->
-            <div class="flex border-b border-gray-200 dark:border-gray-700">
-                <button class="tab-btn flex-1 py-3 text-center font-medium text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400" data-tab="chat">
+            <div class="flex border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+                <button class="tab-btn active flex-1 py-3 text-center font-medium text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400 transition-colors duration-200" data-tab="chat">
                     <i class="fas fa-comment mr-2"></i>Чат
                 </button>
-                <button class="tab-btn flex-1 py-3 text-center font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" data-tab="search">
+                <button class="tab-btn flex-1 py-3 text-center font-medium text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200" data-tab="search">
                     <i class="fas fa-search mr-2"></i>Поиск
                 </button>
             </div>
 
-            <!-- Chat Tab Content -->
-            <div id="chatTab" class="tab-content active flex-1 flex flex-col">
-                <!-- New Chat Button -->
-                <div class="p-4">
+            <div id="chatTab" class="tab-content active flex-1 flex flex-col overflow-y-auto">
+                <div class="p-4 flex-shrink-0">
                     <button id="newChatBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
                         <i class="fas fa-plus mr-2"></i>
                         Новый чат
                     </button>
                 </div>
 
-                <!-- Chat History -->
-                <div class="flex-1 overflow-y-auto p-4 space-y-2">
-                    <div class="chat-history-item bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded-lg p-3 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors duration-200">
+                <div id="chatHistory" class="flex-1 overflow-y-auto p-4 space-y-2">
+                    <div class="chat-history-item active-chat bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded-lg p-3 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors duration-200" data-chat-id="1">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-message text-purple-600 dark:text-purple-400"></i>
+                            <div class="flex items-center space-x-3 overflow-hidden">
+                                <i class="fas fa-message text-purple-600 dark:text-purple-400 flex-shrink-0"></i>
                                 <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Привет! Как дела?</span>
                             </div>
-                            <span class="text-xs text-gray-500 dark:text-gray-400">12:30</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">12:30</span>
                         </div>
                     </div>
                     
-                    <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
+                    <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200" data-chat-id="2">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-message text-gray-600 dark:text-gray-400"></i>
+                            <div class="flex items-center space-x-3 overflow-hidden">
+                                <i class="fas fa-message text-gray-600 dark:text-gray-400 flex-shrink-0"></i>
                                 <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Помоги с программированием</span>
                             </div>
-                            <span class="text-xs text-gray-500 dark:text-gray-400">Вчера</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">Вчера</span>
                         </div>
                     </div>
 
-                    <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
+                    <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200" data-chat-id="3">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-message text-gray-600 dark:text-gray-400"></i>
+                            <div class="flex items-center space-x-3 overflow-hidden">
+                                <i class="fas fa-message text-gray-600 dark:text-gray-400 flex-shrink-0"></i>
                                 <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Расскажи о нейросетях</span>
                             </div>
-                            <span class="text-xs text-gray-500 dark:text-gray-400">2 дня назад</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">2 дня назад</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Search Tab Content -->
-            <div id="searchTab" class="tab-content flex-1 flex flex-col">
-                <!-- Search Input -->
-                <div class="p-4">
+            <div id="searchTab" class="tab-content flex-1 flex flex-col overflow-y-auto">
+                <div class="p-4 flex-shrink-0">
                     <div class="relative">
                         <input type="text" id="searchInput" placeholder="Поиск в истории..." class="w-full border border-gray-300 dark:border-gray-600 rounded-lg py-3 px-4 pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300">
                         <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                     </div>
                 </div>
 
-                <!-- Search Results -->
                 <div class="flex-1 overflow-y-auto p-4">
                     <div class="search-results space-y-3">
-                        <!-- Search results will be populated here -->
+                        <p class="text-gray-500 dark:text-gray-400 text-center">Введите запрос для поиска в истории чатов.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- User Profile -->
-            <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+            <div class="p-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+                <button id="authTrigger" class="flex items-center space-x-3 w-full p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+                    <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
                         <span class="text-white text-sm font-bold" id="userInitial">Г</span>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white" id="userName">Гость</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400" id="userRole">Неавторизован</p>
+                    <div class="flex-1 text-left overflow-hidden">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate" id="userName">Гость</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate" id="userRole">Неавторизован</p>
                     </div>
-                    <button id="settingsBtn" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200">
-                        <i class="fas fa-cog"></i>
+                    <button id="settingsBtn" type="button" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 flex-shrink-0 p-1">
+                        <i class="fas fa-cog text-lg"></i>
                     </button>
-                </div>
+                </button>
             </div>
         </div>
 
-        <!-- Mobile Sidebar Toggle -->
         <button id="sidebarToggle" class="lg:hidden fixed top-4 left-4 z-50 bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700">
             <i class="fas fa-bars text-gray-600 dark:text-gray-400"></i>
         </button>
 
-        <!-- Main Chat Area -->
-        <div class="flex-1 flex flex-col h-full">
-            <!-- Chat Header -->
-            <div class="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+        <div class="flex-1 flex flex-col h-full relative">
+            <div class="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 flex-shrink-0">
                 <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                    <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-brain text-white text-sm"></i>
                     </div>
                     <div>
@@ -340,9 +340,7 @@
                 </div>
             </div>
 
-            <!-- Messages Container -->
             <div id="messagesContainer" class="flex-1 overflow-y-auto p-6 space-y-6">
-                <!-- Welcome Message -->
                 <div class="message-enter flex justify-start">
                     <div class="flex space-x-3 max-w-4xl">
                         <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
@@ -374,24 +372,22 @@
                 </div>
             </div>
 
-            <!-- Typing Indicator -->
-            <div id="typingIndicator" class="hidden px-6 py-4">
+            <div id="typingIndicator" class="hidden px-6 py-4 flex-shrink-0">
                 <div class="flex space-x-3 max-w-4xl">
                     <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-brain text-white text-sm"></i>
                     </div>
                     <div class="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg border border-gray-200 dark:border-gray-600">
-                        <div class="typing-dots">
-                            <span class="text-2xl">●</span>
-                            <span class="text-2xl">●</span>
-                            <span class="text-2xl">●</span>
+                        <div class="typing-dots text-purple-600 dark:text-purple-400">
+                            <span>●</span>
+                            <span>●</span>
+                            <span>●</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Input Area -->
-            <div class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
+            <div class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 flex-shrink-0">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex space-x-4">
                         <div class="flex-1 relative">
@@ -401,8 +397,9 @@
                                 rows="1"
                                 class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl py-4 px-6 pr-12 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 text-lg max-h-32"
                                 oninput="autoResize(this)"
+                                onkeypress="handleKeyPress(event)"
                             ></textarea>
-                            <button id="sendButton" class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-2 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button id="sendButton" class="absolute right-3 bottom-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-3 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <i class="fas fa-paper-plane text-sm"></i>
                             </button>
                         </div>
@@ -549,348 +546,333 @@
         const userName = document.getElementById('userName');
         const userRole = document.getElementById('userRole');
         const userInitial = document.getElementById('userInitial');
+        const authTrigger = document.getElementById('authTrigger');
+        const chatHistory = document.getElementById('chatHistory');
+        const authTabs = document.getElementById('authTabs');
+        const authForms = document.querySelectorAll('.auth-form');
 
         // Данные пользователя
-        let currentUser = null;
+        let currentUser = {
+            name: 'Гость',
+            initial: 'Г',
+            role: 'Неавторизован',
+            isAuthenticated: false
+        };
 
-        // Инициализация приложения
-        function initApp() {
-            // Проверяем, авторизован ли пользователь
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                updateUserUI();
-            } else {
-                // Если пользователь не авторизован, показываем модальное окно входа
-                setTimeout(() => {
-                    authModal.classList.add('active');
-                }, 500);
-            }
+        // Темы
+        const themeToggle = document.getElementById('themeToggle');
+        const themeOptions = document.querySelectorAll('.theme-option');
 
-            // Инициализация вкладок
-            initTabs();
-        }
+        // История чатов (для имитации)
+        let chatHistoryData = [
+            { id: 1, title: 'Привет! Как дела?', timestamp: '12:30' },
+            { id: 2, title: 'Помоги с программированием', timestamp: 'Вчера' },
+            { id: 3, title: 'Расскажи о нейросетях', timestamp: '2 дня назад' }
+        ];
 
-        // Инициализация вкладок
-        function initTabs() {
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const tabId = btn.getAttribute('data-tab');
-                    
-                    // Обновляем активную кнопку
-                    tabBtns.forEach(b => {
-                        b.classList.remove('text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
-                        b.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
-                    });
-                    
-                    btn.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
-                    btn.classList.add('text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
-                    
-                    // Показываем активный контент
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    document.getElementById(`${tabId}Tab`).classList.add('active');
-                    
-                    // Если переключились на вкладку поиска, фокусируемся на поле ввода
-                    if (tabId === 'search') {
-                        searchInput.focus();
-                    }
-                });
-            });
-        }
-
-        // Обновление UI пользователя
-        function updateUserUI() {
-            if (currentUser) {
-                userName.textContent = currentUser.name;
-                userRole.textContent = currentUser.role;
-                userInitial.textContent = currentUser.name.charAt(0).toUpperCase();
-            } else {
-                userName.textContent = 'Гость';
-                userRole.textContent = 'Неавторизован';
-                userInitial.textContent = 'Г';
-            }
-        }
-
-        // Авто-ресайз текстового поля
+        // --- Утилиты ---
+        
+        // Автоматическое изменение размера textarea
         function autoResize(textarea) {
             textarea.style.height = 'auto';
-            textarea.style.height = Math.min(textarea.scrollHeight, 128) + 'px';
-            sendButton.disabled = textarea.value.trim() === '';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
         }
 
-        // Добавление сообщения в чат
-        function addMessage(text, isUser = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message-enter flex ${isUser ? 'justify-end' : 'justify-start'}`;
-            
-            messageDiv.innerHTML = `
-                <div class="flex space-x-3 max-w-4xl ${isUser ? 'flex-row-reverse space-x-reverse' : ''}">
-                    <div class="w-8 h-8 ${isUser ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-gradient-to-r from-purple-600 to-blue-600'} rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas ${isUser ? 'fa-user' : 'fa-brain'} text-white text-sm"></i>
-                    </div>
-                    <div class="${isUser ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl rounded-tr-none' : 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-2xl rounded-tl-none border border-gray-200 dark:border-gray-600'} px-6 py-4 shadow-lg">
-                        <p class="text-lg leading-relaxed whitespace-pre-wrap">${text}</p>
-                    </div>
-                </div>
-            `;
-            
-            messagesContainer.appendChild(messageDiv);
+        // Прокрутка чата вниз
+        function scrollToBottom() {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
-        // Отправка сообщения
-        function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message) return;
+        // Функция для форматирования ответа (поддержка Markdown)
+        function formatMessage(text) {
+            // Замена переносов строк на <br> (кроме внутри ```)
+            let formattedText = text.replace(/([^\n`])\n([^\n`])/g, '$1<br>$2');
+            
+            // Форматирование кода (блоки)
+            formattedText = formattedText.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+                const language = lang ? `<span class="text-xs font-semibold text-gray-500 dark:text-gray-400">${lang.toUpperCase()}</span>` : '';
+                return `
+                    <div class="mt-3 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg overflow-x-auto shadow-inner border border-gray-300 dark:border-gray-600">
+                        ${language}
+                        <pre class="whitespace-pre-wrap break-words font-mono text-sm text-gray-900 dark:text-gray-200">${code.trim().replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+                    </div>
+                `;
+            });
+            
+            // Форматирование маркированных списков
+            formattedText = formattedText.replace(/• (.*?)<br>/g, (match, item) => {
+                return `<li><i class="fas fa-check text-purple-500 mr-2"></i>${item}</li>`;
+            });
+            
+            // Форматирование обычных переносов строк
+            formattedText = formattedText.replace(/\n/g, '<br>');
 
-            // Добавляем сообщение пользователя
-            addMessage(message, true);
+            return formattedText;
+        }
+
+        // --- Обработка сообщений ---
+
+        function createMessageElement(text, isUser) {
+            const wrapper = document.createElement('div');
+            wrapper.className = `message-enter flex ${isUser ? 'justify-end' : 'justify-start'}`;
+
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = `flex space-x-3 max-w-4xl ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
+
+            const iconDiv = document.createElement('div');
+            iconDiv.className = `w-8 h-8 ${isUser ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-gradient-to-r from-purple-600 to-blue-600'} rounded-full flex items-center justify-center flex-shrink-0`;
+
+            const icon = document.createElement('i');
+            icon.className = `text-white text-sm ${isUser ? 'fas fa-user' : 'fas fa-brain'}`;
+            iconDiv.appendChild(icon);
+
+            const messageBox = document.createElement('div');
+            messageBox.className = `${isUser ? 'bg-blue-600 dark:bg-blue-700 text-white rounded-2xl rounded-br-none' : 'bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none border border-gray-200 dark:border-gray-600'} px-6 py-4 shadow-lg`;
+
+            const messageText = document.createElement('p');
+            messageText.className = `${isUser ? 'text-white' : 'text-gray-900 dark:text-white'} text-lg leading-relaxed`;
+            messageText.innerHTML = isUser ? text : formatMessage(text);
+            messageBox.appendChild(messageText);
+            
+            // Кнопки действий для ответа AI
+            if (!isUser) {
+                const actionButtons = document.createElement('div');
+                actionButtons.className = 'flex flex-wrap gap-2 mt-4';
+                actionButtons.innerHTML = `
+                    <button class="suggestion-btn bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-lg text-xs transition-colors duration-200 border border-purple-200 dark:border-purple-700" data-prompt="Продолжи">
+                        Продолжить
+                    </button>
+                    <button class="suggestion-btn bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-lg text-xs transition-colors duration-200 border border-blue-200 dark:border-blue-700" data-prompt="Пример">
+                        Пример
+                    </button>
+                `;
+                messageBox.appendChild(actionButtons);
+
+                actionButtons.querySelectorAll('.suggestion-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        handleSendMessage(e.target.dataset.prompt);
+                    });
+                });
+            }
+
+
+            contentWrapper.appendChild(iconDiv);
+            contentWrapper.appendChild(messageBox);
+            wrapper.appendChild(contentWrapper);
+            
+            return wrapper;
+        }
+
+        function appendMessage(text, isUser) {
+            const messageElement = createMessageElement(text, isUser);
+            messagesContainer.appendChild(messageElement);
+            scrollToBottom();
+        }
+
+        function handleSendMessage(messageText) {
+            const text = messageText || messageInput.value.trim();
+            if (text === "") return;
+
+            // 1. Сообщение пользователя
+            appendMessage(text, true);
+
+            // Очистка и сброс размера поля ввода
             messageInput.value = '';
             autoResize(messageInput);
             sendButton.disabled = true;
 
-            // Показываем индикатор набора
+            // 2. Имитация набора текста AI
             typingIndicator.classList.remove('hidden');
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            scrollToBottom();
 
-            // Имитация задержки ответа AI
+            // 3. Получение и вывод ответа AI
             setTimeout(() => {
                 typingIndicator.classList.add('hidden');
-                const aiResponse = getAIResponse(message);
-                addMessage(aiResponse, false);
-            }, 1000 + Math.random() * 1000);
+                const aiResponse = getAIResponse(text);
+                appendMessage(aiResponse, false);
+                sendButton.disabled = messageInput.value.trim() === '';
+            }, 1500 + Math.random() * 1000); // Имитация задержки
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); // Предотвратить стандартный перенос строки
+                handleSendMessage();
+            }
         }
 
-        // Поиск в истории чата
-        function performSearch(query) {
-            // Очищаем предыдущие результаты
-            searchResults.innerHTML = '';
-            
-            if (!query.trim()) {
-                searchResults.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-4">Введите запрос для поиска</p>';
-                return;
-            }
-            
-            // Имитация поиска по истории
-            const mockResults = [
-                { text: 'Привет! Как дела?', time: '12:30', matches: 2 },
-                { text: 'Помоги с программированием', time: 'Вчера', matches: 1 },
-                { text: 'Расскажи о нейросетях', time: '2 дня назад', matches: 1 }
-            ];
-            
-            if (mockResults.length === 0) {
-                searchResults.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-4">Ничего не найдено</p>';
-                return;
-            }
-            
-            // Отображаем результаты
-            mockResults.forEach(result => {
-                const resultElement = document.createElement('div');
-                resultElement.className = 'bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200';
-                
-                resultElement.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-message text-purple-600 dark:text-purple-400"></i>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">${result.text}</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-xs text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 px-2 py-1 rounded">${result.matches} совпад.</span>
-                            <span class="text-xs text-gray-500 dark:text-gray-400">${result.time}</span>
-                        </div>
-                    </div>
-                `;
-                
-                searchResults.appendChild(resultElement);
-            });
-        }
+        // --- Обработка событий DOM ---
 
-        // Обработчики событий
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+        // Обработчик кнопки отправки
+        sendButton.addEventListener('click', () => handleSendMessage());
 
-        sendButton.addEventListener('click', sendMessage);
-
-        // Кнопки быстрых ответов
-        document.querySelectorAll('.suggestion-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                messageInput.value = btn.textContent.trim();
-                autoResize(messageInput);
-                sendButton.disabled = false;
-                messageInput.focus();
+        // Обработчик предложений
+        document.querySelectorAll('.suggestion-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                handleSendMessage(e.target.textContent.trim());
             });
         });
 
-        // Новая беседа
-        newChatBtn.addEventListener('click', () => {
-            messagesContainer.innerHTML = `
-                <div class="message-enter flex justify-start">
-                    <div class="flex space-x-3 max-w-4xl">
-                        <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-brain text-white text-sm"></i>
-                        </div>
-                        <div class="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg border border-gray-200 dark:border-gray-600">
-                            <p class="text-gray-900 dark:text-white text-lg leading-relaxed">
-                                Привет! Начнем новую беседу! 🎉<br><br>
-                                Чем могу помочь сегодня?
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            `;
+        // Отключение/включение кнопки отправки
+        messageInput.addEventListener('input', () => {
+            sendButton.disabled = messageInput.value.trim() === '';
         });
 
-        // Переключение сайдбара на мобильных
+        // Переключение сайдбара (мобильная версия)
         sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('hidden');
-            sidebar.classList.toggle('absolute');
-            sidebar.classList.toggle('z-40');
+            sidebar.classList.toggle('hidden-mobile');
+            if (sidebar.classList.contains('hidden-mobile')) {
+                sidebarToggle.querySelector('i').className = 'fas fa-bars text-gray-600 dark:text-gray-400';
+            } else {
+                sidebarToggle.querySelector('i').className = 'fas fa-times text-gray-600 dark:text-gray-400';
+            }
         });
 
-        // Закрытие модальных окон
-        closeAuthModal.addEventListener('click', () => {
-            authModal.classList.remove('active');
-        });
+        // Переключение вкладок
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const targetTab = e.currentTarget.dataset.tab;
 
-        closeSettingsModal.addEventListener('click', () => {
-            settingsModal.classList.remove('active');
-        });
-
-        // Открытие настроек
-        settingsBtn.addEventListener('click', () => {
-            settingsModal.classList.add('active');
-        });
-
-        // Выход из системы
-        logoutBtn.addEventListener('click', () => {
-            currentUser = null;
-            localStorage.removeItem('currentUser');
-            updateUserUI();
-            settingsModal.classList.remove('active');
-            authModal.classList.add('active');
-        });
-
-        // Вход как гость
-        guestLogin.addEventListener('click', () => {
-            currentUser = {
-                name: 'Гость',
-                role: 'Временный пользователь',
-                email: 'guest@example.com'
-            };
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            updateUserUI();
-            authModal.classList.remove('active');
-        });
-
-        // Обработка форм авторизации
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabId = tab.getAttribute('data-tab');
-                
-                // Обновляем активную вкладку
-                document.querySelectorAll('.auth-tab').forEach(t => {
-                    t.classList.remove('active', 'text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
-                    t.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active', 'text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+                    btn.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+                    btn.classList.remove('border-b-2');
                 });
                 
-                tab.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
-                tab.classList.add('active', 'text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+                e.currentTarget.classList.add('active', 'text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+                e.currentTarget.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+                e.currentTarget.classList.add('border-b-2');
+
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                document.getElementById(`${targetTab}Tab`).classList.add('active');
+            });
+        });
+
+        // Переключение вкладок авторизации
+        authTabs.addEventListener('click', (e) => {
+            if (e.target.classList.contains('auth-tab')) {
+                const target = e.target.dataset.tab;
                 
-                // Показываем активную форму
-                document.querySelectorAll('.auth-form').forEach(form => {
+                document.querySelectorAll('.auth-tab').forEach(tab => {
+                    tab.classList.remove('active', 'text-purple-600', 'dark:text-purple-400', 'border-b-2', 'border-purple-600', 'dark:border-purple-400');
+                    tab.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+                });
+
+                e.target.classList.add('active', 'text-purple-600', 'dark:text-purple-400', 'border-b-2', 'border-purple-600', 'dark:border-purple-400');
+                e.target.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+
+                authForms.forEach(form => {
                     form.classList.remove('active');
                 });
-                
-                document.getElementById(`${tabId}Form`).classList.add('active');
-            });
+                document.getElementById(`${target}Form`).classList.add('active');
+            }
         });
 
-        // Обработка формы входа
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            // Имитация успешного входа
-            currentUser = {
-                name: 'Ludvig2457',
-                role: 'Разработчик',
-                email: email
-            };
-            
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            updateUserUI();
-            authModal.classList.remove('active');
-            
-            // Очищаем форму
-            document.getElementById('loginForm').reset();
-        });
 
-        // Обработка формы регистрации
-        document.getElementById('registerForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            
-            // Имитация успешной регистрации
-            currentUser = {
-                name: name,
-                role: 'Новый пользователь',
-                email: email
-            };
-            
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            updateUserUI();
-            authModal.classList.remove('active');
-            
-            // Очищаем форму
-            document.getElementById('registerForm').reset();
-        });
+        // --- Модальные окна и Аутентификация ---
 
-        // Поиск при вводе
-        searchInput.addEventListener('input', (e) => {
-            performSearch(e.target.value);
-        });
+        function updateProfile(name, role, isAuthenticated = true) {
+            currentUser.name = name;
+            currentUser.initial = name.charAt(0).toUpperCase();
+            currentUser.role = role;
+            currentUser.isAuthenticated = isAuthenticated;
 
-        // Переключение темы
-        const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = themeToggle.querySelector('i');
-        
-        // Функция для установки темы
-        function setTheme(theme) {
-            if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-                themeIcon.classList.replace('text-gray-600', 'text-yellow-400');
+            userName.textContent = name;
+            userRole.textContent = role;
+            userInitial.textContent = name.charAt(0).toUpperCase();
+
+            const profileDiv = authTrigger.querySelector('div:first-child');
+            if (isAuthenticated) {
+                profileDiv.classList.remove('bg-gradient-to-r', 'from-green-500', 'to-blue-500');
+                profileDiv.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-blue-600');
             } else {
-                document.documentElement.classList.remove('dark');
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
-                themeIcon.classList.replace('text-yellow-400', 'text-gray-600');
+                profileDiv.classList.remove('bg-gradient-to-r', 'from-purple-600', 'to-blue-600');
+                profileDiv.classList.add('bg-gradient-to-r', 'from-green-500', 'to-blue-500');
             }
             
-            localStorage.setItem('theme', theme);
+            // Скрытие модального окна
+            authModal.classList.remove('active');
         }
-        
-        // Инициализация темы
-        const savedTheme = localStorage.getItem('theme') || 'auto';
-        setTheme(savedTheme);
-        
+
+        function handleLogin(event, type) {
+            event.preventDefault();
+            // Имитация успешной авторизации/регистрации
+            if (type === 'login') {
+                const email = document.getElementById('loginEmail').value;
+                const name = email.split('@')[0];
+                updateProfile(name, 'Пользователь');
+                alert(`Вход выполнен как: ${name}`);
+            } else if (type === 'register') {
+                const name = document.getElementById('registerName').value;
+                updateProfile(name, 'Пользователь');
+                alert(`Регистрация завершена. Вход выполнен как: ${name}`);
+            }
+        }
+
+        function handleGuestLogin() {
+            updateProfile('Гость', 'Неавторизован', false);
+            alert('Вы вошли как Гость');
+        }
+
+        function handleLogout() {
+            updateProfile('Гость', 'Неавторизован', false);
+            settingsModal.classList.remove('active');
+            alert('Вы вышли из аккаунта');
+        }
+
+        // Открытие/Закрытие модальных окон
+        authTrigger.addEventListener('click', () => {
+             // Если не авторизован, открываем Auth Modal
+            if (!currentUser.isAuthenticated) {
+                authModal.classList.add('active');
+            } else {
+                 // Если авторизован, делаем что-то (например, открываем профиль или просто ничего не делаем)
+                 alert(`Вы вошли как ${currentUser.name}`);
+            }
+        });
+
+        closeAuthModal.addEventListener('click', () => authModal.classList.remove('active'));
+        guestLogin.addEventListener('click', handleGuestLogin);
+        logoutBtn.addEventListener('click', handleLogout);
+
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Предотвратить срабатывание authTrigger
+            settingsModal.classList.add('active');
+        });
+        closeSettingsModal.addEventListener('click', () => settingsModal.classList.remove('active'));
+
+
+        // --- Логика Темы ---
+
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            localStorage.setItem('theme', theme);
+
+            if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                root.classList.add('dark');
+                themeToggle.querySelector('i').className = 'fas fa-sun text-yellow-400 text-lg';
+            } else {
+                root.classList.remove('dark');
+                themeToggle.querySelector('i').className = 'fas fa-moon text-gray-600 text-lg';
+            }
+            
+            // Обновление активной кнопки в модальном окне
+            themeOptions.forEach(btn => {
+                if (btn.dataset.theme === theme) {
+                    btn.classList.add('border-purple-500', 'ring-2', 'ring-purple-500');
+                } else {
+                    btn.classList.remove('border-purple-500', 'ring-2', 'ring-purple-500');
+                }
+            });
+        }
+
         // Обработчик переключения темы
         themeToggle.addEventListener('click', () => {
             const currentTheme = localStorage.getItem('theme') || 'auto';
-            let newTheme;
-            
+            let newTheme = '';
             if (currentTheme === 'light') {
                 newTheme = 'dark';
             } else if (currentTheme === 'dark') {
@@ -898,21 +880,71 @@
             } else {
                 newTheme = 'light';
             }
-            
-            setTheme(newTheme);
+            applyTheme(newTheme);
         });
-        
-        // Обработчики выбора темы в настройках
-        document.querySelectorAll('.theme-option').forEach(option => {
-            option.addEventListener('click', () => {
-                const theme = option.getAttribute('data-theme');
-                setTheme(theme);
+
+        // Обработчики кнопок выбора темы в модальном окне
+        themeOptions.forEach(btn => {
+            btn.addEventListener('click', () => {
+                applyTheme(btn.dataset.theme);
             });
         });
 
-        // Инициализация приложения
-        initApp();
-        messageInput.focus();
+        // Применение темы при загрузке
+        const savedTheme = localStorage.getItem('theme') || 'auto';
+        applyTheme(savedTheme);
+
+
+        // --- Поиск (Имитация) ---
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase().trim();
+            searchResults.innerHTML = '';
+            
+            if (query.length < 2) {
+                searchResults.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center">Введите запрос для поиска в истории чатов.</p>';
+                return;
+            }
+
+            const filteredResults = chatHistoryData.filter(chat => 
+                chat.title.toLowerCase().includes(query)
+            );
+
+            if (filteredResults.length === 0) {
+                searchResults.innerHTML = `<p class="text-gray-500 dark:text-gray-400 text-center">Результатов по запросу "${query}" не найдено.</p>`;
+                return;
+            }
+
+            filteredResults.forEach(chat => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200';
+                resultItem.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3 overflow-hidden">
+                            <i class="fas fa-search-plus text-blue-600 dark:text-blue-400 flex-shrink-0"></i>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">${chat.title}</span>
+                        </div>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">${chat.timestamp}</span>
+                    </div>
+                `;
+                resultItem.addEventListener('click', () => {
+                    alert(`Загрузка чата: ${chat.title}`);
+                    // Переключаем на вкладку чата
+                    document.querySelector('.tab-btn[data-tab="chat"]').click();
+                    // Закрываем сайдбар на мобильных
+                    if (!sidebar.classList.contains('hidden-mobile')) {
+                        sidebarToggle.click();
+                    }
+                });
+                searchResults.appendChild(resultItem);
+            });
+        });
+
+        // --- Инициализация ---
+        window.onload = () => {
+            scrollToBottom();
+            sendButton.disabled = messageInput.value.trim() === ''; // Инициализация кнопки
+        };
+
     </script>
 </body>
 </html>
