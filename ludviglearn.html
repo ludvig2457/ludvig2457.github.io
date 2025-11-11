@@ -671,34 +671,77 @@
         let currentUser = null;
         let users = JSON.parse(localStorage.getItem('codeDuoUsers')) || [];
         let userProgress = JSON.parse(localStorage.getItem('codeDuoProgress')) || {};
-
-        // Lessons data
+    
+        // Lessons data - РАСШИРЕННАЯ ВЕРСИЯ
         const programmingLessons = [
-            { id: 1, title: "Основы Python", desc: "Переменные, типы данных, операции", duration: "15 минут", difficulty: "★ Легкий", type: "python", completed: false },
-            { id: 2, title: "Функции в Python", desc: "Создание и использование функций", duration: "20 минут", difficulty: "★ Средний", type: "python", completed: false },
-            { id: 3, title: "Циклы в Python", desc: "For, while и управление потоком", duration: "25 минут", difficulty: "★ Средний", type: "python", completed: false },
-            { id: 4, title: "Структуры данных", desc: "Списки, словари, кортежи", duration: "30 минут", difficulty: "★ Сложный", type: "python", completed: false },
-            { id: 5, title: "ООП в Python", desc: "Классы, объекты, наследование", duration: "35 минут", difficulty: "★ Сложный", type: "python", completed: false },
-            { id: 6, title: "Работа с файлами", desc: "Чтение и запись файлов", duration: "25 минут", difficulty: "★ Средний", type: "python", completed: false },
-            { id: 7, title: "Исключения", desc: "Обработка ошибок в Python", duration: "20 минут", difficulty: "★ Средний", type: "python", completed: false },
-            { id: 8, title: "Модули и пакеты", desc: "Импорт и создание модулей", duration: "30 минут", difficulty: "★ Сложный", type: "python", completed: false },
-            { id: 9, title: "Декораторы", desc: "Функции высшего порядка", duration: "35 минут", difficulty: "★ Сложный", type: "python", completed: false },
-            { id: 10, title: "Генераторы", desc: "Создание и использование генераторов", duration: "30 минут", difficulty: "★ Сложный", type: "python", completed: false }
+            // Базовые уроки (1-15)
+            { id: 1, title: "Переменные и типы данных", desc: "Изучение основных типов данных в Python", duration: "15 минут", difficulty: "★ Легкий", type: "python", completed: false },
+            { id: 2, title: "Операторы и выражения", desc: "Арифметические и логические операторы", duration: "20 минут", difficulty: "★ Легкий", type: "python", completed: false },
+            { id: 3, title: "Строки и методы строк", desc: "Работа со строками и их методами", duration: "25 минут", difficulty: "★ Легкий", type: "python", completed: false },
+            { id: 4, title: "Условные операторы", desc: "If, elif, else - ветвление программы", duration: "30 минут", difficulty: "★ Средний", type: "python", completed: false },
+            { id: 5, title: "Циклы for", desc: "Итерация по последовательностям", duration: "25 минут", difficulty: "★ Средний", type: "python", completed: false },
+            { id: 6, title: "Циклы while", desc: "Циклы с условием выполнения", duration: "20 минут", difficulty: "★ Средний", type: "python", completed: false },
+            { id: 7, title: "Списки и кортежи", desc: "Работа с упорядоченными коллекциями", duration: "35 минут", difficulty: "★ Средний", type: "python", completed: false },
+            { id: 8, title: "Словари и множества", desc: "Работа с неупорядоченными коллекциями", duration: "30 минут", difficulty: "★ Средний", type: "python", completed: false },
+            { id: 9, title: "Функции", desc: "Создание и использование функций", duration: "40 минут", difficulty: "★ Сложный", type: "python", completed: false },
+            { id: 10, title: "Модули и импорт", desc: "Работа с модулями и библиотеками", duration: "25 минут", difficulty: "★ Средний", type: "python", completed: false },
+            
+            // Продвинутые темы (11-25)
+            { id: 11, title: "ООП: Классы и объекты", desc: "Основы объектно-ориентированного программирования", duration: "45 минут", difficulty: "★ Сложный", type: "python", completed: false },
+            { id: 12, title: "ООП: Наследование", desc: "Создание иерархий классов", duration: "40 минут", difficulty: "★ Сложный", type: "python", completed: false },
+            { id: 13, title: "ООП: Полиморфизм", desc: "Разные реализации одного интерфейса", duration: "35 минут", difficulty: "★ Сложный", type: "python", completed: false },
+            { id: 14, title: "Исключения и обработка ошибок", desc: "Try, except, finally блоки", duration: "30 минут", difficulty: "★ Средний", type: "python", completed: false },
+            { id: 15, title: "Работа с файлами", desc: "Чтение и запись текстовых файлов", duration: "35 минут", difficulty: "★ Средний", type: "python", completed: false },
+            { id: 16, title: "JSON и сериализация", desc: "Работа с JSON данными", duration: "25 минут", difficulty: "★ Средний", type: "python", completed: false },
+            { id: 17, title: "Декораторы", desc: "Функции высшего порядка", duration: "50 минут", difficulty: "★★ Эксперт", type: "python", completed: false },
+            { id: 18, title: "Генераторы", desc: "Создание и использование генераторов", duration: "40 минут", difficulty: "★★ Эксперт", type: "python", completed: false },
+            { id: 19, title: "List comprehensions", desc: "Создание списков в одну строку", duration: "20 минут", difficulty: "★ Средний", type: "python", completed: false },
+            { id: 20, title: "Lambda функции", desc: "Анонимные функции", duration: "25 минут", difficulty: "★ Средний", type: "python", completed: false },
+            { id: 21, title: "Работа с датой и временем", desc: "Модуль datetime", duration: "30 минут", difficulty: "★ Средний", type: "python", completed: false },
+            { id: 22, title: "Регулярные выражения", desc: "Модуль re для работы с текстом", duration: "45 минут", difficulty: "★★ Эксперт", type: "python", completed: false },
+            { id: 23, title: "Многопоточность", desc: "Параллельное выполнение задач", duration: "50 минут", difficulty: "★★ Эксперт", type: "python", completed: false },
+            { id: 24, title: "Работа с API", desc: "HTTP запросы и REST API", duration: "40 минут", difficulty: "★★ Эксперт", type: "python", completed: false },
+            { id: 25, title: "Тестирование кода", desc: "Unit tests с unittest", duration: "35 минут", difficulty: "★ Сложный", type: "python", completed: false }
         ];
-
+    
         const chessLessons = [
-            { id: 1, title: "Основы шахмат", desc: "Правила, ходы фигур, шах и мат", duration: "15 минут", difficulty: "★ Легкий", type: "chess", completed: false },
-            { id: 2, title: "Тактика для начинающих", desc: "Двойной удар, вилка, связка", duration: "20 минут", difficulty: "★ Средний", type: "chess", completed: false },
-            { id: 3, title: "Стратегия в миттельшпиле", desc: "Планирование, контроль центра", duration: "25 минут", difficulty: "★ Средний", type: "chess", completed: false },
-            { id: 4, title: "Эндшпиль", desc: "Основы игры при малом количестве фигур", duration: "30 минут", difficulty: "★ Сложный", type: "chess", completed: false },
-            { id: 5, title: "Дебютные принципы", desc: "Основные идеи в начале игры", duration: "25 минут", difficulty: "★ Средний", type: "chess", completed: false },
-            { id: 6, title: "Тактические комбинации", desc: "Комбинации и жертвы", duration: "30 минут", difficulty: "★ Сложный", type: "chess", completed: false },
-            { id: 7, title: "Пешечные структуры", desc: "Типичные пешечные построения", duration: "35 минут", difficulty: "★ Сложный", type: "chess", completed: false },
-            { id: 8, title: "Атака на короля", desc: "Методы атаки на королевский фланг", duration: "30 минут", difficulty: "★ Сложный", type: "chess", completed: false },
-            { id: 9, title: "Позиционная игра", desc: "Оценка позиции и планы", duration: "35 минут", difficulty: "★ Сложный", type: "chess", completed: false },
-            { id: 10, title: "Эндшпильные техники", desc: "Ключевые приемы в эндшпиле", duration: "40 минут", difficulty: "★ Сложный", type: "chess", completed: false }
+            // Основы (1-10)
+            { id: 1, title: "Ходы фигур", desc: "Изучение как ходят все шахматные фигуры", duration: "20 минут", difficulty: "★ Легкий", type: "chess", completed: false },
+            { id: 2, title: "Шах и мат", desc: "Основные понятия шах и мат", duration: "15 минут", difficulty: "★ Легкий", type: "chess", completed: false },
+            { id: 3, title: "Рокировка", desc: "Правила и стратегия рокировки", duration: "25 минут", difficulty: "★ Легкий", type: "chess", completed: false },
+            { id: 4, title: "Взятие на проходе", desc: "Специальное правило для пешек", duration: "20 минут", difficulty: "★ Легкий", type: "chess", completed: false },
+            { id: 5, title: "Превращение пешки", desc: "Когда и в кого превращать пешку", duration: "15 минут", difficulty: "★ Легкий", type: "chess", completed: false },
+            { id: 6, title: "Контроль центра", desc: "Основной стратегический принцип", duration: "30 минут", difficulty: "★ Средний", type: "chess", completed: false },
+            { id: 7, title: "Развитие фигур", desc: "Правильное развитие в дебюте", duration: "25 минут", difficulty: "★ Средний", type: "chess", completed: false },
+            { id: 8, title: "Безопасность короля", desc: "Защита короля от атак", duration: "35 минут", difficulty: "★ Средний", type: "chess", completed: false },
+            { id: 9, title: "Двойной удар", desc: "Базовая тактическая комбинация", duration: "20 минут", difficulty: "★ Средний", type: "chess", completed: false },
+            { id: 10, title: "Вилка", desc: "Атака двух фигур одновременно", duration: "25 минут", difficulty: "★ Средний", type: "chess", completed: false },
+            
+            // Тактика (11-20)
+            { id: 11, title: "Связка", desc: "Ограничение движения фигур противника", duration: "30 минут", difficulty: "★ Средний", type: "chess", completed: false },
+            { id: 12, title: "Открытое нападение", desc: "Тактика с разменом фигур", duration: "25 минут", difficulty: "★ Средний", type: "chess", completed: false },
+            { id: 13, title: "Отвлечение", desc: "Отвлечение фигур противника", duration: "35 минут", difficulty: "★ Сложный", type: "chess", completed: false },
+            { id: 14, title: "Завлечение", desc: "Завлечение фигуры в ловушку", duration: "30 минут", difficulty: "★ Сложный", type: "chess", completed: false },
+            { id: 15, title: "Блокировка", desc: "Ограничение подвижности фигур", duration: "40 минут", difficulty: "★ Сложный", type: "chess", completed: false },
+            { id: 16, title: "Перегрузка", desc: "Перегрузка фигур защиты", duration: "35 минут", difficulty: "★ Сложный", type: "chess", completed: false },
+            { id: 17, title: "Уничтожение защиты", desc: "Устранение ключевых защитников", duration: "45 минут", difficulty: "★ Сложный", type: "chess", completed: false },
+            { id: 18, title: "Сквозной шах", desc: "Особая тактика с шахом", duration: "30 минут", difficulty: "★ Сложный", type: "chess", completed: false },
+            { id: 19, title: "Вечный шах", desc: "Тактика для спасения партии", duration: "25 минут", difficulty: "★ Средний", type: "chess", completed: false },
+            { id: 20, title: "Цугцванг", desc: "Позиция где любой ход ухудшает ситуацию", duration: "40 минут", difficulty: "★★ Эксперт", type: "chess", completed: false },
+            
+            // Стратегия (21-30)
+            { id: 21, title: "Пешечные структуры", desc: "Типичные пешечные построения", duration: "50 минут", difficulty: "★★ Эксперт", type: "chess", completed: false },
+            { id: 22, title: "Слабые поля", desc: "Идентификация и использование слабых полей", duration: "45 минут", difficulty: "★★ Эксперт", type: "chess", completed: false },
+            { id: 23, title: "Открытые линии", desc: "Контроль открытых вертикалей и горизонталей", duration: "35 минут", difficulty: "★ Сложный", type: "chess", completed: false },
+            { id: 24, title: "Атака на короля", desc: "Планирование и проведение атаки", duration: "55 минут", difficulty: "★★ Эксперт", type: "chess", completed: false },
+            { id: 25, title: "Эндшпиль: пешечный", desc: "Основы пешечного эндшпиля", duration: "40 минут", difficulty: "★ Сложный", type: "chess", completed: false },
+            { id: 26, title: "Эндшпиль: ладейный", desc: "Тактика в ладейных окончаниях", duration: "45 минут", difficulty: "★★ Эксперт", type: "chess", completed: false },
+            { id: 27, title: "Эндшпиль: ферзевый", desc: "Ферзевые окончания", duration: "35 минут", difficulty: "★ Сложный", type: "chess", completed: false },
+            { id: 28, title: "Позиционная жертва", desc: "Жертва материала за позиционное преимущество", duration: "50 минут", difficulty: "★★ Эксперт", type: "chess", completed: false },
+            { id: 29, title: "Дебютные ловушки", desc: "Типичные ловушки в популярных дебютах", duration: "40 минут", difficulty: "★ Сложный", type: "chess", completed: false },
+            { id: 30, title: "Анализ партий", desc: "Разбор классических шахматных партий", duration: "60 минут", difficulty: "★★ Эксперт", type: "chess", completed: false }
         ];
-
+    
         // Check if user is logged in on page load
         document.addEventListener('DOMContentLoaded', function() {
             const savedUser = localStorage.getItem('codeDuoCurrentUser');
@@ -707,18 +750,18 @@
                 updateUIForLoggedInUser();
             }
         });
-
+    
         // Auth functions
         function openAuthModal(mode = 'login') {
             document.getElementById('auth-modal').style.display = 'flex';
             switchAuthTab(mode);
         }
-
+    
         function closeAuthModal() {
             document.getElementById('auth-modal').style.display = 'none';
             document.getElementById('auth-form').reset();
         }
-
+    
         function switchAuthTab(mode) {
             document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
             document.querySelector(`.auth-tab:nth-child(${mode === 'login' ? 1 : 2})`).classList.add('active');
@@ -735,7 +778,7 @@
                 document.getElementById('confirm-password-group').style.display = 'block';
             }
         }
-
+    
         function handleAuth() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -749,7 +792,7 @@
                 registerUser(name, email, password, confirmPassword);
             }
         }
-
+    
         function registerUser(name, email, password, confirmPassword) {
             if (!name || !email || !password) {
                 alert('Пожалуйста, заполните все поля');
@@ -787,7 +830,7 @@
             alert('Регистрация успешна! Теперь вы можете войти.');
             switchAuthTab('login');
         }
-
+    
         function loginUser(email, password) {
             const user = users.find(u => u.email === email && u.password === password);
             
@@ -806,14 +849,14 @@
             
             alert(`Добро пожаловать, ${user.name}!`);
         }
-
+    
         function logout() {
             currentUser = null;
             localStorage.removeItem('codeDuoCurrentUser');
             updateUIForLoggedOutUser();
             alert('Вы вышли из аккаунта');
         }
-
+    
         function updateUIForLoggedInUser() {
             document.getElementById('auth-buttons').style.display = 'none';
             document.getElementById('user-info').style.display = 'flex';
@@ -828,7 +871,7 @@
             loadProgrammingLessons();
             switchTab('programming');
         }
-
+    
         function updateUIForLoggedOutUser() {
             document.getElementById('auth-buttons').style.display = 'flex';
             document.getElementById('user-info').style.display = 'none';
@@ -839,7 +882,7 @@
             document.getElementById('programming-lessons').style.display = 'none';
             document.getElementById('chess-lessons').style.display = 'none';
         }
-
+    
         // Progress functions
         function updateProgressDisplay() {
             if (!currentUser) return;
@@ -869,7 +912,7 @@
             document.getElementById('chess-days').textContent = chessDays;
             document.getElementById('chess-rating').textContent = chessRating;
         }
-
+    
         // Lessons functions
         function switchTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -881,26 +924,30 @@
             } else {
                 document.getElementById('programming-lessons').style.display = 'none';
                 document.getElementById('chess-lessons').style.display = 'block';
+                loadChessLessons();
             }
         }
-
+    
         function loadProgrammingLessons() {
             const container = document.getElementById('programming-container');
             container.innerHTML = '';
             
             programmingLessons.forEach(lesson => {
                 const isCompleted = userProgress[currentUser.id]?.programming?.completed >= lesson.id;
+                const isLocked = lesson.id > 1 && !userProgress[currentUser.id]?.programming?.completed >= lesson.id - 1;
                 
                 const lessonCard = document.createElement('div');
-                lessonCard.className = `lesson-card ${isCompleted ? '' : 'locked'}`;
-                lessonCard.onclick = () => openLesson(lesson);
+                lessonCard.className = `lesson-card ${isLocked ? 'locked' : ''}`;
+                if (!isLocked) {
+                    lessonCard.onclick = () => openLesson(lesson);
+                }
                 
                 lessonCard.innerHTML = `
                     <div class="lesson-icon">
                         <i class="fab fa-python"></i>
                     </div>
                     <div class="lesson-info">
-                        <div class="lesson-title">${lesson.title}</div>
+                        <div class="lesson-title">${lesson.title} ${isCompleted ? '✓' : ''}</div>
                         <div class="lesson-desc">${lesson.desc}</div>
                         <div class="lesson-meta">
                             <span>${lesson.duration}</span>
@@ -908,31 +955,36 @@
                         </div>
                     </div>
                     <div class="lesson-status">
-                        <i class="fas fa-${isCompleted ? 'lock-open' : 'lock'}"></i>
+                        <i class="fas fa-${isLocked ? 'lock' : (isCompleted ? 'check' : 'play')}"></i>
                     </div>
                 `;
                 
                 container.appendChild(lessonCard);
             });
         }
-
+    
         function loadChessLessons() {
             const container = document.getElementById('chess-container');
             container.innerHTML = '';
             
             chessLessons.forEach(lesson => {
                 const isCompleted = userProgress[currentUser.id]?.chess?.completed >= lesson.id;
+                const isLocked = lesson.id > 1 && !userProgress[currentUser.id]?.chess?.completed >= lesson.id - 1;
                 
                 const lessonCard = document.createElement('div');
-                lessonCard.className = `lesson-card ${isCompleted ? '' : 'locked'}`;
-                lessonCard.onclick = () => openLesson(lesson);
+                lessonCard.className = `lesson-card ${isLocked ? 'locked' : ''}`;
+                if (!isLocked) {
+                    lessonCard.onclick = () => openLesson(lesson);
+                }
+                
+                const iconType = lesson.id <= 10 ? 'pawn' : lesson.id <= 20 ? 'knight' : 'queen';
                 
                 lessonCard.innerHTML = `
                     <div class="lesson-icon">
-                        <i class="fas fa-chess-${lesson.id <= 3 ? 'pawn' : lesson.id <= 6 ? 'knight' : 'queen'}"></i>
+                        <i class="fas fa-chess-${iconType}"></i>
                     </div>
                     <div class="lesson-info">
-                        <div class="lesson-title">${lesson.title}</div>
+                        <div class="lesson-title">${lesson.title} ${isCompleted ? '✓' : ''}</div>
                         <div class="lesson-desc">${lesson.desc}</div>
                         <div class="lesson-meta">
                             <span>${lesson.duration}</span>
@@ -940,14 +992,14 @@
                         </div>
                     </div>
                     <div class="lesson-status">
-                        <i class="fas fa-${isCompleted ? 'lock-open' : 'lock'}"></i>
+                        <i class="fas fa-${isLocked ? 'lock' : (isCompleted ? 'check' : 'play')}"></i>
                     </div>
                 `;
                 
                 container.appendChild(lessonCard);
             });
         }
-
+    
         function openLesson(lesson) {
             if (!currentUser) {
                 alert('Пожалуйста, войдите в систему для доступа к урокам');
@@ -967,13 +1019,15 @@
             }
             
             modal.style.display = 'flex';
-            initChessBoards();
+            if (lesson.type === 'chess') {
+                initChessBoard(lesson.id);
+            }
         }
-
+    
         function closeLessonModal() {
             document.getElementById('lesson-modal').style.display = 'none';
         }
-
+    
         // Close modals when clicking outside
         window.onclick = function(event) {
             const authModal = document.getElementById('auth-modal');
@@ -986,49 +1040,73 @@
                 closeLessonModal();
             }
         }
-
+    
         // Lesson content generation functions
         function getPythonLessonContent(lesson) {
             const lessonsContent = {
                 1: {
-                    theory: "Python - это интерпретируемый язык программирования высокого уровня. Он известен своим простым и понятным синтаксисом.",
-                    code: `print("Привет, мир!")\nname = "Анна"\nage = 25\nprint(f"Меня зовут {name}, мне {age} лет")`,
-                    question: "Что выведет этот код?",
-                    options: [
-                        "Привет, мир! Меня зовут Анна, мне 25 лет",
-                        "Меня зовут Анна",
-                        "Привет, мир! Анна 25"
-                    ],
+                    theory: "В Python переменные используются для хранения данных. Основные типы данных: int (целые числа), float (дробные числа), str (строки), bool (логические значения).",
+                    task: "Создайте переменную с именем 'age' и присвойте ей значение 25",
+                    code: `# Ваш код здесь\nage = `,
+                    answer: "25",
+                    question: "Какое значение нужно присвоить переменной age?",
+                    options: ["25", "'25'", "25.0", "двадцать пять"],
                     correct: 0
                 },
                 2: {
-                    theory: "Функции позволяют организовывать код в переиспользуемые блоки. Они делают код более читаемым и удобным для поддержки.",
-                    code: `def greet(name):\n    return f"Привет, {name}!"\n\nprint(greet("Мария"))`,
-                    question: "Какой будет результат выполнения этого кода?",
-                    options: [
-                        "Ошибка",
-                        "Привет, Мария!",
-                        "Привет, name!"
-                    ],
-                    correct: 1
+                    theory: "Операторы выполняют операции над переменными. Арифметические операторы: +, -, *, /, // (целочисленное деление), % (остаток от деления), ** (возведение в степень).",
+                    task: "Вычислите результат выражения: (10 + 5) * 2",
+                    code: `result = (10 + 5) * 2\nprint(result)`,
+                    answer: "30",
+                    question: "Что выведет этот код?",
+                    options: ["30", "25", "20", "15"],
+                    correct: 0
+                },
+                3: {
+                    theory: "Строки в Python - это последовательности символов. Методы строк: upper(), lower(), strip(), split(), replace(), find().",
+                    task: "Преобразуйте строку 'hello world' в верхний регистр",
+                    code: `text = "hello world"\nresult = text.`,
+                    answer: "upper()",
+                    question: "Какой метод нужно использовать?",
+                    options: ["upper()", "uppercase()", "toUpper()", "capitalize()"],
+                    correct: 0
+                },
+                4: {
+                    theory: "Условные операторы позволяют выполнять код в зависимости от условий. if, elif, else - ключевые слова для ветвления.",
+                    task: "Напишите условие: если x больше 10, вывести 'Больше'",
+                    code: `x = 15\nif x `,
+                    answer: "> 10:",
+                    question: "Какое условие нужно написать?",
+                    options: ["> 10:", "> 10", ">= 10:", "< 10:"],
+                    correct: 0
                 }
-                // Add more lessons here...
             };
             
             const content = lessonsContent[lesson.id] || {
                 theory: `Это урок по теме "${lesson.title}".`,
-                code: `# Код для урока "${lesson.title}"\nprint("Изучаем Python!")`,
+                task: "Выполните задание по теме урока",
+                code: `# Задание: ${lesson.title}\nprint("Выполняем задание")`,
+                answer: "правильный ответ",
                 question: "Вопрос по теме урока:",
                 options: [
                     "Правильный ответ",
-                    "Неправильный ответ",
-                    "Еще один неправильный ответ"
+                    "Неправильный ответ 1",
+                    "Неправильный ответ 2",
+                    "Неправильный ответ 3"
                 ],
                 correct: 0
             };
             
             return `
-                <p>${content.theory}</p>
+                <div class="lesson-theory">
+                    <h3>Теория</h3>
+                    <p>${content.theory}</p>
+                </div>
+                
+                <div class="lesson-task">
+                    <h3>Задание</h3>
+                    <p>${content.task}</p>
+                </div>
                 
                 <div class="code-editor">
                     ${content.code.split('\n').map(line => `<div class="code-line">${line}</div>`).join('')}
@@ -1047,20 +1125,80 @@
                 </div>
             `;
         }
-
+    
         function getChessLessonContent(lesson) {
+            const chessLessonsContent = {
+                1: {
+                    theory: "Шахматные фигуры ходят по-разному. Пешка ходит вперед на одну клетку, но бьет по диагонали. Ладья ходит по горизонтали и вертикали. Слон ходит по диагонали.",
+                    task: "Какой фигурой нужно пойти, чтобы поставить мат в 1 ход?",
+                    question: "Выберите правильный ход для мата:",
+                    options: [
+                        "Ферзь на h7",
+                        "Ладья на f8", 
+                        "Конь на g6",
+                        "Слон на c4"
+                    ],
+                    correct: 0
+                },
+                2: {
+                    theory: "Шах - это нападение на короля. Мат - это шах, от которого нет защиты. Пат - это ситуация, когда игрок не может сделать ход, но король не под шахом.",
+                    task: "Определите, является ли позиция матом, шахом или патом",
+                    question: "Что изображено на диаграмме?",
+                    options: [
+                        "Мат",
+                        "Шах",
+                        "Пат",
+                        "Обычная позиция"
+                    ],
+                    correct: 0
+                },
+                3: {
+                    theory: "Рокировка - это специальный ход, involving короля и ладьи. Король перемещается на две клетки toward ладьи, а ладья перепрыгивает через короля.",
+                    task: "Можно ли сделать рокировку в данной позиции?",
+                    question: "Возможна ли рокировка?",
+                    options: [
+                        "Да, короткая рокировка",
+                        "Да, длинная рокировка",
+                        "Нет, король под шахом",
+                        "Нет, ладья уже ходила"
+                    ],
+                    correct: 2
+                }
+            };
+            
+            const content = chessLessonsContent[lesson.id] || {
+                theory: `Это урок по шахматам: "${lesson.title}".`,
+                task: "Решите шахматную задачу",
+                question: "Какой лучший ход в данной позиции?",
+                options: [
+                    "Правильный ход",
+                    "Неправильный ход 1",
+                    "Неправильный ход 2", 
+                    "Неправильный ход 3"
+                ],
+                correct: 0
+            };
+            
             return `
-                <p>Это урок по шахматам: "${lesson.title}".</p>
+                <div class="lesson-theory">
+                    <h3>Теория</h3>
+                    <p>${content.theory}</p>
+                </div>
+                
+                <div class="lesson-task">
+                    <h3>Задание</h3>
+                    <p>${content.task}</p>
+                </div>
                 
                 <div class="chess-board" id="chess-board-${lesson.id}">
                     <!-- Chess board will be generated by JavaScript -->
                 </div>
                 
-                <div class="task-question">Вопрос по теме урока:</div>
+                <div class="task-question">${content.question}</div>
                 <div class="task-options">
-                    <div class="task-option" onclick="checkAnswer(this, true)">Правильный ответ</div>
-                    <div class="task-option" onclick="checkAnswer(this, false)">Неправильный ответ</div>
-                    <div class="task-option" onclick="checkAnswer(this, false)">Еще один неправильный ответ</div>
+                    ${content.options.map((option, index) => 
+                        `<div class="task-option" onclick="checkAnswer(this, ${index === content.correct})">${option}</div>`
+                    ).join('')}
                 </div>
                 
                 <div class="task-actions">
@@ -1069,33 +1207,67 @@
                 </div>
             `;
         }
-
-        function initChessBoards() {
-            // Initialize chess boards for all lessons
-            for (let i = 1; i <= 10; i++) {
-                const board = document.getElementById(`chess-board-${i}`);
-                if (board) {
-                    board.innerHTML = '';
-                    for (let row = 0; row < 8; row++) {
-                        for (let col = 0; col < 8; col++) {
-                            const square = document.createElement('div');
-                            square.className = `chess-square ${(row + col) % 2 === 0 ? 'white' : 'black'}`;
-                            
-                            // Add some pieces for demonstration
-                            if (row === 4 && col === 4) {
-                                square.innerHTML = '♔';
-                            }
-                            
-                            board.appendChild(square);
-                        }
+    
+        function initChessBoard(lessonId) {
+            const board = document.getElementById(`chess-board-${lessonId}`);
+            if (!board) return;
+            
+            board.innerHTML = '';
+            
+            // Create chess board
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement('div');
+                    square.className = `chess-square ${(row + col) % 2 === 0 ? 'white' : 'black'}`;
+                    
+                    // Add coordinates
+                    if (row === 7) {
+                        const fileLabel = document.createElement('div');
+                        fileLabel.className = 'file-label';
+                        fileLabel.textContent = String.fromCharCode(97 + col); // a-h
+                        fileLabel.style.cssText = 'position: absolute; bottom: 2px; right: 2px; font-size: 10px; color: #666;';
+                        square.style.position = 'relative';
+                        square.appendChild(fileLabel);
                     }
+                    if (col === 0) {
+                        const rankLabel = document.createElement('div');
+                        rankLabel.className = 'rank-label';
+                        rankLabel.textContent = 8 - row; // 1-8
+                        rankLabel.style.cssText = 'position: absolute; top: 2px; left: 2px; font-size: 10px; color: #666;';
+                        square.style.position = 'relative';
+                        square.appendChild(rankLabel);
+                    }
+                    
+                    // Add pieces based on lesson
+                    if (lessonId === 1) {
+                        // Basic checkmate position
+                        if (row === 0 && col === 4) square.innerHTML = '♚'; // Black king
+                        if (row === 1 && col === 7) square.innerHTML = '♕'; // White queen
+                        if (row === 2 && col === 5) square.innerHTML = '♖'; // White rook
+                    } else if (lessonId === 2) {
+                        // Check position
+                        if (row === 4 && col === 4) square.innerHTML = '♔'; // White king
+                        if (row === 3 && col === 3) square.innerHTML = '♛'; // Black queen
+                    } else if (lessonId === 3) {
+                        // Castling position
+                        if (row === 7 && col === 4) square.innerHTML = '♔'; // White king
+                        if (row === 7 && col === 0) square.innerHTML = '♖'; // White rook (queenside)
+                        if (row === 7 && col === 7) square.innerHTML = '♖'; // White rook (kingside)
+                        if (row === 0 && col === 3) square.innerHTML = '♛'; // Black queen attacking e1
+                    } else {
+                        // Generic position with a king
+                        if (row === 4 && col === 4) square.innerHTML = '♔';
+                    }
+                    
+                    board.appendChild(square);
                 }
             }
         }
-
+    
         function checkAnswer(element, isCorrect) {
             document.querySelectorAll('.task-option').forEach(opt => {
                 opt.style.background = '';
+                opt.style.color = '';
             });
             
             if (isCorrect) {
@@ -1106,9 +1278,16 @@
                 element.style.color = 'white';
             }
         }
-
+    
         function completeLesson(type, lessonId) {
             if (!currentUser) return;
+            
+            // Check if answer was selected
+            const selectedOption = document.querySelector('.task-option[style*="background: var(--success)"]');
+            if (!selectedOption) {
+                alert('Пожалуйста, выберите ответ перед завершением урока!');
+                return;
+            }
             
             // Update user progress
             if (!userProgress[currentUser.id]) {
@@ -1121,15 +1300,15 @@
             if (type === 'programming') {
                 if (lessonId > userProgress[currentUser.id].programming.completed) {
                     userProgress[currentUser.id].programming.completed = lessonId;
-                    userProgress[currentUser.id].programming.days++;
+                    userProgress[currentUser.id].programming.days = (userProgress[currentUser.id].programming.days || 0) + 1;
                     userProgress[currentUser.id].programming.success = Math.min(100, 
-                        (userProgress[currentUser.id].programming.completed / userProgress[currentUser.id].programming.total) * 100);
+                        (userProgress[currentUser.id].programming.completed / programmingLessons.length) * 100);
                 }
             } else {
                 if (lessonId > userProgress[currentUser.id].chess.completed) {
                     userProgress[currentUser.id].chess.completed = lessonId;
-                    userProgress[currentUser.id].chess.days++;
-                    userProgress[currentUser.id].chess.rating += 25;
+                    userProgress[currentUser.id].chess.days = (userProgress[currentUser.id].chess.days || 0) + 1;
+                    userProgress[currentUser.id].chess.rating = (userProgress[currentUser.id].chess.rating || 1000) + 25;
                 }
             }
             
@@ -1146,13 +1325,6 @@
                 loadChessLessons();
             }
         }
-
-        // Initialize chess lessons when switching to chess tab
-        document.querySelector('.tab:nth-child(2)').addEventListener('click', function() {
-            if (currentUser) {
-                loadChessLessons();
-            }
-        });
     </script>
 </body>
 </html>
