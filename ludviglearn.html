@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeDuo - Изучай программирование и шахматы бесплатно!</title>
+    <title>CodeDuo - Уроки программирования и шахмат</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -29,35 +28,32 @@
             background-color: #f5f7fa;
             color: var(--dark);
             line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+            padding-bottom: 70px;
         }
 
         /* Header Styles */
-        header {
+        .header {
             background-color: white;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
+            padding: 15px 20px;
         }
 
-        .navbar {
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--primary);
         }
@@ -66,26 +62,10 @@
             color: var(--accent);
         }
 
-        .nav-links {
-            display: flex;
-            gap: 25px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--dark);
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
         .user-actions {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
 
         .btn {
@@ -95,6 +75,7 @@
             cursor: pointer;
             transition: all 0.3s;
             border: none;
+            font-size: 0.9rem;
         }
 
         .btn-outline {
@@ -108,221 +89,38 @@
             color: white;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 80px 0;
-            text-align: center;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-
-        .hero h1 {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 30px;
-            color: #555;
-        }
-
-        .paths {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-
-        .path-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            width: 280px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-            cursor: pointer;
-        }
-
-        .path-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .path-card i {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: var(--primary);
-        }
-
-        .path-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-
-        .path-card p {
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 80px 0;
-            background: white;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .section-title h2 {
-            font-size: 2.2rem;
-            color: var(--dark);
-            margin-bottom: 15px;
-        }
-
-        .section-title p {
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .feature-card {
-            background: var(--light);
-            border-radius: 10px;
-            padding: 25px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-card i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-
-        /* Learning Section */
-        .learning {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-        }
-
-        .learning-container {
-            display: flex;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .learning-content {
-            flex: 1;
-        }
-
-        .learning-content h2 {
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-
-        .learning-content p {
-            margin-bottom: 30px;
-            color: #555;
-        }
-
-        .learning-visual {
-            flex: 1;
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .code-editor {
-            background: #1e1e1e;
-            border-radius: 8px;
-            padding: 20px;
-            color: white;
-            font-family: 'Courier New', monospace;
-            margin-bottom: 20px;
-        }
-
-        .code-line {
-            margin-bottom: 5px;
-        }
-
-        .chess-board {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            width: 100%;
-            aspect-ratio: 1;
-            border: 2px solid #333;
-        }
-
-        .chess-square {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .chess-square.white {
-            background-color: #f0d9b5;
-        }
-
-        .chess-square.black {
-            background-color: #b58863;
-        }
-
         /* Progress Section */
         .progress-section {
-            padding: 80px 0;
+            padding: 20px;
             background: white;
+            margin-bottom: 10px;
         }
 
         .progress-container {
             display: flex;
-            gap: 40px;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
         }
 
         .progress-card {
-            flex: 1;
+            min-width: 200px;
             background: var(--light);
             border-radius: 15px;
-            padding: 30px;
+            padding: 20px;
             text-align: center;
         }
 
         .progress-card h3 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
         }
 
         .progress-bar {
-            height: 20px;
+            height: 15px;
             background: #e9ecef;
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             overflow: hidden;
         }
 
@@ -335,7 +133,7 @@
         .stats {
             display: flex;
             justify-content: space-around;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .stat {
@@ -343,257 +141,848 @@
         }
 
         .stat-value {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary);
         }
 
         .stat-label {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #666;
         }
 
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 60px 0 30px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-column h3 {
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 10px;
-        }
-
-        .footer-column a {
-            color: #adb5bd;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-column a:hover {
-            color: white;
-        }
-
-        .social-links {
+        /* Tabs Section */
+        .tabs {
             display: flex;
-            gap: 15px;
-            margin-top: 20px;
+            background: white;
+            padding: 0 20px;
+            border-bottom: 1px solid #eee;
         }
 
-        .social-links a {
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        /* Lessons Section */
+        .lessons-section {
+            padding: 20px;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title h2 {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+
+        .filter-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .lessons-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .lesson-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.3s;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .lesson-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .lesson-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .lesson-status {
+            color: var(--success);
+            font-size: 1.2rem;
+        }
+
+        .locked .lesson-icon {
+            background: #ccc;
+        }
+
+        .locked .lesson-status {
+            color: #ccc;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: var(--primary);
+        }
+
+        .code-editor {
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 15px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .code-line {
+            margin-bottom: 5px;
+            white-space: nowrap;
+        }
+
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            width: 100%;
+            aspect-ratio: 1;
+            border: 2px solid #333;
+            margin-bottom: 20px;
+        }
+
+        .chess-square {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .chess-square.white {
+            background-color: #f0d9b5;
+        }
+
+        .chess-square.black {
+            background-color: #b58863;
+        }
+
+        .task-question {
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .task-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .task-option {
+            padding: 12px 15px;
+            background: var(--light);
+            border-radius: 10px;
+            cursor: pointer;
             transition: background 0.3s;
         }
 
-        .social-links a:hover {
-            background: var(--primary);
+        .task-option:hover {
+            background: #e9ecef;
         }
 
-        .copyright {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #adb5bd;
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .task-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .task-btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .task-btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
+        @media (min-width: 768px) {
+            .lessons-container {
+                grid-template-columns: repeat(2, 1fr);
             }
-
-            .nav-links {
-                gap: 15px;
-            }
-
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-
-            .learning-container, .progress-container {
-                flex-direction: column;
-            }
-
-            .paths {
-                flex-direction: column;
-                align-items: center;
+            
+            .progress-container {
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
     <!-- Header -->
-    <header>
-        <div class="container">
-            <nav class="navbar">
-                <div class="logo">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span>CodeDuo</span>
-                </div>
-                <div class="nav-links">
-                    <a href="#" class="active">Главная</a>
-                   </a>
-                    <a href="#">Курсы <a href="#">Курсы</a>
-                    <a href</a>
-                    <a href="#">Прогресс</="#">Прогресс</a>
-                    <a hrefa>
-                    <a href="#">Сообщество</a="#">Сообщество</a>
->
-                </div>
-                               </div>
-                <div class="user-actions <div class="user-actions">
-                    <button class="">
-                    <button class="btn btn-outline">Вbtn btn-outline">Войти</button>
-                   ойти</button>
-                    <button class="btn btn-primary <button class="btn btn-primary">Начать учиться</">Начать учиться</button>
-                </div>
-button>
-                </div>
-            </nav>
-        </            </nav>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>CodeDuo</span>
+            </div>
+            <div class="user-actions">
+                <button class="btn btn-outline">Войти</button>
+            </div>
         </div>
     </header>
 
-div>
-    </header>
-
-    <!-- Hero Section -->
-       <!-- Hero Section -->
-    <section class="hero">
- <section class="hero">
-        <div class="container        <div class="container">
-            <h1>И">
-            <h1>Изучай программирование изучай программирование и шахматы бесп шахматы бесплалатно!</h1тно!</h1>
->
-            <p            <p>>Освой двеОсвой две дис дисциплины, развивающие логициплины, развивающие логическое ическое и стратегическое мышление. Интерактивные уроки, стратегическое мышление. Интерактивные уроки, практи практические задания и геймические задания и геймификация как в Duolingoфикация как в Duolingo.</p>
-            <div.</p>
-            <div class="paths">
-                <div class="path-card" onclick=" class="paths">
-                <div class="path-card" onclick="startLearningstartLearning('programming')('programming')">
-                   ">
-                    <i class="fas fa-code"></i>
- <i class="fas fa-code"></i>
-                                       <h3>Программирование</h3>
-                    <p>Изучай Python, JavaScript, HTML <h3>Программирование</h3>
-                    <p>Изучай/CSS через интерак Python, JavaScript, HTML/CSSтивные упражнения</p>
- через интерактивные упражнения</p>
-                    <button class="btn btn-primary">Начать курс</button>
+    <!-- Progress Section -->
+    <section class="progress-section">
+        <div class="progress-container">
+            <div class="progress-card">
+                <h3>Программирование</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 65%"></div>
                 </div>
-                <div class="path-card" onclick="startLearning('chess')">
-                    <i class="fas fa-chess"></i>
-                    <h3>Шахматы</h3>
-                    <p>Освой тактику, стратегию и дебюты с нуля до продвинутого уровня</p>
-                    <button class="btn btn-primary">Начать курс</button>
+                <p>Пройдено 13 из 20 уроков</p>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">42</div>
+                        <div class="stat-label">Дней</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">87%</div>
+                        <div class="stat-label">Успех</div>
+                    </div>
+                </div>
+            </div>
+            <div class="progress-card">
+                <h3>Шахматы</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 40%"></div>
+                </div>
+                <p>Пройдено 8 из 20 уроков</p>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">28</div>
+                        <div class="stat-label">Дней</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">1250</div>
+                        <div class="stat-label">ELO</div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="container">
-            <div class="section-title">
-                <h2>Почему CodeDuo?</h2>
-                    <button class="btn btn-primary">Начать курс</button>
+    <!-- Tabs Section -->
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('programming')">Программирование</div>
+        <div class="tab" onclick="switchTab('chess')">Шахматы</div>
+    </div>
+
+    <!-- Programming Lessons -->
+    <section class="lessons-section" id="programming-lessons">
+        <div class="section-title">
+            <h2>Уроки программирования</h2>
+            <button class="filter-btn">
+                <i class="fas fa-sort-amount-down"></i>
+            </button>
+        </div>
+        <div class="lessons-container">
+            <div class="lesson-card" onclick="openLesson('python-basics')">
+                <div class="lesson-icon">
+                    <i class="fab fa-python"></i>
                 </div>
-                <div class="path-card" onclick="startLearning('chess')">
-                    <i class="fas fa-chess"></i>
-                    <h3>Шахматы</h3>
-                    <p>Освой тактику, стратегию и дебюты с нуля до продвинутого уровня</p>
-                    <button class="btn btn-primary">Начать курс</button>
+                <div class="lesson-info">
+                    <div class="lesson-title">Основы Python</div>
+                    <div class="lesson-desc">Переменные, типы данных, операции</div>
+                    <div class="lesson-meta">
+                        <span>15 минут</span>
+                        <span>★ Легкий</span>
+                    </div>
+                </div>
+                <div class="lesson-status">
+                    <i class="fas fa-lock-open"></i>
+                </div>
+            </div>
+            <div class="lesson-card" onclick="openLesson('python-functions')">
+                <div class="lesson-icon">
+                    <i class="fab fa-python"></i>
+                </div>
+                <div class="lesson-info">
+                    <div class="lesson-title">Функции в Python</div>
+                    <div class="lesson-desc">Создание и использование функций</div>
+                    <div class="lesson-meta">
+                        <span>20 минут</span>
+                        <span>★ Средний</span>
+                    </div>
+                </div>
+                <div class="lesson-status">
+                    <i class="fas fa-lock-open"></i>
+                </div>
+            </div>
+            <div class="lesson-card" onclick="openLesson('python-loops')">
+                <div class="lesson-icon">
+                    <i class="fab fa-python"></i>
+                </div>
+                <div class="lesson-info">
+                    <div class="lesson-title">Циклы в Python</div>
+                    <div class="lesson-desc">For, while и управление потоком</div>
+                    <div class="lesson-meta">
+                        <span>25 минут</span>
+                        <span>★ Средний</span>
+                    </div>
+                </div>
+                <div class="lesson-status">
+                    <i class="fas fa-lock-open"></i>
+                </div>
+            </div>
+            <div class="lesson-card locked">
+                <div class="lesson-icon">
+                    <i class="fab fa-python"></i>
+                </div>
+                <div class="lesson-info">
+                    <div class="lesson-title">Структуры данных</div>
+                    <div class="lesson-desc">Списки, словари, кортежи</div>
+                    <div class="lesson-meta">
+                        <span>30 минут</span>
+                        <span>★ Сложный</span>
+                    </div>
+                </div>
+                <div class="lesson-status">
+                    <i class="fas fa-lock"></i>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="container">
-            <div class="section-title">
-                <h2>Почему CodeDuo                <p>Наша?</h2>
-                <p>Наша плат платформа объединяетформа объединяет лучшие практики обучения программирова лучшие практики обучения програмнию и шахмамированию и шахматам</там</pp>
+    <!-- Chess Lessons -->
+    <section class="lessons-section" id="chess-lessons" style="display: none;">
+        <div class="section-title">
+            <h2>Уроки шахмат</h2>
+            <button class="filter-btn">
+                <i class="fas fa-sort-amount-down"></i>
+            </button>
+        </div>
+        <div class="lessons-container">
+            <div class="lesson-card" onclick="openLesson('chess-basics')">
+                <div class="lesson-icon">
+                    <i class="fas fa-chess-pawn"></i>
+                </div>
+                <div class="lesson-info">
+                    <div class="lesson-title">Основы шахмат</div>
+                    <div class="lesson-desc">Правила, ходы фигур, шах и мат</div>
+                    <div class="lesson-meta">
+                        <span>15 минут</span>
+                        <span>★ Легкий</span>
+                    </div>
+                </div>
+                <div class="lesson-status">
+                    <i class="fas fa-lock-open"></i>
+                </div>
             </div>
-           >
+            <div class="lesson-card" onclick="openLesson('chess-tactics')">
+                <div class="lesson-icon">
+                    <i class="fas fa-chess-knight"></i>
+                </div>
+                <div class="lesson-info">
+                    <div class="lesson-title">Тактика для начинающих</div>
+                    <div class="lesson-desc">Двойной удар, вилка, связка</div>
+                    <div class="lesson-meta">
+                        <span>20 минут</span>
+                        <span>★ Средний</span>
+                    </div>
+                </div>
+                <div class="lesson-status">
+                    <i class="fas fa-lock-open"></i>
+                </div>
             </div>
-            <div class="features-grid">
-                <div class=" <div class="features-grid">
-                <div class="feature-card">
-                    <i classfeature-card">
-                    <i="fas fa-gamepad"></i>
-                    <h3>Геймификация</h3>
-                    <p>Очки опыта, уровни, ежедневные задания class="fas fa-gamepad"></i>
-                    <h3>Геймификация</h3>
-                    <p>Очки опыта и награды за прогре, уровни, ежедневные задания и награды за прогресс</p>
-                </сс</p>
+            <div class="lesson-card" onclick="openLesson('chess-middlegame')">
+                <div class="lesson-icon">
+                    <i class="fas fa-chess-queen"></i>
                 </div>
-                <div classdiv>
-                <div class="feature-card">
-                   ="feature-card">
-                    <i class="fas fa-b <i class="fas fa-bolt"></i>
-                    <h3>Мгновolt"></i>
-                    <h3>Мгновенная обраенная обратная связь</hтная связь</h33>
-                    <p>П>
-                    <p>Проверка кода ироверка кода и шахматных х шахматных ходов в реальномодов в реальном времени</ времени</p>
+                <div class="lesson-info">
+                    <div class="lesson-title">Стратегия в миттельшпиле</div>
+                    <div class="lesson-desc">Планирование, контроль центра</div>
+                    <div class="lesson-meta">
+                        <span>25 минут</span>
+                        <span>★ Средний</span>
+                    </div>
                 </div>
-                <div class="feature-card">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>Отслеживание прогресса</h3>
-                    <p>Детальная статистика и рекомендации для улучшения</pp>
+                <div class="lesson-status">
+                    <i class="fas fa-lock-open"></i>
                 </div>
-                <div class="feature-card">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>Отслеживание прогресса</h3>
-                    <p>Детальная статистика и рекомендации для улучшения</>
+            </div>
+            <div class="lesson-card locked">
+                <div class="lesson-icon">
+                    <i class="fas fa-chess-board"></i>
                 </div>
-               p>
+                <div class="lesson-info">
+                    <div class="lesson-title">Эндшпиль</div>
+                    <div class="lesson-desc">Основы игры при малом количестве фигур</div>
+                    <div class="lesson-meta">
+                        <span>30 минут</span>
+                        <span>★ Сложный</span>
+                    </div>
                 </div>
-                <div class=" <div class="feature-card">
-                    <i class="fas fa-users"></i>
-                    <h3>Сообщество</h3>
-                    <p>Общайся с другими учениками, участвуй в турнирах</p>
+                <div class="lesson-status">
+                    <i class="fas fa-lock"></i>
                 </div>
-                <div class="feature-card">
-                    <i class="fas fafeature-card">
-                    <i class="fas fa-users"></i>
-                    <h3>Сообщество</h3>
-                    <p>Общайся с другими учениками, участвуй в турнирах</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Уроки</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-trophy"></i>
+            <span>Достижения</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>Прогресс</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Профиль</span>
+        </a>
+    </nav>
+
+    <!-- Lesson Modal -->
+    <div id="lesson-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <h2 id="lesson-title">Основы Python</h2>
+            </div>
+            <div id="lesson-content">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Switch between programming and chess tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab:nth-child(${tab === 'programming' ? 1 : 2})`).classList.add('active');
+            
+            if (tab === 'programming') {
+                document.getElementById('programming-lessons').style.display = 'block';
+                document.getElementById('chess-lessons').style.display = 'none';
+            } else {
+                document.getElementById('programming-lessons').style.display = 'none';
+                document.getElementById('chess-lessons').style.display = 'block';
+            }
+        }
+
+        // Open lesson modal
+        function openLesson(lessonId) {
+            const modal = document.getElementById('lesson-modal');
+            const lessonTitle = document.getElementById('lesson-title');
+            const lessonContent = document.getElementById('lesson-content');
+            
+            // Set lesson title
+            if (lessonId === 'python-basics') {
+                lessonTitle.textContent = 'Основы Python';
+                lessonContent.innerHTML = getPythonBasicsContent();
+            } else if (lessonId === 'python-functions') {
+                lessonTitle.textContent = 'Функции в Python';
+                lessonContent.innerHTML = getPythonFunctionsContent();
+            } else if (lessonId === 'python-loops') {
+                lessonTitle.textContent = 'Циклы в Python';
+                lessonContent.innerHTML = getPythonLoopsContent();
+            } else if (lessonId === 'chess-basics') {
+                lessonTitle.textContent = 'Основы шахмат';
+                lessonContent.innerHTML = getChessBasicsContent();
+            } else if (lessonId === 'chess-tactics') {
+                lessonTitle.textContent = 'Тактика для начинающих';
+                lessonContent.innerHTML = getChessTacticsContent();
+            } else if (lessonId === 'chess-middlegame') {
+                lessonTitle.textContent = 'Стратегия в миттельшпиле';
+                lessonContent.innerHTML = getChessMiddlegameContent();
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('lesson-modal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('lesson-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Lesson content functions
+        function getPythonBasicsContent() {
+            return `
+                <p>В этом уроке мы изучим основы программирования на Python.</p>
+                
+                <div class="code-editor">
+                    <div class="code-line"><span style="color: #569cd6">print</span>(<span style="color: #ce9178">"Привет, мир!"</span>)</div>
+                    <div class="code-line"><span style="color: #569cd6">name</span> = <span style="color: #ce9178">"Анна"</span></div>
+                    <div class="code-line"><span style="color: #569cd6">age</span> = <span style="color: #b5cea8">25</span></div>
+                    <div class="code-line"><span style="color: #569cd6">print</span>(<span style="color: #ce9178">f"Меня зовут {name}, мне {age} лет"</span>)</div>
                 </div>
-                <div class="feature-card">
-                    <i class="fas fa-mobile-alt"></i>
-                    <h3>Д-mobile-alt"></i>
-                    <h3>Доступно вездеоступно везде</h3>
-                    <p>Занима</h3>
-                    <p>Занимайся на компьютере, планшете или телефоне</p>
+                
+                <div class="task-question">Что выведет этот код?</div>
+                <div class="task-options">
+                    <div class="task-option" onclick="checkAnswer(this, true)">Привет, мир! Меня зовут Анна, мне 25 лет</div>
+                    <div class="task-option" onclick="checkAnswer(this, false)">Меня зовут Анна</div>
+                    <div class="task-option" onclick="checkAnswer(this, false)">Привет, мир! Анна 25</div>
                 </div>
-                <div class="feature-card">
-                    <i class="fas fa-award"></i>
-                    <h3>Полностью бесплатно</h3>
-                    <p>Все курйся на компьютере, планшете или телефоне</p>
+                
+                <div class="task-actions">
+                    <button class="task-btn task-btn-outline" onclick="closeModal()">Назад</button>
+                    <button class="task-btn task-btn-primary" onclick="completeLesson()">Завершить урок</button>
                 </div>
-                <div class="feature-card">
-                    <i class="fas fa-award"></i>
-                    <h3>Полностью бесплатно</h3>
-                    <p>Все кур
+            `;
+        }
+
+        function getPythonFunctionsContent() {
+            return `
+                <p>Функции позволяют нам организовывать код в переиспользуемые блоки.</p>
+                
+                <div class="code-editor">
+                    <div class="code-line"><span style="color: #569cd6">def</span> <span style="color: #dcdcaa">greet</span>(name):</div>
+                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #569cd6">return</span> <span style="color: #ce9178">f"Привет, {name}!"</span></div>
+                    <div class="code-line"></div>
+                    <div class="code-line"><span style="color: #569cd6">print</span>(greet(<span style="color: #ce9178">"Мария"</span>))</div>
+                </div>
+                
+                <div class="task-question">Какой будет результат выполнения этого кода?</div>
+                <div class="task-options">
+                    <div class="task-option" onclick="checkAnswer(this, false)">Ошибка</div>
+                    <div class="task-option" onclick="checkAnswer(this, true)">Привет, Мария!</div>
+                    <div class="task-option" onclick="checkAnswer(this, false)">Привет, name!</div>
+                </div>
+                
+                <div class="task-actions">
+                    <button class="task-btn task-btn-outline" onclick="closeModal()">Назад</button>
+                    <button class="task-btn task-btn-primary" onclick="completeLesson()">Завершить урок</button>
+                </div>
+            `;
+        }
+
+        function getChessBasicsContent() {
+            return `
+                <p>В этом уроке мы изучим основы шахмат: как ходят фигуры и основные правила.</p>
+                
+                <div class="chess-board" id="chess-board-basics">
+                    <!-- Chess board will be generated by JavaScript -->
+                </div>
+                
+                <div class="task-question">Какая фигура изображена на доске?</div>
+                <div class="task-options">
+                    <div class="task-option" onclick="checkAnswer(this, false)">Ферзь</div>
+                    <div class="task-option" onclick="checkAnswer(this, true)">Король</div>
+                    <div class="task-option" onclick="checkAnswer(this, false)">Ладья</div>
+                </div>
+                
+                <div class="task-actions">
+                    <button class="task-btn task-btn-outline" onclick="closeModal()">Назад</button>
+                    <button class="task-btn task-btn-primary" onclick="completeLesson()">Завершить урок</button>
+                </div>
+            `;
+        }
+
+        function getChessTacticsContent() {
+            return `
+                <p>В этом уроке мы изучим базовые тактические приемы в шахматах.</p>
+                
+                <div class="chess-board" id="chess-board-tactics">
+                    <!-- Chess board will be generated by JavaScript -->
+                </div>
+                
+                <div class="task-question">Какой ход приведет к мату в 1 ход?</div>
+                <div class="task-options">
+                    <div class="task-option" onclick="checkAnswer(this, false)">Ферзь на e5</div>
+                    <div class="task-option" onclick="checkAnswer(this, true)">Ферзь на h7</div>
+                    <div class="task-option" onclick="checkAnswer(this, false)">Ладья на f8</div>
+                </div>
+                
+                <div class="task-actions">
+                    <button class="task-btn task-btn-outline" onclick="closeModal()">Назад</button>
+                    <button class="task-btn task-btn-primary" onclick="completeLesson()">Завершить урок</button>
+                </div>
+            `;
+        }
+
+        // Simplified versions for other lessons
+        function getPythonLoopsContent() {
+            return getGenericLessonContent("Циклы в Python", "python");
+        }
+
+        function getChessMiddlegameContent() {
+            return getGenericLessonContent("Стратегия в миттельшпиле", "chess");
+        }
+
+        function getGenericLessonContent(title, type) {
+            return `
+                <p>Это урок по теме "${title}".</p>
+                ${type === 'python' ? 
+                    `<div class="code-editor">
+                        <div class="code-line"><span style="color: #569cd6">for</span> i <span style="color: #569cd6">in</span> <span style="color: #569cd6">range</span>(5):</div>
+                        <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #569cd6">print</span>(i)</div>
+                    </div>` : 
+                    `<div class="chess-board" id="chess-board-generic"></div>`
+                }
+                
+                <div class="task-question">Вопрос по теме урока:</div>
+                <div class="task-options">
+                    <div class="task-option" onclick="checkAnswer(this, true)">Правильный ответ</div>
+                    <div class="task-option" onclick="checkAnswer(this, false)">Неправильный ответ</div>
+                    <div class="task-option" onclick="checkAnswer(this, false)">Еще один неправильный</div>
+                </div>
+                
+                <div class="task-actions">
+                    <button class="task-btn task-btn-outline" onclick="closeModal()">Назад</button>
+                    <button class="task-btn task-btn-primary" onclick="completeLesson()">Завершить урок</button>
+                </div>
+            `;
+        }
+
+        // Check answer function
+        function checkAnswer(element, isCorrect) {
+            document.querySelectorAll('.task-option').forEach(opt => {
+                opt.style.background = '';
+            });
+            
+            if (isCorrect) {
+                element.style.background = 'var(--success)';
+                element.style.color = 'white';
+            } else {
+                element.style.background = 'var(--danger)';
+                element.style.color = 'white';
+            }
+        }
+
+        // Complete lesson function
+        function completeLesson() {
+            alert('Урок завершен! +10 очков опыта');
+            closeModal();
+        }
+
+        // Initialize chess boards when modal opens
+        document.getElementById('lesson-modal').addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                initChessBoards();
+            }
+        });
+
+        function initChessBoards() {
+            // Initialize basics chess board
+            const basicsBoard = document.getElementById('chess-board-basics');
+            if (basicsBoard) {
+                basicsBoard.innerHTML = '';
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const square = document.createElement('div');
+                        square.className = `chess-square ${(row + col) % 2 === 0 ? 'white' : 'black'}`;
+                        
+                        if (row === 4 && col === 4) {
+                            square.innerHTML = '♔'; // King
+                        }
+                        
+                        basicsBoard.appendChild(square);
+                    }
+                }
+            }
+            
+            // Initialize tactics chess board
+            const tacticsBoard = document.getElementById('chess-board-tactics');
+            if (tacticsBoard) {
+                tacticsBoard.innerHTML = '';
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const square = document.createElement('div');
+                        square.className = `chess-square ${(row + col) % 2 === 0 ? 'white' : 'black'}`;
+                        
+                        if (row === 0 && col === 4) {
+                            square.innerHTML = '♚'; // {
+                            square.innerHTML = '♚'; // Black king
+                        } else if (row === Black king
+                        } else if (row === 1 1 && col === 7) {
+                            square.innerHTML = '♕'; && col === 7) {
+                            square.innerHTML = '♕'; // White queen
+                        } else if // White queen
+                        } else if (row ===  (row === 2 && col === 5) {
+                            square.innerHTML = '♖';2 && col === 5 // White rook
+                        }
+                        
+                        tacticsBoard.appendChild(square);
+) {
+                            square.innerHTML = '♖'; // White rook
+                        }
+                        
+                        tacticsBoard.appendChild(square);
+                    }
+                }
+            }
+            
+            // Initialize generic chess board
+            const genericBoard = document.getElementById('                    }
+                }
+            }
+            
+            // Initialize generic chess board
+            const genericBoard = document.getElementById('chess-board-generic');
+            if (genericBoard) {
+chess-board-generic');
+            if (genericBoard) {
+                genericBoard.innerHTML = '';
+                for (let row =                 genericBoard.innerHTML = '';
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const square = document.createElement('div');
+                        square.className = `chess-square ${(row + col) % 2 === 0 ? 'white' : 'black'}`;
+                        genericBoard.appendChild(square);
+0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const square = document.createElement('div');
+                        square.className = `chess-square ${(row + col) % 2 === 0 ? 'white' : 'black'}`;
+                        genericBoard                    }
+                }
+            }
+       .appendChild(square);
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
