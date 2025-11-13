@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="assets/cube.svg" />
+    <!-- Добавлен скрипт reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -98,6 +100,21 @@
         @keyframes blink-caret {
             from, to { border-color: transparent }
             50% { border-color: #8a2be2 }
+        }
+        
+        /* Стили для reCAPTCHA */
+        .g-recaptcha {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        /* Адаптивность для reCAPTCHA */
+        @media (max-width: 480px) {
+            .g-recaptcha {
+                transform: scale(0.85);
+                transform-origin: 0 0;
+            }
         }
     </style>
 </head>
@@ -637,6 +654,11 @@
                                        transition duration-300"></textarea>
                         </div>
 
+                        <!-- Добавлена reCAPTCHA -->
+                        <div class="mb-6">
+                            <div class="g-recaptcha" data-sitekey="6LdsPgssAAAAAMk4QKZ7hAE4ov79I32LMi4vNw5C"></div>
+                        </div>
+
                         <div class="mt-8">
                             <button type="submit"
                                 class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 
@@ -802,6 +824,16 @@
             setTimeout(() => {
                 document.body.style.opacity = '1';
             }, 100);
+        });
+
+        // Валидация формы с reCAPTCHA
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const recaptchaResponse = grecaptcha.getResponse();
+            if (!recaptchaResponse) {
+                e.preventDefault();
+                alert('Пожалуйста, подтвердите, что вы не робот');
+                return false;
+            }
         });
     </script>
 </body>
