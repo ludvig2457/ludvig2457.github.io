@@ -119,29 +119,6 @@
     </style>
 </head>
 <body class="font-sans bg-white dark:bg-gray-900 transition-colors duration-300">
-    <!-- Cloudflare Setup Section -->
-    <section id="cloudflare" class="py-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div class="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
-            <h2 class="text-4xl font-bold mb-6 text-center">Activate Cloudflare</h2>
-            <p class="mb-6 text-lg text-center">
-                Follow these steps to speed up and protect your web traffic with Cloudflare.
-            </p>
-            <ol class="list-decimal list-inside space-y-4 text-lg">
-                <li>Log in to your DNS provider (usually your domain registrar).</li>
-                <li>Disable DNSSEC if it's enabled.</li>
-                <li>Replace current nameservers with Cloudflare nameservers:</li>
-            </ol>
-            <div class="bg-white/20 dark:bg-gray-800 p-6 rounded-xl shadow-lg text-gray-900 dark:text-white mb-6">
-                <p><strong>martin.ns.cloudflare.com</strong></p>
-                <p><strong>robin.ns.cloudflare.com</strong></p>
-                <p class="mt-2 text-sm text-gray-100 dark:text-gray-400">Remove any other nameservers and save changes.</p>
-            </div>
-            <p class="text-lg">
-                Changes may take up to 24 hours to propagate. Once active, Cloudflare will handle SSL/TLS, DDoS protection, caching, and other optimizations automatically.
-            </p>
-        </div>
-    </section>
-
     <!-- Theme Toggle -->
     <div class="fixed top-4 right-4 z-50">
         <button id="themeToggle" class="theme-toggle bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl">
