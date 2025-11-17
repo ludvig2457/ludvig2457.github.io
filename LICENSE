@@ -1,0 +1,120 @@
+GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ Copyright (C) 2025  Ludvig2457
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+                            Preamble
+
+ The GNU General Public License is a free, copyleft license for
+software and other kinds of works.
+
+ This license applies to the website https://ludvig2457.github.io/
+and all its source code, design, and content.
+
+                        TERMS AND CONDITIONS
+
+0. Definitions.
+
+"This License" refers to version 3 of the GNU General Public License.
+
+"Copyright" also means copyright-like laws that apply to other kinds
+of works, such as website designs and user interfaces.
+
+"The Program" refers to any copyrightable work licensed under this
+License, including but not limited to:
+- HTML, CSS, JavaScript code of the website
+- Design elements, graphics, and user interface
+- Documentation and content
+- SuperLauncherMC and LudvigOS software
+
+1. Source Code.
+The "source code" for the website means the preferred form of the work
+for making modifications to it, including:
+- All HTML files
+- CSS stylesheets  
+- JavaScript code
+- Image assets and design files
+- Documentation
+
+2. Basic Permissions.
+All rights granted under this License are granted for the term of
+copyright on the Program, and are irrevocable provided the stated
+conditions are met. You may:
+- Use the website code commercially or non-commercially
+- Modify and create derivative works
+- Distribute original or modified versions
+- Sublicense the work
+
+3. Protecting Users' Legal Rights From Anti-Circumvention Law.
+No covered work shall be deemed part of an effective technological
+measure under any applicable law fulfilling obligations under article
+11 of the WIPO copyright treaty adopted on 20 December 1996.
+
+4. Conveying Verbatim Copies.
+You may convey verbatim copies of the Program's source code as you
+receive it, in any medium, provided that you:
+- Give all recipients a copy of this License
+- Keep intact all notices stating that this License applies
+
+5. Conveying Modified Source Versions.
+You may convey a work based on the Program, or the modifications to
+produce it from the Program, in the form of source code under the
+terms of section 4, provided that you also meet all of these conditions:
+- The work must carry prominent notices stating that you modified it
+- You must license the entire work, as a whole, under this License
+- Modified versions must be marked as different from the original version
+
+6. Additional Terms.
+You may add your own copyright statement to your modifications and
+may provide additional or different license terms and conditions
+for use, reproduction, or distribution of your modifications, or
+for any such Derivative Works as a whole.
+
+7. Termination.
+Your rights under this License will terminate automatically if you
+fail to comply with any of its terms.
+
+8. Disclaimer of Warranty.
+THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
+APPLICABLE LAW. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE
+OF THE PROGRAM IS WITH YOU.
+
+9. Limitation of Liability.
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW WILL ANY COPYRIGHT HOLDER,
+OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED
+ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL,
+INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY
+TO USE THE PROGRAM.
+
+10. Interpretation of Sections 8 and 9.
+If the disclaimer of warranty and limitation of liability provided
+above cannot be given local legal effect according to their terms,
+reviewing courts shall apply local law that most closely approximates
+an absolute waiver of all civil liability in connection with the Program.
+
+How to Apply These Terms to Your New Websites
+
+If you develop a new website, and you want it to be free software for
+the community, the best way to achieve this is to make it free software
+which everyone can redistribute and change under these terms.
+
+To do so, attach the following notices to the website:
+
+    This website is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This website is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+Also add information on how to contact you by electronic and paper mail.
+
+END OF TERMS AND CONDITIONS
