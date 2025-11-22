@@ -24,11 +24,18 @@ jobs:
           echo "Starting to archive all commits..."
           git log --pretty=format:%H | while read commit_hash; do
             git checkout $commit_hash
-            echo "Archiving commit $commit_hash..."
-            # Отправляем сайт в Wayback Machine и сохраняем HTTP-код
+            echo "Processing commit $commit_hash..."
+            
+            # Отправляем сайт в Wayback Machine
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://web.archive.org/save/https://ludvig2457.github.io/" || true)
-            echo "Commit $commit_hash archived. HTTP status: $STATUS"
-            # Делаем небольшую паузу, чтобы не перегружать сервер
-            sleep 5
+
+            if [ "$STATUS" -eq 200 ]; then
+              echo "✅ Commit $commit_hash successfully archived."
+            else
+              echo "⚠️ Commit $commit_hash not archived. HTTP status: $STATUS"
+            fi
+
+            # Делаем паузу 60 секунд между запросами
+            sleep 60
           done
           echo "All commits processed!"
