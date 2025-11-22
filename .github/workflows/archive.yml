@@ -25,6 +25,10 @@ jobs:
           git log --pretty=format:%H | while read commit_hash; do
             git checkout $commit_hash
             echo "Archiving commit $commit_hash..."
-            curl -s "https://web.archive.org/save/https://ludvig2457.github.io/"
+            # Отправляем сайт в Wayback Machine и сохраняем HTTP-код
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://web.archive.org/save/https://ludvig2457.github.io/" || true)
+            echo "Commit $commit_hash archived. HTTP status: $STATUS"
+            # Делаем небольшую паузу, чтобы не перегружать сервер
+            sleep 5
           done
           echo "All commits processed!"
