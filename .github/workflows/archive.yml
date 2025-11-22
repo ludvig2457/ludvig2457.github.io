@@ -1,6 +1,8 @@
-name: Archive Website
+name: Archive All Site Versions
 
+# Запускаем вручную или при пуше в main
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -8,8 +10,21 @@ on:
 jobs:
   archive:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Archive site to Internet Archive
+      # Клонируем репозиторий с полной историей
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Важно: чтобы получить всю историю коммитов
+
+      # Архивируем каждый коммит на Internet Archive
+      - name: Archive all commits
         run: |
-          echo "Saving site to Internet Archive..."
-          curl -I "https://web.archive.org/save/https://ludvig2457.github.io/"
+          echo "Starting to archive all commits..."
+          git log --pretty=format:%H | while read commit_hash; do
+            git checkout $commit_hash
+            echo "Archiving commit $commit_hash..."
+            curl -s "https://web.archive.org/save/https://ludvig2457.github.io/"
+          done
+          echo "All commits processed!"
