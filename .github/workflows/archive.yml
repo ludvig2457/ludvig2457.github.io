@@ -1,0 +1,15 @@
+name: Archive Website
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Archive site to Internet Archive
+        run: |
+          echo "Saving site to Internet Archive..."
+          curl -I "https://web.archive.org/save/https://ludvig2457.github.io/"
