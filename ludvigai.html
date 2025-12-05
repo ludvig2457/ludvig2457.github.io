@@ -1,950 +1,803 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LudvigAI - Ваш русский AI-ассистент</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        /* Анимация градиентного фона */
-        .gradient-bg {
-            background: linear-gradient(-45deg, #667eea, #764ba2, #8a2be2, #6b46c1);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-        }
-        /* Анимация градиентного текста */
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea, #8a2be2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% 200%;
-            animation: gradient 8s ease infinite;
-        }
-        @keyframes gradient {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        /* Плавный переход для боковой панели */
-        .sidebar-transition {
-            transition: all 0.3s ease;
-        }
-        
-        /* Анимация появления сообщения */
-        .message-enter {
-            animation: messageEnter 0.3s ease;
-        }
-        @keyframes messageEnter {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Анимация набора текста (точки) */
-        .typing-dots {
-            display: inline-block;
-        }
-        .typing-dots span {
-            animation: typing 1.4s infinite;
-        }
-        .typing-dots span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        .typing-dots span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-10px); }
-        }
-        
-        /* Стили для вкладок */
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: flex; /* Используем flex для внутренних элементов */
-        }
-        
-        /* Стили для модальных окон */
-        .auth-modal, .settings-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .auth-modal.active, .settings-modal.active {
-            display: flex;
-        }
-        
-        /* Стили для результатов поиска */
-        .search-results {
-            max-height: 300px;
-            overflow-y: auto;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LudvigAI - Ваш русский AI-ассистент</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-        /* Скрытая боковая панель для мобильных устройств */
-        #sidebar.hidden-mobile {
-            transform: translateX(-100%);
-            position: absolute; /* Для мобильных устройств */
-            height: 100%;
-            z-index: 50;
-        }
-        @media (min-width: 1024px) { /* lg breakpoint */
-            #sidebar.hidden-mobile {
-                transform: translateX(0);
-                position: static;
-                z-index: auto;
-            }
-        }
-        
-    </style>
+<style>
+  /* Анимация градиентного фона */
+  .gradient-bg {
+    background: linear-gradient(-45deg, #667eea, #764ba2, #8a2be2, #6b46c1);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+  }
+  /* Анимация градиентного текста */
+  .gradient-text {
+    background: linear-gradient(135deg, #667eea, #8a2be2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradient 8s ease infinite;
+  }
+  @keyframes gradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* Плавный переход для боковой панели */
+  .sidebar-transition {
+    transition: all 0.3s ease;
+  }
+  /* Анимация появления сообщения */
+  .message-enter {
+    animation: messageEnter 0.3s ease;
+  }
+  @keyframes messageEnter {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  /* Анимация точек набора текста */
+  .typing-dots span {
+    display: inline-block;
+    animation: typing 1.4s infinite;
+  }
+  .typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  @keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-10px); }
+  }
+  /* Стили для вкладок */
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: flex;
+  }
+  /* Модальные окна */
+  .auth-modal, .settings-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .auth-modal.active, .settings-modal.active {
+    display: flex;
+  }
+  /* Скролл для поиска */
+  .search-results {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  /* Мобильная скрытая боковая панель */
+  #sidebar.hidden-mobile {
+    transform: translateX(-100%);
+    position: absolute;
+    height: 100%;
+    z-index: 50;
+  }
+  @media (min-width: 1024px) {
+    #sidebar.hidden-mobile {
+      transform: translateX(0);
+      position: static;
+      z-index: auto;
+    }
+  }
+</style>
 </head>
 <body class="font-sans bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-    <div class="fixed top-4 right-4 z-50">
-        <button id="themeToggle" class="bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
-            <i class="fas fa-moon text-gray-600 dark:text-yellow-400 text-lg"></i>
+
+<!-- Переключатель темы -->
+<div class="fixed top-4 right-4 z-50">
+  <button id="themeToggle" class="bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 transition-all duration-300">
+    <i class="fas fa-moon text-gray-600 dark:text-yellow-400 text-lg"></i>
+  </button>
+</div>
+
+<!-- Модаль логина/регистрации -->
+<div id="authModal" class="auth-modal">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Вход в LudvigAI</h2>
+      <button id="closeAuthModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+    <!-- Вкладки авторизации -->
+    <div id="authTabs" class="flex mb-6 border-b border-gray-200 dark:border-gray-700">
+      <button class="auth-tab py-2 px-4 font-medium text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400" data-tab="login">Вход</button>
+      <button class="auth-tab py-2 px-4 font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" data-tab="register">Регистрация</button>
+    </div>
+    <!-- Формы -->
+    <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event, 'login')">
+      <div class="mb-4">
+        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваш email" required>
+      </div>
+      <div class="mb-6">
+        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="loginPassword">Пароль</label>
+        <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваш пароль" required>
+      </div>
+      <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg mb-4">Войти</button>
+      <button type="button" id="guestLogin" class="w-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg">Войти как гость</button>
+    </form>
+    <form id="registerForm" class="auth-form" onsubmit="handleLogin(event, 'register')">
+      <div class="mb-4">
+        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="registerName">Имя</label>
+        <input type="text" id="registerName" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваше имя" required>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="registerEmail">Email</label>
+        <input type="email" id="registerEmail" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваш email" required>
+      </div>
+      <div class="mb-6">
+        <label class="block text-gray-700 dark:text-gray-300 mb-2" for="registerPassword">Пароль</label>
+        <input type="password" id="registerPassword" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Придумайте пароль" required>
+      </div>
+      <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg">Зарегистрироваться</button>
+    </form>
+  </div>
+</div>
+
+<!-- Модаль настроек -->
+<div id="settingsModal" class="settings-modal">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Настройки</h2>
+      <button id="closeSettingsModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+    <div class="space-y-6">
+      <!-- Тема -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Тема</h3>
+        <div class="flex space-x-4">
+          <button class="theme-option flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-theme="light">
+            <i class="fas fa-sun text-yellow-500 mb-2"></i>
+            <p class="font-medium text-gray-900 dark:text-white">Светлая</p>
+          </button>
+          <button class="theme-option flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-theme="dark">
+            <i class="fas fa-moon text-indigo-500 mb-2"></i>
+            <p class="font-medium text-gray-900 dark:text-white">Темная</p>
+          </button>
+          <button class="theme-option flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-theme="auto">
+            <i class="fas fa-desktop text-blue-500 mb-2"></i>
+            <p class="font-medium text-gray-900 dark:text-white">Авто</p>
+          </button>
+        </div>
+      </div>
+      <!-- Язык -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Язык</h3>
+        <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+          <option>Русский</option>
+          <option>English</option>
+          <option>Español</option>
+        </select>
+      </div>
+      <!-- Уведомления -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Уведомления</h3>
+        <div class="flex items-center justify-between">
+          <span class="text-gray-700 dark:text-gray-300">Push-уведомления</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer" checked />
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:bg-purple-600"></div>
+          </label>
+        </div>
+      </div>
+      <!-- Выйти -->
+      <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+        <button id="logoutBtn" class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg">
+          Выйти
         </button>
+      </div>
     </div>
+  </div>
+</div>
 
-    <div id="authModal" class="auth-modal">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Вход в LudvigAI</h2>
-                <button id="closeAuthModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <div id="authTabs" class="flex mb-6 border-b border-gray-200 dark:border-gray-700">
-                <button class="auth-tab py-2 px-4 font-medium text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400" data-tab="login">Вход</button>
-                <button class="auth-tab py-2 px-4 font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" data-tab="register">Регистрация</button>
-            </div>
-            
-            <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event, 'login')">
-                <div class="mb-4">
-                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваш email" required>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="loginPassword">Пароль</label>
-                    <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваш пароль" required>
-                </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg mb-4">
-                    Войти
-                </button>
-                <button type="button" id="guestLogin" class="w-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg">
-                    Войти как гость
-                </button>
-            </form>
-            
-            <form id="registerForm" class="auth-form" onsubmit="handleLogin(event, 'register')">
-                <div class="mb-4">
-                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="registerName">Имя</label>
-                    <input type="text" id="registerName" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваше имя" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="registerEmail">Email</label>
-                    <input type="email" id="registerEmail" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Ваш email" required>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-gray-700 dark:text-gray-300 mb-2" for="registerPassword">Пароль</label>
-                    <input type="password" id="registerPassword" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Придумайте пароль" required>
-                </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg">
-                    Зарегистрироваться
-                </button>
-            </form>
+<!-- Основной контейнер -->
+<div class="flex h-screen overflow-hidden">
+
+  <!-- Боковая панель -->
+  <div id="sidebar" class="sidebar-transition w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-shrink-0 flex-col h-full hidden-mobile lg:flex">
+    <!-- Заголовок -->
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+          <i class="fas fa-brain text-white text-lg"></i>
         </div>
+        <div>
+          <h1 class="text-xl font-bold text-gray-900 dark:text-white">LudvigAI</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Ваш русский ассистент</p>
+        </div>
+      </div>
     </div>
-
-    <div id="settingsModal" class="settings-modal">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Настройки</h2>
-                <button id="closeSettingsModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <div class="space-y-6">
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Тема</h3>
-                    <div class="flex space-x-4">
-                        <button class="theme-option flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-theme="light">
-                            <i class="fas fa-sun text-yellow-500 mb-2"></i>
-                            <p class="font-medium text-gray-900 dark:text-white">Светлая</p>
-                        </button>
-                        <button class="theme-option flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-theme="dark">
-                            <i class="fas fa-moon text-indigo-500 mb-2"></i>
-                            <p class="font-medium text-gray-900 dark:text-white">Темная</p>
-                        </button>
-                        <button class="theme-option flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" data-theme="auto">
-                            <i class="fas fa-desktop text-blue-500 mb-2"></i>
-                            <p class="font-medium text-gray-900 dark:text-white">Авто</p>
-                        </button>
-                    </div>
-                </div>
-                
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Язык</h3>
-                    <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <option>Русский</option>
-                        <option>English</option>
-                        <option>Español</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Уведомления</h3>
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-700 dark:text-gray-300">Push-уведомления</span>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" checked>
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <button id="logoutBtn" class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 shadow-lg">
-                        Выйти
-                    </button>
-                </div>
-            </div>
-        </div>
+    <!-- Вкладки -->
+    <div class="flex border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+      <button class="tab-btn active flex-1 py-3 text-center font-medium text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400 transition-colors duration-200" data-tab="chat">
+        <i class="fas fa-comment mr-2"></i>Чат
+      </button>
+      <button class="tab-btn flex-1 py-3 text-center font-medium text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200" data-tab="search">
+        <i class="fas fa-search mr-2"></i>Поиск
+      </button>
     </div>
-
-    <div class="flex h-screen overflow-hidden">
-        <div id="sidebar" class="sidebar-transition w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-shrink-0 flex-col h-full hidden-mobile lg:flex">
-            <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-brain text-white text-lg"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold text-gray-900 dark:text-white">LudvigAI</h1>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Ваш русский ассистент</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-                <button class="tab-btn active flex-1 py-3 text-center font-medium text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400 transition-colors duration-200" data-tab="chat">
-                    <i class="fas fa-comment mr-2"></i>Чат
-                </button>
-                <button class="tab-btn flex-1 py-3 text-center font-medium text-gray-500 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200" data-tab="search">
-                    <i class="fas fa-search mr-2"></i>Поиск
-                </button>
-            </div>
-
-            <div id="chatTab" class="tab-content active flex-1 flex flex-col overflow-y-auto">
-                <div class="p-4 flex-shrink-0">
-                    <button id="newChatBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
-                        <i class="fas fa-plus mr-2"></i>
-                        Новый чат
-                    </button>
-                </div>
-
-                <div id="chatHistory" class="flex-1 overflow-y-auto p-4 space-y-2">
-                    <div class="chat-history-item active-chat bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded-lg p-3 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors duration-200" data-chat-id="1">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3 overflow-hidden">
-                                <i class="fas fa-message text-purple-600 dark:text-purple-400 flex-shrink-0"></i>
-                                <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Привет! Как дела?</span>
-                            </div>
-                            <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">12:30</span>
-                        </div>
-                    </div>
-                    
-                    <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200" data-chat-id="2">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3 overflow-hidden">
-                                <i class="fas fa-message text-gray-600 dark:text-gray-400 flex-shrink-0"></i>
-                                <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Помоги с программированием</span>
-                            </div>
-                            <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">Вчера</span>
-                        </div>
-                    </div>
-
-                    <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200" data-chat-id="3">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3 overflow-hidden">
-                                <i class="fas fa-message text-gray-600 dark:text-gray-400 flex-shrink-0"></i>
-                                <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Расскажи о нейросетях</span>
-                            </div>
-                            <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">2 дня назад</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="searchTab" class="tab-content flex-1 flex flex-col overflow-y-auto">
-                <div class="p-4 flex-shrink-0">
-                    <div class="relative">
-                        <input type="text" id="searchInput" placeholder="Поиск в истории..." class="w-full border border-gray-300 dark:border-gray-600 rounded-lg py-3 px-4 pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300">
-                        <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    </div>
-                </div>
-
-                <div class="flex-1 overflow-y-auto p-4">
-                    <div class="search-results space-y-3">
-                        <p class="text-gray-500 dark:text-gray-400 text-center">Введите запрос для поиска в истории чатов.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="p-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
-                <button id="authTrigger" class="flex items-center space-x-3 w-full p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
-                    <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-white text-sm font-bold" id="userInitial">Г</span>
-                    </div>
-                    <div class="flex-1 text-left overflow-hidden">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate" id="userName">Гость</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate" id="userRole">Неавторизован</p>
-                    </div>
-                    <button id="settingsBtn" type="button" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 flex-shrink-0 p-1">
-                        <i class="fas fa-cog text-lg"></i>
-                    </button>
-                </button>
-            </div>
-        </div>
-
-        <button id="sidebarToggle" class="lg:hidden fixed top-4 left-4 z-50 bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700">
-            <i class="fas fa-bars text-gray-600 dark:text-gray-400"></i>
+    <!-- Контент -->
+    <div id="chatTab" class="tab-content active flex-1 flex flex-col overflow-y-auto">
+      <div class="p-4 flex-shrink-0">
+        <button id="newChatBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+          <i class="fas fa-plus mr-2"></i>Новый чат
         </button>
-
-        <div class="flex-1 flex flex-col h-full relative">
-            <div class="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 flex-shrink-0">
-                <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-brain text-white text-sm"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">LudvigAI</h2>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Готов помочь с любыми вопросами</p>
-                    </div>
-                </div>
+      </div>
+      <div id="chatHistory" class="flex-1 overflow-y-auto p-4 space-y-2">
+        <!-- Примеры истории -->
+        <div class="chat-history-item active-chat bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded-lg p-3 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors duration-200" data-chat-id="1">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 overflow-hidden">
+              <i class="fas fa-message text-purple-600 dark:text-purple-400 flex-shrink-0"></i>
+              <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Привет! Как дела?</span>
             </div>
-
-            <div id="messagesContainer" class="flex-1 overflow-y-auto p-6 space-y-6">
-                <div class="message-enter flex justify-start">
-                    <div class="flex space-x-3 max-w-4xl">
-                        <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-brain text-white text-sm"></i>
-                        </div>
-                        <div class="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg border border-gray-200 dark:border-gray-600">
-                            <p class="text-gray-900 dark:text-white text-lg leading-relaxed">
-                                Привет! Я LudvigAI - ваш русский AI-ассистент. 🤖<br><br>
-                                Я могу помочь вам с:
-                                • Ответами на вопросы<br>
-                                • Программированием<br>
-                                • Творческими задачами<br>
-                                • И многим другим!<br><br>
-                                Чем могу помочь?
-                            </p>
-                            <div class="flex flex-wrap gap-2 mt-4">
-                                <button class="suggestion-btn bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-purple-200 dark:border-purple-700">
-                                    Расскажи о себе
-                                </button>
-                                <button class="suggestion-btn bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-blue-200 dark:border-blue-700">
-                                    Помоги с кодом
-                                </button>
-                                <button class="suggestion-btn bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-green-200 dark:border-green-700">
-                                    Что нового?
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="typingIndicator" class="hidden px-6 py-4 flex-shrink-0">
-                <div class="flex space-x-3 max-w-4xl">
-                    <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-brain text-white text-sm"></i>
-                    </div>
-                    <div class="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg border border-gray-200 dark:border-gray-600">
-                        <div class="typing-dots text-purple-600 dark:text-purple-400">
-                            <span>●</span>
-                            <span>●</span>
-                            <span>●</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 flex-shrink-0">
-                <div class="max-w-4xl mx-auto">
-                    <div class="flex space-x-4">
-                        <div class="flex-1 relative">
-                            <textarea 
-                                id="messageInput" 
-                                placeholder="Напишите сообщение..." 
-                                rows="1"
-                                class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl py-4 px-6 pr-12 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 text-lg max-h-32"
-                                oninput="autoResize(this)"
-                                onkeypress="handleKeyPress(event)"
-                            ></textarea>
-                            <button id="sendButton" class="absolute right-3 bottom-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-3 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                                <i class="fas fa-paper-plane text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center mt-3 text-sm text-gray-500 dark:text-gray-400">
-                        <div class="flex space-x-4">
-                            <button class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200">
-                                <i class="fas fa-robot mr-1"></i> AI
-                            </button>
-                            <button class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200">
-                                <i class="fas fa-wand-magic-sparkles mr-1"></i> Креатив
-                            </button>
-                        </div>
-                        <div>
-                            <span>LudvigAI v1.0</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">12:30</span>
+          </div>
         </div>
+        <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200" data-chat-id="2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 overflow-hidden">
+              <i class="fas fa-message text-gray-600 dark:text-gray-400 flex-shrink-0"></i>
+              <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Помоги с программированием</span>
+            </div>
+            <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">Вчера</span>
+          </div>
+        </div>
+        <div class="chat-history-item bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200" data-chat-id="3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 overflow-hidden">
+              <i class="fas fa-message text-gray-600 dark:text-gray-400 flex-shrink-0"></i>
+              <span class="text-sm font-medium text-gray-900 dark:text-white truncate">Расскажи о нейросетях</span>
+            </div>
+            <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">2 дня назад</span>
+          </div>
+        </div>
+      </div>
     </div>
+    <!-- Вкладка поиска -->
+    <div id="searchTab" class="tab-content flex-1 flex flex-col overflow-y-auto">
+      <div class="p-4 flex-shrink-0">
+        <div class="relative">
+          <input type="text" id="searchInput" placeholder="Поиск в истории..." class="w-full border border-gray-300 dark:border-gray-600 rounded-lg py-3 px-4 pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500" />
+          <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+        </div>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4">
+        <div class="search-results space-y-3">
+          <p class="text-gray-500 dark:text-gray-400 text-center">Введите запрос для поиска в истории чатов.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Информация о пользователе -->
+    <div class="p-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+      <button id="authTrigger" class="flex items-center space-x-3 w-full p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+        <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+          <span class="text-white text-sm font-bold" id="userInitial">Г</span>
+        </div>
+        <div class="flex-1 text-left overflow-hidden">
+          <p class="text-sm font-medium text-gray-900 dark:text-white truncate" id="userName">Гость</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 truncate" id="userRole">Неавторизован</p>
+        </div>
+        <button id="settingsBtn" type="button" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 flex-shrink-0 p-1">
+          <i class="fas fa-cog text-lg"></i>
+        </button>
+      </button>
+    </div>
+  </div>
+
+  <!-- Кнопка открытия сайдбара на мобильных -->
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 left-4 z-50 bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg border border-gray-200 dark:border-gray-700">
+    <i class="fas fa-bars text-gray-600 dark:text-gray-400"></i>
+  </button>
+
+  <!-- Основной контент -->
+  <div class="flex-1 flex flex-col h-full relative">
+    <!-- Заголовок -->
+    <div class="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 flex-shrink-0">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-brain text-white text-sm"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">LudvigAI</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Готов помочь с любыми вопросами</p>
+        </div>
+      </div>
+    </div>
+    <!-- Контейнер сообщений -->
+    <div id="messagesContainer" class="flex-1 overflow-y-auto p-6 space-y-6">
+      <!-- Пример сообщений -->
+      <div class="message-enter flex justify-start">
+        <div class="flex space-x-3 max-w-4xl">
+          <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-brain text-white text-sm"></i>
+          </div>
+          <div class="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg border border-gray-200 dark:border-gray-600">
+            <p class="text-gray-900 dark:text-white text-lg leading-relaxed">
+              Привет! Я LudvigAI - ваш русский AI-ассистент. 🤖<br /><br />
+              Я могу помочь вам с:<br />
+              • Ответами на вопросы<br />
+              • Программированием<br />
+              • Творческими задачами<br />
+              • И многим другим!<br /><br />
+              Чем могу помочь?
+            </p>
+            <div class="flex flex-wrap gap-2 mt-4">
+              <button class="suggestion-btn bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-purple-200 dark:border-purple-700">
+                Расскажи о себе
+              </button>
+              <button class="suggestion-btn bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-blue-200 dark:border-blue-700">
+                Помоги с кодом
+              </button>
+              <button class="suggestion-btn bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-300 px-4 py-2 rounded-lg text-sm transition-colors duration-200 border border-green-200 dark:border-green-700">
+                Что нового?
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Индикатор набора -->
+    <div id="typingIndicator" class="hidden px-6 py-4 flex-shrink-0">
+      <div class="flex space-x-3 max-w-4xl">
+        <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-brain text-white text-sm"></i>
+        </div>
+        <div class="bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none px-6 py-4 shadow-lg border border-gray-200 dark:border-gray-600">
+          <div class="typing-dots text-purple-600 dark:text-purple-400">
+            <span>●</span>
+            <span>●</span>
+            <span>●</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Форма ввода -->
+    <div class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 flex-shrink-0">
+      <div class="max-w-4xl mx-auto">
+        <div class="flex space-x-4">
+          <div class="flex-1 relative">
+            <textarea
+              id="messageInput"
+              placeholder="Напишите сообщение..."
+              rows="1"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded-2xl py-4 px-6 pr-12 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 text-lg max-h-32"
+              oninput="autoResize(this)"
+              onkeypress="handleKeyPress(event)"
+            ></textarea>
+            <button id="sendButton" class="absolute right-3 bottom-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-3 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+              <i class="fas fa-paper-plane text-sm"></i>
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-between items-center mt-3 text-sm text-gray-500 dark:text-gray-400">
+          <div class="flex space-x-4">
+            <button class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200">
+              <i class="fas fa-robot mr-1"></i> AI
+            </button>
+            <button class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200">
+              <i class="fas fa-wand-magic-sparkles mr-1"></i> Креатив
+            </button>
+          </div>
+          <div>
+            <span>LudvigAI v1.0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // База знаний
+  const responseTemplates = {
+    'привет': [
+      "Привет! Как твои дела? 😊",
+      "Здравствуй! Рад тебя видеть! 👋",
+      "Привет друг! Что нового? 🎉",
+      "Хай! Как настроение? 😄",
+      "Добрый день! Как поживаешь? 🌟"
+    ],
+    'как': [
+      "У меня все отлично, спасибо! А у тебя? 🤖",
+      "Все хорошо, работаю как обычно. 💻",
+      "Прекрасно! Спасибо что спросил! ✨",
+      "Нормально, ни на что не жалуюсь. Как ты? 😊"
+    ],
+    'дела': [
+      "Дела идут хорошо! Спасибо! 🚀",
+      "Все отлично, благодарю! 👍",
+      "Работаю, учусь, развиваюсь. 📚",
+      "Как всегда - в порядке! 💪"
+    ],
+    'что': [
+      "Ничего особенного, все по старому. 📅",
+      "Работаю над интересными проектами! 💡",
+      "В последнее время много учусь. 🎓",
+      "Все как обычно, спасибо что интересуешься! 🤗"
+    ],
+    'нового': [
+      "Ничего нового, все стабильно. ⚡",
+      "Планирую новые проекты! 🎯",
+      "Осваиваю новые технологии. 🔧",
+      "Все по плану, работа кипит. 🔥"
+    ],
+    'помоги': [
+      "Конечно! Расскажи, чем могу помочь? ❓",
+      "С удовольствием! В чем проблема? 💭",
+      "Конечно помогу! Что случилось? 🛠️",
+      "Я к твоим услугам! Чем помочь? 🤝"
+    ],
+    'пока': [
+      "До свидания! Удачи тебе! 👋",
+      "Пока! Хорошего дня! 🌞",
+      "Был рад общению! Возвращайся! 🤗",
+      "До встречи! Всего наилучшего! ✨"
+    ],
+    'спасибо': [
+      "Пожалуйста! Обращайся еще! 😊",
+      "Не за что! Всегда рад помочь! 👍",
+      "Пожалуйста! Рад был помочь! 🤝",
+      "Не стоит благодарности! 💫"
+    ],
+    'до': [
+      "До свидания! Хорошего дня! 🌟",
+      "Пока! Удачи во всем! 🍀",
+      "Было приятно пообщаться! Возвращайся! 👋"
+    ],
+    'свидания': [
+      "До свидания! Всего доброго! ✨",
+      "Пока! Хорошего настроения! 😊",
+      "До встречи! Береги себя! 💖"
+    ],
+    'расскажи': [
+      "Я - LudvigAI, русскоязычный AI-ассистент созданный для помощи в различных задачах! 🤖\n\nМои возможности:\n• Отвечать на вопросы\n• Помогать с программированием\n• Обсуждать технологии\n• Поддерживать беседу\n• И многое другое!",
+      "Я искусственный интеллект, созданный чтобы помогать пользователям. Могу отвечать на вопросы, помогать с кодом, обсуждать технологии и просто общаться! 💻",
+      "Я ваш виртуальный помощник LudvigAI! Создан для того, чтобы сделать вашу жизнь проще через технологии и общение. Что именно хочешь узнать? 🎯"
+    ],
+    'код': [
+      "Конечно! С каким языком программирования нужна помощь? 🐍\n\nPython, JavaScript, C++ или может что-то другое?",
+      "Помогу с кодом! Расскажи подробнее что нужно сделать? 💻",
+      "Программирование - это моя стихия! В чем именно нужна помощь? 🔧"
+    ],
+    'python': [
+      "Python - отличный выбор! 🐍\n\nВот базовый пример:\n```python\nprint('Привет, мир!')\n\n# Переменные\nname = 'LudvigAI'\nprint(f'Привет от {name}!')\n```\nЧто конкретно интересует?",
+      "Python - мой любимый язык! Могу помочь с:\n• Веб-разработкой (Django/Flask)\n• Data Science\n• Автоматизацией\n• И многим другим!",
+      "Отличный выбор! Python прекрасен своей читаемостью и мощными библиотеками. С каким проектом помочь? 🚀"
+    ]
+  };
+
+  const defaultResponses = [
+    "Интересно! Расскажи подробнее. 💭",
+    "Понятно! Что еще хочешь узнать? ❓",
+    "Я тебя слушаю! Продолжай. 👂",
+    "Расскажи мне больше об этом! 📖",
+    "Это любопытно! Что думаешь по этому поводу? 🤔",
+    "Не совсем понял. Можешь объяснить по-другому? 🔄"
+  ];
+
+  function getAIResponse(userInput) {
+    userInput = userInput.toLowerCase().trim();
+    for (const keyword in responseTemplates) {
+      if (userInput.includes(keyword)) {
+        const responses = responseTemplates[keyword];
+        return responses[Math.floor(Math.random() * responses.length)];
+      }
+    }
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+  }
+
+  // DOM элементы
+  const messagesContainer = document.getElementById('messagesContainer');
+  const messageInput = document.getElementById('messageInput');
+  const sendButton = document.getElementById('sendButton');
+  const typingIndicator = document.getElementById('typingIndicator');
+  const newChatBtn = document.getElementById('newChatBtn');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebar = document.getElementById('sidebar');
+  const authModal = document.getElementById('authModal');
+  const settingsModal = document.getElementById('settingsModal');
+  const closeAuthModal = document.getElementById('closeAuthModal');
+  const closeSettingsModal = document.getElementById('closeSettingsModal');
+  const settingsBtn = document.getElementById('settingsBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const guestLogin = document.getElementById('guestLogin');
+  const searchInput = document.getElementById('searchInput');
+  const searchResults = document.querySelector('.search-results');
+  const userName = document.getElementById('userName');
+  const userRole = document.getElementById('userRole');
+  const userInitial = document.getElementById('userInitial');
+  const authTrigger = document.getElementById('authTrigger');
+  const chatHistory = document.getElementById('chatHistory');
+  const authTabs = document.getElementById('authTabs');
+  const authForms = document.querySelectorAll('.auth-form');
+
+  // Пользовательские данные
+  let currentUser = {
+    name: 'Гость',
+    initial: 'Г',
+    role: 'Неавторизован',
+    isAuthenticated: false
+  };
+
+  // Темы
+  const themeToggle = document.getElementById('themeToggle');
+  const themeOptions = document.querySelectorAll('.theme-option');
+
+  // История чатов
+  let chatHistoryData = [
+    { id: 1, title: 'Привет! Как дела?', timestamp: '12:30' },
+    { id: 2, title: 'Помоги с программированием', timestamp: 'Вчера' },
+    { id: 3, title: 'Расскажи о нейросетях', timestamp: '2 дня назад' }
+  ];
+
+  // --- Утилиты ---
+  function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
+  }
+  function scrollToBottom() {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+  function formatMessage(text) {
+    let formatted = text.replace(/([^\n`])\n([^\n`])/g, '$1<br>$2');
+    // код
+    formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+      const language = lang ? `<span class="text-xs font-semibold text-gray-500 dark:text-gray-400">${lang.toUpperCase()}</span>` : '';
+      return `
+        <div class="mt-3 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg overflow-x-auto shadow-inner border border-gray-300 dark:border-gray-600">
+          ${language}
+          <pre class="whitespace-pre-wrap break-words font-mono text-sm text-gray-900 dark:text-gray-200">${code.trim().replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+        </div>
+      `;
+    });
+    // списки
+    formatted = formatted.replace(/• (.*?)<br>/g, (match, item) => {
+      return `<li><i class="fas fa-check text-purple-500 mr-2"></i>${item}</li>`;
+    });
+    // переносы
+    formatted = formatted.replace(/\n/g, '<br>');
+    return formatted;
+  }
+
+  // Создание сообщения
+  function createMessageElement(text, isUser) {
+    const wrapper = document.createElement('div');
+    wrapper.className = `message-enter flex ${isUser ? 'justify-end' : 'justify-start'}`;
+
+    const contentWrapper = document.createElement('div');
+    contentWrapper.className = `flex space-x-3 max-w-4xl ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
+
+    const iconDiv = document.createElement('div');
+    iconDiv.className = `w-8 h-8 ${isUser ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-gradient-to-r from-purple-600 to-blue-600'} rounded-full flex items-center justify-center flex-shrink-0`;
+    const icon = document.createElement('i');
+    icon.className = `text-white text-sm ${isUser ? 'fas fa-user' : 'fas fa-brain'}`;
+    iconDiv.appendChild(icon);
+
+    const messageBox = document.createElement('div');
+    messageBox.className = `${isUser ? 'bg-blue-600 dark:bg-blue-700 text-white rounded-2xl rounded-br-none' : 'bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl rounded-tl-none'} px-6 py-4 shadow-lg`;
+
+    const messageText = document.createElement('p');
+    messageText.className = `${isUser ? 'text-white' : 'text-gray-900 dark:text-white'} text-lg leading-relaxed`;
+    messageText.innerHTML = isUser ? text : formatMessage(text);
+    messageBox.appendChild(messageText);
+
+    if (!isUser) {
+      const actions = document.createElement('div');
+      actions.className = 'flex flex-wrap gap-2 mt-4';
+      actions.innerHTML = `
+        <button class="suggestion-btn bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-lg text-xs border border-purple-200 dark:border-purple-700" data-prompt="Продолжи">Продолжить</button>
+        <button class="suggestion-btn bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-lg text-xs border border-blue-200 dark:border-blue-700" data-prompt="Пример">Пример</button>
+      `;
+      messageBox.appendChild(actions);
+      actions.querySelectorAll('.suggestion-btn').forEach(btn => {
+        btn.addEventListener('click', () => handleSendMessage(btn.dataset.prompt));
+      });
+    }
+
+    contentWrapper.appendChild(iconDiv);
+    contentWrapper.appendChild(messageBox);
+    wrapper.appendChild(contentWrapper);
+    return wrapper;
+  }
+  function appendMessage(text, isUser) {
+    const el = createMessageElement(text, isUser);
+    messagesContainer.appendChild(el);
+    scrollToBottom();
+  }
+
+  function handleSendMessage(text) {
+    const message = text || messageInput.value.trim();
+    if (!message) return;
+
+    appendMessage(message, true);
+    messageInput.value = '';
+    autoResize(messageInput);
+    sendButton.disabled = true;
+
+    // Имитация ответа
+    typingIndicator.classList.remove('hidden');
+    scrollToBottom();
+    setTimeout(() => {
+      typingIndicator.classList.add('hidden');
+      const response = getAIResponse(message);
+      appendMessage(response, false);
+      sendButton.disabled = messageInput.value.trim() === '';
+    }, 1500 + Math.random() * 1000);
+  }
+
+  function handleKeyPress(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  }
+
+  // Обработчики событий
+  document.getElementById('sendButton').addEventListener('click', () => handleSendMessage());
+  messageInput.addEventListener('input', () => {
+    document.getElementById('sendButton').disabled = messageInput.value.trim() === '';
+  });
+  messageInput.addEventListener('keypress', handleKeyPress);
+  document.querySelectorAll('.suggestion-btn').forEach(btn => {
+    btn.addEventListener('click', () => handleSendMessage(btn.dataset.prompt));
+  });
+  document.getElementById('sidebarToggle').addEventListener('click', () => {
+    sidebar.classList.toggle('hidden-mobile');
+    const icon = document.querySelector('#sidebarToggle i');
+    icon.className = sidebar.classList.contains('hidden-mobile') ? 'fas fa-bars' : 'fas fa-times';
+  });
+  // Вкладки
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('active', 'text-purple-600', 'border-b-2', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+        b.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+      });
+      btn.classList.add('active', 'text-purple-600', 'border-b-2', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(`${tab}Tab`).classList.add('active');
+    });
+  });
+  // Авторизация вкладки
+  document.getElementById('authTabs').addEventListener('click', e => {
+    if (e.target.classList.contains('auth-tab')) {
+      const tab = e.target.dataset.tab;
+      document.querySelectorAll('.auth-tab').forEach(t => {
+        t.classList.remove('active', 'text-purple-600', 'border-b-2', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+        t.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+      });
+      e.target.classList.add('active', 'text-purple-600', 'border-b-2', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      document.getElementById(`${tab}Form`).classList.add('active');
+    }
+  });
+  // Модальные окна
+  document.getElementById('closeAuthModal').addEventListener('click', () => {
+    document.getElementById('authModal').classList.remove('active');
+  });
+  document.getElementById('closeSettingsModal').addEventListener('click', () => {
+    document.getElementById('settingsModal').classList.remove('active');
+  });
+  document.getElementById('authTrigger').addEventListener('click', () => {
+    if (!currentUser.isAuthenticated) {
+      document.getElementById('authModal').classList.add('active');
+    } else {
+      alert(`Вы вошли как ${currentUser.name}`);
+    }
+  });
+  document.getElementById('guestLogin').addEventListener('click', () => {
+    updateProfile('Гость', 'Неавторизован', false);
+    alert('Вы вошли как Гость');
+  });
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    updateProfile('Гость', 'Неавторизован', false);
+    document.getElementById('settingsModal').classList.remove('active');
+    alert('Вы вышли из аккаунта');
+  });
+  document.querySelector('#settingsBtn').addEventListener('click', e => {
+    e.stopPropagation();
+    document.getElementById('settingsModal').classList.add('active');
+  });
+  // Тема
+  function applyTheme(theme) {
+    const root = document.documentElement;
+    localStorage.setItem('theme', theme);
+    if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      root.classList.add('dark');
+      document.querySelector('#themeToggle i').className = 'fas fa-sun text-yellow-400 text-lg';
+    } else {
+      root.classList.remove('dark');
+      document.querySelector('#themeToggle i').className = 'fas fa-moon text-gray-600 text-lg';
+    }
+    themeOptions.forEach(btn => {
+      if (btn.dataset.theme === theme) {
+        btn.classList.add('border-purple-500', 'ring-2', 'ring-purple-500');
+      } else {
+        btn.classList.remove('border-purple-500', 'ring-2', 'ring-purple-500');
+      }
+    });
+  }
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const current = localStorage.getItem('theme') || 'auto';
+    let newTheme;
+    if (current === 'light') newTheme = 'dark';
+    else if (current === 'dark') newTheme = 'auto';
+    else newTheme = 'light';
+    applyTheme(newTheme);
+  });
+  themeOptions.forEach(btn => {
+    btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
+  });
+  const savedTheme = localStorage.getItem('theme') || 'auto';
+  applyTheme(savedTheme);
+  // Поиск
+  document.getElementById('searchInput').addEventListener('input', () => {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    searchResults.innerHTML = '';
+    if (query.length < 2) {
+      searchResults.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center">Введите запрос для поиска в истории чатов.</p>';
+      return;
+    }
+    const filtered = chatHistoryData.filter(c => c.title.toLowerCase().includes(query));
+    if (filtered.length === 0) {
+      searchResults.innerHTML = `<p class="text-gray-500 dark:text-gray-400 text-center">Результатов по запросу "${query}" не найдено.</p>`;
+      return;
+    }
+    filtered.forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200';
+      el.innerHTML = `
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3 overflow-hidden">
+            <i class="fas fa-search-plus text-blue-600 dark:text-blue-400 flex-shrink-0"></i>
+            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">${c.title}</span>
+          </div>
+          <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">${c.timestamp}</span>
+        </div>
+      `;
+      el.addEventListener('click', () => {
+        alert(`Загрузка чата: ${c.title}`);
+        document.querySelector('.tab-btn[data-tab="chat"]').click();
+        if (!sidebar.classList.contains('hidden-mobile')) sidebar.classList.add('hidden-mobile');
+        document.querySelector('#sidebarToggle i').className = 'fas fa-bars';
+      });
+      searchResults.appendChild(el);
+    });
+  });
+  // Инициализация
+  window.onload = () => {
+    scrollToBottom();
+    document.getElementById('sendButton').disabled = messageInput.value.trim() === '';
+  };
+</script>
 
-    <script>
-        // База знаний нейросети LudvigAI
-        const responseTemplates = {
-            'привет': [
-                "Привет! Как твои дела? 😊",
-                "Здравствуй! Рад тебя видеть! 👋", 
-                "Привет друг! Что нового? 🎉",
-                "Хай! Как настроение? 😄",
-                "Добрый день! Как поживаешь? 🌟"
-            ],
-            'как': [
-                "У меня все отлично, спасибо! А у тебя? 🤖",
-                "Все хорошо, работаю как обычно. 💻",
-                "Прекрасно! Спасибо что спросил! ✨",
-                "Нормально, ни на что не жалуюсь. Как ты? 😊"
-            ],
-            'дела': [
-                "Дела идут хорошо! Спасибо! 🚀",
-                "Все отлично, благодарю! 👍",
-                "Работаю, учусь, развиваюсь. 📚",
-                "Как всегда - в порядке! 💪"
-            ],
-            'что': [
-                "Ничего особенного, все по старому. 📅",
-                "Работаю над интересными проектами! 💡",
-                "В последнее время много учусь. 🎓",
-                "Все как обычно, спасибо что интересуешься! 🤗"
-            ],
-            'нового': [
-                "Ничего нового, все стабильно. ⚡",
-                "Планирую новые проекты! 🎯",
-                "Осваиваю новые технологии. 🔧",
-                "Все по плану, работа кипит. 🔥"
-            ],
-            'помоги': [
-                "Конечно! Расскажи, чем могу помочь? ❓",
-                "С удовольствием! В чем проблема? 💭",
-                "Конечно помогу! Что случилось? 🛠️",
-                "Я к твоим услугам! Чем помочь? 🤝"
-            ],
-            'пока': [
-                "До свидания! Удачи тебе! 👋",
-                "Пока! Хорошего дня! 🌞",
-                "Был рад общению! Возвращайся! 🤗",
-                "До встречи! Всего наилучшего! ✨"
-            ],
-            'спасибо': [
-                "Пожалуйста! Обращайся еще! 😊",
-                "Не за что! Всегда рад помочь! 👍",
-                "Пожалуйста! Рад был помочь! 🤝",
-                "Не стоит благодарности! 💫"
-            ],
-            'до': [
-                "До свидания! Хорошего дня! 🌟",
-                "Пока! Удачи во всем! 🍀",
-                "Было приятно пообщаться! Возвращайся! 👋"
-            ],
-            'свидания': [
-                "До свидания! Всего доброго! ✨",
-                "Пока! Хорошего настроения! 😊",
-                "До встречи! Береги себя! 💖"
-            ],
-            'расскажи': [
-                "Я - LudvigAI, русскоязычный AI-ассистент созданный для помощи в различных задачах! 🤖\n\nМои возможности:\n• Отвечать на вопросы\n• Помогать с программированием\n• Обсуждать технологии\n• Поддерживать беседу\n• И многое другое!",
-                "Я искусственный интеллект, созданный чтобы помогать пользователям. Могу отвечать на вопросы, помогать с кодом, обсуждать технологии и просто общаться! 💻",
-                "Я ваш виртуальный помощник LudvigAI! Создан для того, чтобы сделать вашу жизнь проще через технологии и общение. Что именно хочешь узнать? 🎯"
-            ],
-            'код': [
-                "Конечно! С каким языком программирования нужна помощь? 🐍\n\nPython, JavaScript, C++ или может что-то другое?",
-                "Помогу с кодом! Расскажи подробнее что нужно сделать? 💻",
-                "Программирование - это моя стихия! В чем именно нужна помощь? 🔧"
-            ],
-            'python': [
-                "Python - отличный выбор! 🐍\n\nВот базовый пример:\n```python\nprint('Привет, мир!')\n\n# Переменные\nname = 'LudvigAI'\nprint(f'Привет от {name}!')\n```\nЧто конкретно интересует?",
-                "Python - мой любимый язык! Могу помочь с:\n• Веб-разработкой (Django/Flask)\n• Data Science\n• Автоматизацией\n• И многим другим!",
-                "Отличный выбор! Python прекрасен своей читаемостью и мощными библиотеками. С каким проектом помочь? 🚀"
-            ]
-        };
-
-        const defaultResponses = [
-            "Интересно! Расскажи подробнее. 💭",
-            "Понятно! Что еще хочешь узнать? ❓",
-            "Я тебя слушаю! Продолжай. 👂",
-            "Расскажи мне больше об этом! 📖",
-            "Это любопытно! Что думаешь по этому поводу? 🤔",
-            "Не совсем понял. Можешь объяснить по-другому? 🔄"
-        ];
-
-        // Функция для получения ответа от AI
-        function getAIResponse(userInput) {
-            userInput = userInput.toLowerCase().trim();
-            
-            // Ищем ключевые слова в сообщении пользователя
-            for (const keyword in responseTemplates) {
-                if (userInput.includes(keyword)) {
-                    const responses = responseTemplates[keyword];
-                    return responses[Math.floor(Math.random() * responses.length)];
-                }
-            }
-            
-            // Ответ по умолчанию
-            return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
-        }
-
-        // DOM элементы
-        const messagesContainer = document.getElementById('messagesContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const typingIndicator = document.getElementById('typingIndicator');
-        const newChatBtn = document.getElementById('newChatBtn');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebar = document.getElementById('sidebar');
-        const authModal = document.getElementById('authModal');
-        const settingsModal = document.getElementById('settingsModal');
-        const closeAuthModal = document.getElementById('closeAuthModal');
-        const closeSettingsModal = document.getElementById('closeSettingsModal');
-        const settingsBtn = document.getElementById('settingsBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const guestLogin = document.getElementById('guestLogin');
-        const searchInput = document.getElementById('searchInput');
-        const searchResults = document.querySelector('.search-results');
-        const userName = document.getElementById('userName');
-        const userRole = document.getElementById('userRole');
-        const userInitial = document.getElementById('userInitial');
-        const authTrigger = document.getElementById('authTrigger');
-        const chatHistory = document.getElementById('chatHistory');
-        const authTabs = document.getElementById('authTabs');
-        const authForms = document.querySelectorAll('.auth-form');
-
-        // Данные пользователя
-        let currentUser = {
-            name: 'Гость',
-            initial: 'Г',
-            role: 'Неавторизован',
-            isAuthenticated: false
-        };
-
-        // Темы
-        const themeToggle = document.getElementById('themeToggle');
-        const themeOptions = document.querySelectorAll('.theme-option');
-
-        // История чатов (для имитации)
-        let chatHistoryData = [
-            { id: 1, title: 'Привет! Как дела?', timestamp: '12:30' },
-            { id: 2, title: 'Помоги с программированием', timestamp: 'Вчера' },
-            { id: 3, title: 'Расскажи о нейросетях', timestamp: '2 дня назад' }
-        ];
-
-        // --- Утилиты ---
-        
-        // Автоматическое изменение размера textarea
-        function autoResize(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = (textarea.scrollHeight) + 'px';
-        }
-
-        // Прокрутка чата вниз
-        function scrollToBottom() {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        // Функция для форматирования ответа (поддержка Markdown)
-        function formatMessage(text) {
-            // Замена переносов строк на <br> (кроме внутри ```)
-            let formattedText = text.replace(/([^\n`])\n([^\n`])/g, '$1<br>$2');
-            
-            // Форматирование кода (блоки)
-            formattedText = formattedText.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-                const language = lang ? `<span class="text-xs font-semibold text-gray-500 dark:text-gray-400">${lang.toUpperCase()}</span>` : '';
-                return `
-                    <div class="mt-3 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg overflow-x-auto shadow-inner border border-gray-300 dark:border-gray-600">
-                        ${language}
-                        <pre class="whitespace-pre-wrap break-words font-mono text-sm text-gray-900 dark:text-gray-200">${code.trim().replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
-                    </div>
-                `;
-            });
-            
-            // Форматирование маркированных списков
-            formattedText = formattedText.replace(/• (.*?)<br>/g, (match, item) => {
-                return `<li><i class="fas fa-check text-purple-500 mr-2"></i>${item}</li>`;
-            });
-            
-            // Форматирование обычных переносов строк
-            formattedText = formattedText.replace(/\n/g, '<br>');
-
-            return formattedText;
-        }
-
-        // --- Обработка сообщений ---
-
-        function createMessageElement(text, isUser) {
-            const wrapper = document.createElement('div');
-            wrapper.className = `message-enter flex ${isUser ? 'justify-end' : 'justify-start'}`;
-
-            const contentWrapper = document.createElement('div');
-            contentWrapper.className = `flex space-x-3 max-w-4xl ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`;
-
-            const iconDiv = document.createElement('div');
-            iconDiv.className = `w-8 h-8 ${isUser ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-gradient-to-r from-purple-600 to-blue-600'} rounded-full flex items-center justify-center flex-shrink-0`;
-
-            const icon = document.createElement('i');
-            icon.className = `text-white text-sm ${isUser ? 'fas fa-user' : 'fas fa-brain'}`;
-            iconDiv.appendChild(icon);
-
-            const messageBox = document.createElement('div');
-            messageBox.className = `${isUser ? 'bg-blue-600 dark:bg-blue-700 text-white rounded-2xl rounded-br-none' : 'bg-white dark:bg-gray-700 rounded-2xl rounded-tl-none border border-gray-200 dark:border-gray-600'} px-6 py-4 shadow-lg`;
-
-            const messageText = document.createElement('p');
-            messageText.className = `${isUser ? 'text-white' : 'text-gray-900 dark:text-white'} text-lg leading-relaxed`;
-            messageText.innerHTML = isUser ? text : formatMessage(text);
-            messageBox.appendChild(messageText);
-            
-            // Кнопки действий для ответа AI
-            if (!isUser) {
-                const actionButtons = document.createElement('div');
-                actionButtons.className = 'flex flex-wrap gap-2 mt-4';
-                actionButtons.innerHTML = `
-                    <button class="suggestion-btn bg-purple-100 dark:bg-purple-900/30 hover:bg-purple-200 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-lg text-xs transition-colors duration-200 border border-purple-200 dark:border-purple-700" data-prompt="Продолжи">
-                        Продолжить
-                    </button>
-                    <button class="suggestion-btn bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-lg text-xs transition-colors duration-200 border border-blue-200 dark:border-blue-700" data-prompt="Пример">
-                        Пример
-                    </button>
-                `;
-                messageBox.appendChild(actionButtons);
-
-                actionButtons.querySelectorAll('.suggestion-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        handleSendMessage(e.target.dataset.prompt);
-                    });
-                });
-            }
-
-
-            contentWrapper.appendChild(iconDiv);
-            contentWrapper.appendChild(messageBox);
-            wrapper.appendChild(contentWrapper);
-            
-            return wrapper;
-        }
-
-        function appendMessage(text, isUser) {
-            const messageElement = createMessageElement(text, isUser);
-            messagesContainer.appendChild(messageElement);
-            scrollToBottom();
-        }
-
-        function handleSendMessage(messageText) {
-            const text = messageText || messageInput.value.trim();
-            if (text === "") return;
-
-            // 1. Сообщение пользователя
-            appendMessage(text, true);
-
-            // Очистка и сброс размера поля ввода
-            messageInput.value = '';
-            autoResize(messageInput);
-            sendButton.disabled = true;
-
-            // 2. Имитация набора текста AI
-            typingIndicator.classList.remove('hidden');
-            scrollToBottom();
-
-            // 3. Получение и вывод ответа AI
-            setTimeout(() => {
-                typingIndicator.classList.add('hidden');
-                const aiResponse = getAIResponse(text);
-                appendMessage(aiResponse, false);
-                sendButton.disabled = messageInput.value.trim() === '';
-            }, 1500 + Math.random() * 1000); // Имитация задержки
-        }
-        
-        function handleKeyPress(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault(); // Предотвратить стандартный перенос строки
-                handleSendMessage();
-            }
-        }
-
-        // --- Обработка событий DOM ---
-
-        // Обработчик кнопки отправки
-        sendButton.addEventListener('click', () => handleSendMessage());
-
-        // Обработчик предложений
-        document.querySelectorAll('.suggestion-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                handleSendMessage(e.target.textContent.trim());
-            });
-        });
-
-        // Отключение/включение кнопки отправки
-        messageInput.addEventListener('input', () => {
-            sendButton.disabled = messageInput.value.trim() === '';
-        });
-
-        // Переключение сайдбара (мобильная версия)
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('hidden-mobile');
-            if (sidebar.classList.contains('hidden-mobile')) {
-                sidebarToggle.querySelector('i').className = 'fas fa-bars text-gray-600 dark:text-gray-400';
-            } else {
-                sidebarToggle.querySelector('i').className = 'fas fa-times text-gray-600 dark:text-gray-400';
-            }
-        });
-
-        // Переключение вкладок
-        document.querySelectorAll('.tab-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const targetTab = e.currentTarget.dataset.tab;
-
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('active', 'text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
-                    btn.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
-                    btn.classList.remove('border-b-2');
-                });
-                
-                e.currentTarget.classList.add('active', 'text-purple-600', 'dark:text-purple-400', 'border-purple-600', 'dark:border-purple-400');
-                e.currentTarget.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
-                e.currentTarget.classList.add('border-b-2');
-
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-
-                document.getElementById(`${targetTab}Tab`).classList.add('active');
-            });
-        });
-
-        // Переключение вкладок авторизации
-        authTabs.addEventListener('click', (e) => {
-            if (e.target.classList.contains('auth-tab')) {
-                const target = e.target.dataset.tab;
-                
-                document.querySelectorAll('.auth-tab').forEach(tab => {
-                    tab.classList.remove('active', 'text-purple-600', 'dark:text-purple-400', 'border-b-2', 'border-purple-600', 'dark:border-purple-400');
-                    tab.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
-                });
-
-                e.target.classList.add('active', 'text-purple-600', 'dark:text-purple-400', 'border-b-2', 'border-purple-600', 'dark:border-purple-400');
-                e.target.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-300');
-
-                authForms.forEach(form => {
-                    form.classList.remove('active');
-                });
-                document.getElementById(`${target}Form`).classList.add('active');
-            }
-        });
-
-
-        // --- Модальные окна и Аутентификация ---
-
-        function updateProfile(name, role, isAuthenticated = true) {
-            currentUser.name = name;
-            currentUser.initial = name.charAt(0).toUpperCase();
-            currentUser.role = role;
-            currentUser.isAuthenticated = isAuthenticated;
-
-            userName.textContent = name;
-            userRole.textContent = role;
-            userInitial.textContent = name.charAt(0).toUpperCase();
-
-            const profileDiv = authTrigger.querySelector('div:first-child');
-            if (isAuthenticated) {
-                profileDiv.classList.remove('bg-gradient-to-r', 'from-green-500', 'to-blue-500');
-                profileDiv.classList.add('bg-gradient-to-r', 'from-purple-600', 'to-blue-600');
-            } else {
-                profileDiv.classList.remove('bg-gradient-to-r', 'from-purple-600', 'to-blue-600');
-                profileDiv.classList.add('bg-gradient-to-r', 'from-green-500', 'to-blue-500');
-            }
-            
-            // Скрытие модального окна
-            authModal.classList.remove('active');
-        }
-
-        function handleLogin(event, type) {
-            event.preventDefault();
-            // Имитация успешной авторизации/регистрации
-            if (type === 'login') {
-                const email = document.getElementById('loginEmail').value;
-                const name = email.split('@')[0];
-                updateProfile(name, 'Пользователь');
-                alert(`Вход выполнен как: ${name}`);
-            } else if (type === 'register') {
-                const name = document.getElementById('registerName').value;
-                updateProfile(name, 'Пользователь');
-                alert(`Регистрация завершена. Вход выполнен как: ${name}`);
-            }
-        }
-
-        function handleGuestLogin() {
-            updateProfile('Гость', 'Неавторизован', false);
-            alert('Вы вошли как Гость');
-        }
-
-        function handleLogout() {
-            updateProfile('Гость', 'Неавторизован', false);
-            settingsModal.classList.remove('active');
-            alert('Вы вышли из аккаунта');
-        }
-
-        // Открытие/Закрытие модальных окон
-        authTrigger.addEventListener('click', () => {
-             // Если не авторизован, открываем Auth Modal
-            if (!currentUser.isAuthenticated) {
-                authModal.classList.add('active');
-            } else {
-                 // Если авторизован, делаем что-то (например, открываем профиль или просто ничего не делаем)
-                 alert(`Вы вошли как ${currentUser.name}`);
-            }
-        });
-
-        closeAuthModal.addEventListener('click', () => authModal.classList.remove('active'));
-        guestLogin.addEventListener('click', handleGuestLogin);
-        logoutBtn.addEventListener('click', handleLogout);
-
-        settingsBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Предотвратить срабатывание authTrigger
-            settingsModal.classList.add('active');
-        });
-        closeSettingsModal.addEventListener('click', () => settingsModal.classList.remove('active'));
-
-
-        // --- Логика Темы ---
-
-        function applyTheme(theme) {
-            const root = document.documentElement;
-            localStorage.setItem('theme', theme);
-
-            if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                root.classList.add('dark');
-                themeToggle.querySelector('i').className = 'fas fa-sun text-yellow-400 text-lg';
-            } else {
-                root.classList.remove('dark');
-                themeToggle.querySelector('i').className = 'fas fa-moon text-gray-600 text-lg';
-            }
-            
-            // Обновление активной кнопки в модальном окне
-            themeOptions.forEach(btn => {
-                if (btn.dataset.theme === theme) {
-                    btn.classList.add('border-purple-500', 'ring-2', 'ring-purple-500');
-                } else {
-                    btn.classList.remove('border-purple-500', 'ring-2', 'ring-purple-500');
-                }
-            });
-        }
-
-        // Обработчик переключения темы
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = localStorage.getItem('theme') || 'auto';
-            let newTheme = '';
-            if (currentTheme === 'light') {
-                newTheme = 'dark';
-            } else if (currentTheme === 'dark') {
-                newTheme = 'auto';
-            } else {
-                newTheme = 'light';
-            }
-            applyTheme(newTheme);
-        });
-
-        // Обработчики кнопок выбора темы в модальном окне
-        themeOptions.forEach(btn => {
-            btn.addEventListener('click', () => {
-                applyTheme(btn.dataset.theme);
-            });
-        });
-
-        // Применение темы при загрузке
-        const savedTheme = localStorage.getItem('theme') || 'auto';
-        applyTheme(savedTheme);
-
-
-        // --- Поиск (Имитация) ---
-        searchInput.addEventListener('input', () => {
-            const query = searchInput.value.toLowerCase().trim();
-            searchResults.innerHTML = '';
-            
-            if (query.length < 2) {
-                searchResults.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center">Введите запрос для поиска в истории чатов.</p>';
-                return;
-            }
-
-            const filteredResults = chatHistoryData.filter(chat => 
-                chat.title.toLowerCase().includes(query)
-            );
-
-            if (filteredResults.length === 0) {
-                searchResults.innerHTML = `<p class="text-gray-500 dark:text-gray-400 text-center">Результатов по запросу "${query}" не найдено.</p>`;
-                return;
-            }
-
-            filteredResults.forEach(chat => {
-                const resultItem = document.createElement('div');
-                resultItem.className = 'bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200';
-                resultItem.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3 overflow-hidden">
-                            <i class="fas fa-search-plus text-blue-600 dark:text-blue-400 flex-shrink-0"></i>
-                            <span class="text-sm font-medium text-gray-900 dark:text-white truncate">${chat.title}</span>
-                        </div>
-                        <span class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">${chat.timestamp}</span>
-                    </div>
-                `;
-                resultItem.addEventListener('click', () => {
-                    alert(`Загрузка чата: ${chat.title}`);
-                    // Переключаем на вкладку чата
-                    document.querySelector('.tab-btn[data-tab="chat"]').click();
-                    // Закрываем сайдбар на мобильных
-                    if (!sidebar.classList.contains('hidden-mobile')) {
-                        sidebarToggle.click();
-                    }
-                });
-                searchResults.appendChild(resultItem);
-            });
-        });
-
-        // --- Инициализация ---
-        window.onload = () => {
-            scrollToBottom();
-            sendButton.disabled = messageInput.value.trim() === ''; // Инициализация кнопки
-        };
-
-    </script>
 </body>
 </html>
