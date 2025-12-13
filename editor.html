@@ -4,85 +4,58 @@
 <meta charset="UTF-8">
 <title>LudvigEditor Web Ultra</title>
 <style>
-  html, body, #container {
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    background: linear-gradient(135deg, #1a1b3a, #3f2b96);
-    font-family: "JetBrains Mono", Consolas, monospace;
-  }
-  #toolbar {
-    height: 40px;
-    background: rgba(40,40,80,0.9);
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-  }
-  #toolbar select, #toolbar button {
-    margin-right: 10px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    border: none;
-    background: #2a2f4a;
-    color: #fff;
-    cursor: pointer;
-  }
-  #toolbar select { width: 120px; }
+html, body, #container {
+  margin: 0; height: 100%; width: 100%; overflow: hidden;
+  background: linear-gradient(135deg, #1a1b3a, #3f2b96);
+  font-family: "JetBrains Mono", Consolas, monospace;
+}
+#toolbar {
+  height: 40px; background: rgba(40,40,80,0.9);
+  display: flex; align-items: center; padding: 0 10px;
+}
+#toolbar select, #toolbar button {
+  margin-right: 10px; padding: 4px 8px; border-radius: 4px;
+  border: none; background: #2a2f4a; color: #fff; cursor: pointer;
+}
+#toolbar select { width: 140px; }
+#output { background:#11132b;color:#cdd6f4;padding:10px;margin:0;height:100px;overflow:auto;font-family:monospace;}
 </style>
-
-<!-- Monaco Editor CDN -->
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
 <script>
 require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs' }});
-
 let editor;
 require(['vs/editor/editor.main'], function() {
-    editor = monaco.editor.create(document.getElementById('container'), {
-        value: "# Welcome to LudvigEditor Web Ultra\nprint('Hello World')",
-        language: 'python',
-        theme: 'vs-dark',
-        automaticLayout: true,
-        minimap: { enabled: true },
-        fontSize: 14,
-        scrollBeyondLastLine: false,
-        wordWrap: "on",
-        smoothScrolling: true
-    });
+  editor = monaco.editor.create(document.getElementById('container'), {
+    value: "# LudvigEditor Web Ultra\nprint('Hello World')",
+    language: 'python',
+    theme: 'vs-dark',
+    automaticLayout: true,
+    minimap: { enabled: true },
+    fontSize: 14,
+    scrollBeyondLastLine: false,
+    wordWrap: "on",
+    smoothScrolling: true
+  });
 
-    // Получение кода
-    window.getCode = function() {
-        return editor.getValue();
-    };
+  // Open file from PyQt
+  window.loadFileFromPy = function(code, lang='python') {
+      editor.setValue(code);
+      monaco.editor.setModelLanguage(editor.getModel(), lang);
+  };
 
-    // Установка кода
-    window.setCode = function(text) {
-        editor.setValue(text);
-    };
+  document.getElementById('language').addEventListener('change', () => {
+      monaco.editor.setModelLanguage(editor.getModel(), document.getElementById('language').value);
+  });
 
-    // Языки
-    const languageSelect = document.getElementById('language');
-    languageSelect.addEventListener('change', () => {
-        monaco.editor.setModelLanguage(editor.getModel(), languageSelect.value);
-    });
-
-    // Пример автосохранения каждые 5 секунд (можно убрать)
-    setInterval(() => {
-        // console.log("Autosave preview:", editor.getValue().substring(0,50));
-    }, 5000);
-
-    // Кнопка Run Python
-    document.getElementById('run').addEventListener('click', () => {
-        const code = editor.getValue();
-        const output = document.getElementById('output');
-        try {
-            output.textContent = '';
-            const result = new Function(code)();
-            if(result !== undefined) output.textContent = result;
-        } catch(e) {
-            output.textContent = e;
-        }
-    });
+  document.getElementById('run').addEventListener('click', () => {
+      const code = editor.getValue();
+      const output = document.getElementById('output');
+      try {
+          output.textContent = '';
+          const result = new Function(code)();
+          if(result !== undefined) output.textContent = result;
+      } catch(e) { output.textContent = e; }
+  });
 });
 </script>
 </head>
@@ -104,6 +77,6 @@ require(['vs/editor/editor.main'], function() {
   <button id="run">▶ Run (JS only)</button>
 </div>
 <div id="container"></div>
-<pre id="output" style="background:#11132b;color:#cdd6f4;padding:10px;margin:0;height:100px;overflow:auto;"></pre>
+<pre id="output"></pre>
 </body>
 </html>
