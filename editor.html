@@ -3,41 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <title>LudvigEditor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+/* ===== ROOT ===== */
 html, body {
     margin: 0;
     height: 100%;
-    background: radial-gradient(circle at top, #3f2b96, #1a1b3a);
-    font-family: system-ui;
+    overflow: hidden;
+    background: radial-gradient(circle at top, #4b2fbf, #15162e);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont;
 }
 
+/* ===== TOP BAR ===== */
 #topbar {
-    height: 42px;
+    height: 46px;
     display: flex;
     align-items: center;
-    padding: 0 12px;
+    padding: 0 14px;
     color: #fff;
-    backdrop-filter: blur(16px);
-    background: rgba(40, 40, 80, 0.45);
-    box-shadow: 0 4px 20px rgba(0,0,0,.4);
+    font-size: 14px;
+    letter-spacing: .3px;
+
+    backdrop-filter: blur(18px) saturate(140%);
+    background: rgba(30, 30, 60, 0.45);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 6px 30px rgba(0,0,0,.45);
 }
 
+#title {
+    font-weight: 600;
+}
+
+/* ===== EDITOR ===== */
 #editor {
     width: 100%;
-    height: calc(100% - 42px);
+    height: calc(100% - 46px);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(120,120,200,.35);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
 }
 </style>
 
+<!-- Monaco Loader -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
 </head>
 
 <body>
 
-<div id="topbar">⚡ LudvigEditor — VS Code style</div>
+<div id="topbar">
+    ⚡ <span id="title">LudvigEditor</span>&nbsp;— VS Code style
+</div>
+
 <div id="editor"></div>
 
 <script>
+/* ================= MONACO ================= */
 require.config({
     paths: {
         vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs"
@@ -46,35 +77,81 @@ require.config({
 
 require(["vs/editor/editor.main"], function () {
 
-    window.editor = monaco.editor.create(document.getElementById("editor"), {
-        value: "# LudvigEditor\nprint('Hello, future 🚀')",
-        language: "python",
-        theme: "vs-dark",
-        automaticLayout: true,
-        smoothScrolling: true,
-        fontLigatures: true,
-        fontFamily: "JetBrains Mono, Consolas",
-        minimap: { enabled: true },
-        cursorSmoothCaretAnimation: "on",
-        wordWrap: "on"
+    /* ===== THEME (VS CODE+) ===== */
+    monaco.editor.defineTheme("ludvig-dark", {
+        base: "vs-dark",
+        inherit: true,
+        rules: [
+            { token: "comment", foreground: "6A9955" },
+            { token: "keyword", foreground: "C586C0" },
+            { token: "number", foreground: "B5CEA8" },
+            { token: "string", foreground: "CE9178" },
+            { token: "type.identifier", foreground: "4EC9B0" },
+            { token: "identifier", foreground: "D4D4D4" },
+            { token: "delimiter", foreground: "D4D4D4" },
+            { token: "keyword.import", foreground: "569CD6" },
+            { token: "function", foreground: "DCDCAA" }
+        ],
+        colors: {
+            "editor.background": "#0f1224",
+            "editor.lineHighlightBackground": "#1b1f3a",
+            "editorCursor.foreground": "#AEAFAD",
+            "editor.selectionBackground": "#264F78",
+            "editor.inactiveSelectionBackground": "#3A3D41",
+        }
     });
 
-    // -------- AUTOSAVE --------
+    /* ===== EDITOR ===== */
+    window.editor = monaco.editor.create(
+        document.getElementById("editor"),
+        {
+            value:
+`# LudvigEditor
+# VS Code-style editor
+# PyQt6 • Python • Future 🚀
+
+print("Hello, Ludvig!")`,
+            language: "python",
+            theme: "ludvig-dark",
+            automaticLayout: true,
+
+            fontFamily: "JetBrains Mono, Consolas, monospace",
+            fontSize: 14,
+            fontLigatures: true,
+
+            smoothScrolling: true,
+            cursorSmoothCaretAnimation: "on",
+
+            minimap: { enabled: true },
+            wordWrap: "on",
+
+            bracketPairColorization: { enabled: true },
+            guides: {
+                indentation: true,
+                bracketPairs: true
+            }
+        }
+    );
+
+    /* ===== AUTOSAVE ===== */
+    const AUTOSAVE_KEY = "ludvig_autosave";
+
     setInterval(() => {
-        const code = editor.getValue();
-        window.localStorage.setItem("autosave", code);
+        localStorage.setItem(AUTOSAVE_KEY, editor.getValue());
     }, 5000);
 
-    const saved = localStorage.getItem("autosave");
+    const saved = localStorage.getItem(AUTOSAVE_KEY);
     if (saved) editor.setValue(saved);
 
-    // -------- API FOR PYQT --------
-    window.setCode = (code, lang="python") => {
-        monaco.editor.setModelLanguage(editor.getModel(), lang);
+    /* ===== PYQT API ===== */
+    window.setCode = (code, lang = "python") => {
+        const model = editor.getModel();
+        monaco.editor.setModelLanguage(model, lang);
         editor.setValue(code);
     };
 
     window.getCode = () => editor.getValue();
+
 });
 </script>
 
