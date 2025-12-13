@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <title>LudvigEditor Web</title>
 <style>
-  html, body { margin: 0; height: 100%; background: #0f1224; overflow: hidden; }
-  #editor { width: 100%; height: 100%; }
+  html, body { margin:0; padding:0; width:100%; height:100%; background:#0f1224; overflow:hidden; font-family:sans-serif;}
+  #editor { position:absolute; top:0; left:0; right:0; bottom:150px; }
+  #terminal { position:absolute; left:0; right:0; bottom:0; height:150px; background:#1b1e2b; color:#e0e0ff; font-family:monospace; padding:5px; overflow:auto;}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs/loader.js"></script>
 <script>
@@ -23,7 +24,7 @@ require(['vs/editor/editor.main'], function() {
     });
 });
 
-// Функция для PyQt6
+// ------------------ Functions for PyQt ------------------
 window.loadFileFromPy = function(code, lang='python') {
     if(editor) {
         monaco.editor.setModelLanguage(editor.getModel(), lang);
@@ -31,13 +32,23 @@ window.loadFileFromPy = function(code, lang='python') {
     }
 };
 
-// Функция для PyQt6 получения кода из веба
 window.getCodeForPy = function() {
     return editor ? editor.getValue() : '';
+};
+
+window.appendTerminal = function(text) {
+    let term = document.getElementById('terminal');
+    term.innerText += text + "\n";
+    term.scrollTop = term.scrollHeight;
+};
+
+window.clearTerminal = function() {
+    document.getElementById('terminal').innerText = '';
 };
 </script>
 </head>
 <body>
 <div id="editor"></div>
+<div id="terminal">Terminal Output:</div>
 </body>
 </html>
