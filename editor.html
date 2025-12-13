@@ -2,81 +2,42 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>LudvigEditor Web Ultra</title>
+<title>LudvigEditor Web</title>
 <style>
-html, body, #container {
-  margin: 0; height: 100%; width: 100%; overflow: hidden;
-  background: linear-gradient(135deg, #1a1b3a, #3f2b96);
-  font-family: "JetBrains Mono", Consolas, monospace;
-}
-#toolbar {
-  height: 40px; background: rgba(40,40,80,0.9);
-  display: flex; align-items: center; padding: 0 10px;
-}
-#toolbar select, #toolbar button {
-  margin-right: 10px; padding: 4px 8px; border-radius: 4px;
-  border: none; background: #2a2f4a; color: #fff; cursor: pointer;
-}
-#toolbar select { width: 140px; }
-#output { background:#11132b;color:#cdd6f4;padding:10px;margin:0;height:100px;overflow:auto;font-family:monospace;}
+  html, body { margin: 0; height: 100%; background: #0f1224; overflow: hidden; }
+  #editor { width: 100%; height: 100%; }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs/loader.js"></script>
 <script>
-require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs' }});
+require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs' }});
 let editor;
 require(['vs/editor/editor.main'], function() {
-  editor = monaco.editor.create(document.getElementById('container'), {
-    value: "# LudvigEditor Web Ultra\nprint('Hello World')",
-    language: 'python',
-    theme: 'vs-dark',
-    automaticLayout: true,
-    minimap: { enabled: true },
-    fontSize: 14,
-    scrollBeyondLastLine: false,
-    wordWrap: "on",
-    smoothScrolling: true
-  });
-
-  // Open file from PyQt
-  window.loadFileFromPy = function(code, lang='python') {
-      editor.setValue(code);
-      monaco.editor.setModelLanguage(editor.getModel(), lang);
-  };
-
-  document.getElementById('language').addEventListener('change', () => {
-      monaco.editor.setModelLanguage(editor.getModel(), document.getElementById('language').value);
-  });
-
-  document.getElementById('run').addEventListener('click', () => {
-      const code = editor.getValue();
-      const output = document.getElementById('output');
-      try {
-          output.textContent = '';
-          const result = new Function(code)();
-          if(result !== undefined) output.textContent = result;
-      } catch(e) { output.textContent = e; }
-  });
+    editor = monaco.editor.create(document.getElementById('editor'), {
+        value: '',
+        language: 'python',
+        theme: 'vs-dark',
+        fontSize: 14,
+        automaticLayout: true,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false
+    });
 });
+
+// Функция для PyQt6
+window.loadFileFromPy = function(code, lang='python') {
+    if(editor) {
+        monaco.editor.setModelLanguage(editor.getModel(), lang);
+        editor.setValue(code);
+    }
+};
+
+// Функция для PyQt6 получения кода из веба
+window.getCodeForPy = function() {
+    return editor ? editor.getValue() : '';
+};
 </script>
 </head>
 <body>
-<div id="toolbar">
-  <select id="language">
-    <option value="python">Python</option>
-    <option value="javascript">JavaScript</option>
-    <option value="cpp">C++</option>
-    <option value="html">HTML</option>
-    <option value="css">CSS</option>
-    <option value="java">Java</option>
-    <option value="typescript">TypeScript</option>
-    <option value="json">JSON</option>
-    <option value="php">PHP</option>
-    <option value="go">Go</option>
-    <option value="csharp">C#</option>
-  </select>
-  <button id="run">▶ Run (JS only)</button>
-</div>
-<div id="container"></div>
-<pre id="output"></pre>
+<div id="editor"></div>
 </body>
 </html>
