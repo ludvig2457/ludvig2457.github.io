@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>LudvigEditor PRO</title>
+<title>LudvigEditor PRO 3.0</title>
 <style>
-html, body { margin:0; padding:0; width:100%; height:100%; background:#1e1e1e; overflow:hidden; font-family:sans-serif; }
+html, body { margin:0; padding:0; width:100%; height:100%; background:#1e1e2f; overflow:hidden; font-family:sans-serif; }
 #editor { position:absolute; top:0; left:0; right:0; bottom:150px; border-radius:5px; }
-#terminal { position:absolute; left:0; right:0; bottom:0; height:150px; background:#1e1e1e; color:#d4d4d4; font-family:monospace; padding:5px; overflow:auto; border-top:3px solid #007acc; }
+#terminal { position:absolute; left:0; right:0; bottom:0; height:150px; background:#1e1e2f; color:#d4d4d4; font-family:monospace; padding:5px; overflow:auto; border-top:3px solid #007acc; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs/loader.js"></script>
 <script>
@@ -16,7 +16,7 @@ require(['vs/editor/editor.main'], function() {
     editor = monaco.editor.create(document.getElementById('editor'), {
         value: '',
         language: 'python',
-        theme: 'ludvig-vscode',
+        theme: 'ludvig-vscode-pro',
         fontSize: 14,
         automaticLayout: true,
         minimap: { enabled: false },
@@ -26,11 +26,17 @@ require(['vs/editor/editor.main'], function() {
     // ===================== Custom Python Highlight =====================
     monaco.languages.register({ id: 'python-pro' });
 
+    const imports = [
+        'sys','os','subprocess','requests','threading','time','json','shutil','uuid','tqdm','pypresence',
+        'minecraft_launcher_lib','packaging','random_username','PyQt6'
+    ];
+
     monaco.languages.setMonarchTokensProvider('python-pro', {
         tokenizer: {
             root: [
                 // Imports
-                [/\b(import|from|as)\b/, 'keyword.import'],
+                [new RegExp('\\b(import|from|as)\\b'), 'keyword.import'],
+                [new RegExp('\\b(' + imports.join('|') + ')\\b'), 'keyword.library'],
                 // Control flow
                 [/\b(if|elif|else|for|while|try|except|finally|with|pass|break|continue|return|lambda|yield|await|async)\b/, 'keyword.control'],
                 // Constants
@@ -53,23 +59,24 @@ require(['vs/editor/editor.main'], function() {
         }
     });
 
-    monaco.editor.defineTheme('ludvig-vscode', {
+    monaco.editor.defineTheme('ludvig-vscode-pro', {
         base: 'vs-dark',
         inherit: true,
         rules: [
             { token: 'keyword.import', foreground: 'C586C0', fontStyle: 'bold' },      // Purple
+            { token: 'keyword.library', foreground: '9CDCFE', fontStyle: 'bold' },     // Light Blue for imports
             { token: 'keyword.control', foreground: '569CD6', fontStyle: 'bold' },     // Blue
-            { token: 'constant.language', foreground: '4EC9B0' },   // Cyan
-            { token: 'entity.name.function', foreground: 'DCDCAA' },// Yellow
+            { token: 'constant.language', foreground: '4EC9B0' },                       // Cyan
+            { token: 'entity.name.function', foreground: 'DCDCAA' },                    // Yellow
             { token: 'entity.name.class', foreground: '4EC9B0', fontStyle: 'bold' },   // Cyan
-            { token: 'comment', foreground: '6A9955', fontStyle: 'italic' }, // Green italic
-            { token: 'string', foreground: 'CE9178' },              // Orange
-            { token: 'number', foreground: 'B5CEA8' },              // Light green
-            { token: 'annotation', foreground: 'D4D4D4', fontStyle: 'bold' }, // Decorators
-            { token: 'identifier', foreground: 'D4D4D4' }           // Default
+            { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },           // Green italic
+            { token: 'string', foreground: 'CE9178' },                                  // Orange
+            { token: 'number', foreground: 'B5CEA8' },                                  // Light green
+            { token: 'annotation', foreground: 'D4D4D4', fontStyle: 'bold' },          // Decorators
+            { token: 'identifier', foreground: 'D4D4D4' }                               // Default
         ],
         colors: {
-            'editor.background': '#1e1e1e',
+            'editor.background': '#1e1e2f',
             'editor.foreground': '#d4d4d4',
             'editor.selectionBackground': '#264f78',
             'editor.lineHighlightBackground': '#333333',
@@ -77,7 +84,7 @@ require(['vs/editor/editor.main'], function() {
         }
     });
 
-    monaco.editor.setTheme('ludvig-vscode');
+    monaco.editor.setTheme('ludvig-vscode-pro');
 });
 
 // ------------------ PyQt6 Interface ------------------
