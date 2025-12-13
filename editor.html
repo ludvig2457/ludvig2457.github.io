@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>LudvigEditor ULTRA 5.0</title>
+<title>LudvigEditor ULTRA 6.0</title>
 <style>
-html, body { margin:0; padding:0; width:100%; height:100%; background:#1e1e2f; overflow:hidden; font-family:sans-serif; }
-#editor { position:absolute; top:0; left:0; right:0; bottom:200px; border-radius:5px; }
-#terminals { position:absolute; left:0; right:0; bottom:0; height:200px; display:flex; flex-wrap:wrap; overflow:auto; }
-.terminal { flex:1; min-width:300px; background:#1e1e2f; color:#d4d4d4; font-family:monospace; padding:5px; margin:2px; border-radius:4px; border:2px solid #007acc; overflow:auto; white-space: pre-wrap; }
+html,body { margin:0; padding:0; width:100%; height:100%; background:#1e1e2f; font-family:sans-serif; overflow:hidden; }
+#editor { position:absolute; top:0; left:0; right:0; bottom:200px; border-radius:6px; }
+#terminals { position:absolute; left:0; right:0; bottom:0; height:200px; display:flex; overflow:auto; flex-wrap:wrap; }
+.terminal { flex:1; min-width:300px; margin:2px; border-radius:4px; padding:5px; background:#1e1e2f; font-family:monospace; border:2px solid #007acc; overflow:auto; white-space:pre-wrap; }
 .stdout { color:#4EC9B0; }
 .stderr { color:#F44747; }
 .info { color:#569CD6; }
@@ -16,89 +16,87 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#1e1e2f; o
 <script src="https://cdn.jsdelivr.net/npm/pyodide@0.24.0/full/pyodide.js"></script>
 <script>
 require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs' }});
-let editor;
-let terminals = [];
-
-async function initPyodideAndLint() {
-    window.pyodide = await loadPyodide();
-    await pyodide.loadPackage(['pyflakes']);
+let editor, terminals=[];
+async function initPyodide(){
+    window.pyodide=await loadPyodide();
+    await pyodide.loadPackage(['pyflakes','pycodestyle']);
 }
-initPyodideAndLint();
+initPyodide();
 
 require(['vs/editor/editor.main'], function() {
     editor = monaco.editor.create(document.getElementById('editor'), {
         value: '',
         language: 'python',
         theme: 'ludvig-vscode-ultra',
-        fontSize: 14,
-        automaticLayout: true,
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false
+        fontSize:14,
+        automaticLayout:true,
+        minimap:{enabled:false},
+        scrollBeyondLastLine:false
     });
 
-    // Autocomplete для всех импортов SuperLauncher
+    // Autocomplete для SuperLauncher импортов и методов
     const imports = [
         'sys','os','subprocess','threading','time','json','shutil','requests',
         'PyQt6','minecraft_launcher_lib','packaging','tqdm','pypresence','random_username','uuid','pathlib'
     ];
+    const methods = ['append','read','write','join','split','replace','format','pop','clear','keys','values','items','encode','decode','start','stop'];
     monaco.languages.registerCompletionItemProvider('python',{
         provideCompletionItems:function(model,position){
-            return { suggestions: imports.map(i=>({
-                label:i,
-                kind: monaco.languages.CompletionItemKind.Module,
-                insertText:i
-            }))};
+            let suggestions = imports.concat(methods).map(i=>({label:i,kind:monaco.languages.CompletionItemKind.Function,insertText:i}));
+            return {suggestions:suggestions};
         }
     });
 
-    // Live lint ошибок
+    // Live lint / PEP8
     async function checkErrors(){
+        if(!window.pyodide) return;
         const code = editor.getValue();
         try {
-            let pyflakes = await pyodide.runPythonAsync(`
-import pyflakes.api, pyflakes.reporter, io
-reporter = pyflakes.reporter.Reporter(io.StringIO(), io.StringIO())
-pyflakes.api.check(${JSON.stringify(code)}, '<string>', reporter=reporter)
-reporter.messages
+            let lint = await pyodide.runPythonAsync(`
+import pyflakes.api, pyflakes.reporter, pycodestyle, io
+out = io.StringIO()
+rep = pyflakes.reporter.Reporter(out,out)
+pyflakes.api.check(${JSON.stringify(code)}, '<string>', rep)
+style=pycodestyle.StyleGuide(quiet=True)
+style.check_files([io.StringIO(${JSON.stringify(code)})])
+out.getvalue()
 `);
-            const markers = [];
-            if (pyflakes){
-                pyflakes.split('\\n').forEach(line=>{
-                    const match = line.match(/<string>:(\\d+):\\s*(.*)/);
-                    if (match){
-                        const lineNumber = parseInt(match[1]);
-                        const msg = match[2];
+            const markers=[];
+            if(lint){
+                lint.split('\\n').forEach(line=>{
+                    const match=line.match(/<string>:(\\d+):\\s*(.*)/);
+                    if(match){
+                        const lineNumber=parseInt(match[1]);
+                        const msg=match[2];
                         markers.push({
-                            startLineNumber: lineNumber,
+                            startLineNumber:lineNumber,
                             startColumn:1,
-                            endLineNumber: lineNumber,
+                            endLineNumber:lineNumber,
                             endColumn:1,
-                            message: msg,
-                            severity: monaco.MarkerSeverity.Error
+                            message:msg,
+                            severity:monaco.MarkerSeverity.Error
                         });
                     }
                 });
             }
-            monaco.editor.setModelMarkers(editor.getModel(), "owner", markers);
-        } catch(e){
-            console.log(e);
-        }
+            monaco.editor.setModelMarkers(editor.getModel(),"owner",markers);
+        }catch(e){console.log(e);}
     }
     editor.onDidChangeModelContent(()=>checkErrors());
     setInterval(checkErrors,2000);
 
-    // Тема VS Code
+    // VS Code тема
     monaco.editor.defineTheme('ludvig-vscode-ultra',{
         base:'vs-dark',
         inherit:true,
         rules:[
-            { token:'keyword', foreground:'C586C0', fontStyle:'bold' },
-            { token:'number', foreground:'B5CEA8' },
-            { token:'string', foreground:'CE9178' },
-            { token:'comment', foreground:'6A9955', fontStyle:'italic' },
-            { token:'entity.name.function', foreground:'DCDCAA' },
-            { token:'entity.name.class', foreground:'4EC9B0', fontStyle:'bold' },
-            { token:'identifier', foreground:'D4D4D4' }
+            {token:'keyword', foreground:'C586C0', fontStyle:'bold'},
+            {token:'number', foreground:'B5CEA8'},
+            {token:'string', foreground:'CE9178'},
+            {token:'comment', foreground:'6A9955', fontStyle:'italic'},
+            {token:'entity.name.function', foreground:'DCDCAA'},
+            {token:'entity.name.class', foreground:'4EC9B0', fontStyle:'bold'},
+            {token:'identifier', foreground:'D4D4D4'}
         ],
         colors:{
             'editor.background':'#1e1e2f',
@@ -111,7 +109,7 @@ reporter.messages
     monaco.editor.setTheme('ludvig-vscode-ultra');
 });
 
-// PyQt6 Bridge
+// PyQt6 bridge
 window.loadFileFromPy=function(code,lang='python'){ editor.setValue(code); };
 window.getCodeForPy=function(){ return editor.getValue(); };
 window.appendTerminal=function(text,type='info'){
