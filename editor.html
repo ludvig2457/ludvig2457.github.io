@@ -39,6 +39,8 @@ html, body {
     outline: none;
     opacity: 0.85;
     font-size: 14px;
+    background: rgba(255,255,255,.12);
+    color: #fff;
 }
 
 /* ===== LANGUAGE SELECT ===== */
@@ -48,7 +50,13 @@ html, body {
     border: none;
     font-size: 14px;
     background: rgba(255,255,255,.12);
-    color: white;
+    color: #fff; /* отображение в панели */
+}
+
+/* Сделаем текст внутри раскрывающегося списка чёрным на светлом фоне */
+#langSelect option {
+    color: black;
+    background: white;
 }
 
 /* ===== EDITOR ===== */
