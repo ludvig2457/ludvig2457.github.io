@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>LudvigEditor ULTRA++</title>
+<title>LudvigEditor PRO</title>
 <style>
-html, body { margin:0; padding:0; width:100%; height:100%; background:#0f1224; overflow:hidden; font-family:sans-serif; }
-#editor { position:absolute; top:0; left:0; right:0; bottom:150px; border-radius:10px; }
-#terminal { position:absolute; left:0; right:0; bottom:0; height:150px; background:#1b1e2b; color:#e0e0ff; font-family:monospace; padding:5px; overflow:auto; border-top:3px solid #3f2b96; }
+html, body { margin:0; padding:0; width:100%; height:100%; background:#1e1e1e; overflow:hidden; font-family:sans-serif; }
+#editor { position:absolute; top:0; left:0; right:0; bottom:150px; border-radius:5px; }
+#terminal { position:absolute; left:0; right:0; bottom:0; height:150px; background:#1e1e1e; color:#d4d4d4; font-family:monospace; padding:5px; overflow:auto; border-top:3px solid #007acc; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs/loader.js"></script>
 <script>
@@ -15,7 +15,7 @@ let editor;
 require(['vs/editor/editor.main'], function() {
     editor = monaco.editor.create(document.getElementById('editor'), {
         value: '',
-        language: 'python-custom',
+        language: 'python',
         theme: 'vs-dark',
         fontSize: 14,
         automaticLayout: true,
@@ -23,51 +23,52 @@ require(['vs/editor/editor.main'], function() {
         scrollBeyondLastLine: false
     });
 
-    // ===================== Python Custom with Colors =====================
-    monaco.languages.register({ id: 'python-custom' });
-    monaco.languages.setMonarchTokensProvider('python-custom', {
+    // ===================== Custom Python Highlight =====================
+    monaco.languages.register({ id: 'python-pro' });
+    monaco.languages.setMonarchTokensProvider('python-pro', {
         tokenizer: {
             root: [
-                [/\b(import|from)\b/, 'keyword.import'],   // Imports - violet
-                [/\b(as|if|elif|else|for|while|try|except|with|pass|break|continue|def|class|return|lambda|yield|await|async)\b/, 'keyword.control'], // Control - pink
-                [/\b(True|False|None)\b/, 'constant.language'], // Constants - cyan
-                [/\b([A-Za-z_][\w]*)\s*(?=\()/, 'entity.name.function'], // Function names - blue
-                [/\bclass\s+([A-Za-z_][\w]*)/, 'entity.name.class'],   // Classes - orange
-                [/#.*$/, 'comment'], // Comments - gray
-                [/'[^']*'/, 'string'], [/"[^"]*"/, 'string'], // Strings - yellow
-                [/\b[0-9]+\b/, 'number'], // Numbers - light green
-                [/\b([A-Za-z_][\w]*)\b/, 'identifier'] // Identifiers - default
+                [/\b(import|from)\b/, 'keyword.import'],
+                [/\b(as|if|elif|else|for|while|try|except|with|pass|break|continue|def|class|return|lambda|yield|await|async)\b/, 'keyword.control'],
+                [/\b(True|False|None)\b/, 'constant.language'],
+                [/\b([A-Za-z_][\w]*)\s*(?=\()/, 'entity.name.function'],
+                [/\bclass\s+([A-Za-z_][\w]*)/, 'entity.name.class'],
+                [/#.*$/, 'comment'],
+                [/'[^']*'/, 'string'], [/"[^"]*"/, 'string'],
+                [/\b[0-9]+\b/, 'number'],
+                [/\b([A-Za-z_][\w]*)\b/, 'identifier']
             ]
         }
     });
 
-    monaco.editor.defineTheme('ludvig-theme', {
+    monaco.editor.defineTheme('ludvig-vscode', {
         base: 'vs-dark',
         inherit: true,
         rules: [
-            { token: 'keyword.import', foreground: 'C792EA' },
-            { token: 'keyword.control', foreground: 'FF79C6' },
-            { token: 'constant.language', foreground: '00FFFF' },
-            { token: 'entity.name.function', foreground: '82AAFF' },
-            { token: 'entity.name.class', foreground: 'F78C6C' },
-            { token: 'comment', foreground: '6A9955' },
-            { token: 'string', foreground: 'F1FA8C' },
-            { token: 'number', foreground: 'B5CEA8' },
-            { token: 'identifier', foreground: 'DCDCAA' }
+            { token: 'keyword.import', foreground: 'C586C0' },      // Purple
+            { token: 'keyword.control', foreground: '569CD6' },     // Blue
+            { token: 'constant.language', foreground: '4EC9B0' },   // Cyan
+            { token: 'entity.name.function', foreground: 'DCDCAA' },// Yellow
+            { token: 'entity.name.class', foreground: '4EC9B0' },   // Cyan
+            { token: 'comment', foreground: '6A9955', fontStyle: 'italic' }, // Green italic
+            { token: 'string', foreground: 'CE9178' },              // Orange
+            { token: 'number', foreground: 'B5CEA8' },              // Light green
+            { token: 'identifier', foreground: 'D4D4D4' }           // Default
         ],
         colors: {
-            'editor.background': '#0f1224',
-            'editor.foreground': '#e0e0ff',
-            'editor.selectionBackground': '#2a2f4a',
-            'editor.lineHighlightBackground': '#1b1e2b'
+            'editor.background': '#1e1e1e',
+            'editor.foreground': '#d4d4d4',
+            'editor.selectionBackground': '#264f78',
+            'editor.lineHighlightBackground': '#333333',
+            'editorCursor.foreground': '#dcdcdc'
         }
     });
 
-    monaco.editor.setTheme('ludvig-theme');
+    monaco.editor.setTheme('ludvig-vscode');
 });
 
-// ------------------ Functions for PyQt ------------------
-window.loadFileFromPy = function(code, lang='python-custom') {
+// ------------------ PyQt Functions ------------------
+window.loadFileFromPy = function(code, lang='python') {
     if(editor) {
         monaco.editor.setModelLanguage(editor.getModel(), lang);
         editor.setValue(code);
