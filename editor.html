@@ -27,6 +27,20 @@ html, body {
     backdrop-filter: blur(20px) saturate(160%);
     box-shadow: 0 6px 30px rgba(0,0,0,.5);
     border-bottom: 1px solid rgba(255,255,255,.12);
+    position: relative;
+}
+
+/* ===== SEARCH INPUT ===== */
+#searchInput {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    opacity: 0.8;
+    font-size: 14px;
 }
 
 /* ===== EDITOR ===== */
@@ -44,7 +58,9 @@ html, body {
 </head>
 
 <body>
-<div id="topbar">⚡ LudvigEditor — VS Code style</div>
+<div id="topbar">⚡ LudvigEditor — VS Code style
+    <input type="text" id="searchInput" placeholder="Search..." />
+</div>
 <div id="editor"></div>
 
 <script>
@@ -94,6 +110,22 @@ require(["vs/editor/editor.main"], function () {
     window.getCode = () => editor.getValue();
 
     window.pySave = null; // для PyQt, будет вызываться перед запуском
+
+    // ===== SEARCH FUNCTION =====
+    const searchInput = document.getElementById("searchInput");
+    searchInput.addEventListener("input", () => {
+        const term = searchInput.value;
+        if(term) {
+            editor.getAction('actions.find').run().then(() => {
+                editor.getContribution('editor.contrib.findController')
+                      .getState()
+                      .change({ searchString: term }, false);
+            });
+        } else {
+            // Очистка поиска
+            editor.getContribution('editor.contrib.findController').getState().change({ searchString: '' }, false);
+        }
+    });
 });
 </script>
 </body>
