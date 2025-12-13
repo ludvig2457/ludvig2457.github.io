@@ -2,78 +2,87 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>LudvigEditor PRO 3.0</title>
+<title>LudvigEditor ULTRA 4.0</title>
 <style>
 html, body { margin:0; padding:0; width:100%; height:100%; background:#1e1e2f; overflow:hidden; font-family:sans-serif; }
-#editor { position:absolute; top:0; left:0; right:0; bottom:150px; border-radius:5px; }
-#terminal { position:absolute; left:0; right:0; bottom:0; height:150px; background:#1e1e2f; color:#d4d4d4; font-family:monospace; padding:5px; overflow:auto; border-top:3px solid #007acc; }
+#editor { position:absolute; top:0; left:0; right:0; bottom:200px; border-radius:5px; }
+#terminals { position:absolute; left:0; right:0; bottom:0; height:200px; display:flex; flex-wrap:wrap; overflow:auto; }
+.terminal { flex:1; min-width:300px; background:#1e1e2f; color:#d4d4d4; font-family:monospace; padding:5px; margin:2px; border-radius:4px; border:2px solid #007acc; overflow:auto; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs/loader.js"></script>
 <script>
 require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs' }});
 let editor;
+let terminals = [];
+
 require(['vs/editor/editor.main'], function() {
+    // ============ Основной редактор ============
     editor = monaco.editor.create(document.getElementById('editor'), {
         value: '',
         language: 'python',
-        theme: 'ludvig-vscode-pro',
+        theme: 'ludvig-vscode-ultra',
         fontSize: 14,
         automaticLayout: true,
         minimap: { enabled: false },
         scrollBeyondLastLine: false
     });
 
-    // ===================== Custom Python Highlight =====================
-    monaco.languages.register({ id: 'python-pro' });
-
-    const imports = [
-        'sys','os','subprocess','requests','threading','time','json','shutil','uuid','tqdm','pypresence',
-        'minecraft_launcher_lib','packaging','random_username','PyQt6'
-    ];
-
-    monaco.languages.setMonarchTokensProvider('python-pro', {
-        tokenizer: {
-            root: [
-                // Imports
-                [new RegExp('\\b(import|from|as)\\b'), 'keyword.import'],
-                [new RegExp('\\b(' + imports.join('|') + ')\\b'), 'keyword.library'],
-                // Control flow
-                [/\b(if|elif|else|for|while|try|except|finally|with|pass|break|continue|return|lambda|yield|await|async)\b/, 'keyword.control'],
-                // Constants
-                [/\b(True|False|None)\b/, 'constant.language'],
-                // Functions and classes
-                [/\bdef\s+([A-Za-z_][\w]*)/, 'entity.name.function'],
-                [/\bclass\s+([A-Za-z_][\w]*)/, 'entity.name.class'],
-                // Strings
-                [/'[^']*'/, 'string'],
-                [/"[^"]*"/, 'string'],
-                // Numbers
-                [/\b[0-9]+(\.[0-9]+)?\b/, 'number'],
-                // Comments
-                [/#.*$/, 'comment'],
-                // Decorators
-                [/^@\w+/, 'annotation'],
-                // Identifiers
-                [/\b([A-Za-z_][\w]*)\b/, 'identifier']
-            ]
+    // ============ Autocomplete ============
+    monaco.languages.registerCompletionItemProvider('python', {
+        provideCompletionItems: function(model, position) {
+            const suggestions = [
+                { label: 'sys', kind: monaco.languages.CompletionItemKind.Module, insertText: 'sys' },
+                { label: 'os', kind: monaco.languages.CompletionItemKind.Module, insertText: 'os' },
+                { label: 'subprocess', kind: monaco.languages.CompletionItemKind.Module, insertText: 'subprocess' },
+                { label: 'threading', kind: monaco.languages.CompletionItemKind.Module, insertText: 'threading' },
+                { label: 'PyQt6', kind: monaco.languages.CompletionItemKind.Module, insertText: 'PyQt6' },
+                { label: 'QApplication', kind: monaco.languages.CompletionItemKind.Class, insertText: 'QApplication' },
+                { label: 'QMainWindow', kind: monaco.languages.CompletionItemKind.Class, insertText: 'QMainWindow' },
+                { label: 'QWidget', kind: monaco.languages.CompletionItemKind.Class, insertText: 'QWidget' }
+                // ... добавляй все необходимые библиотеки
+            ];
+            return { suggestions: suggestions };
         }
     });
 
-    monaco.editor.defineTheme('ludvig-vscode-pro', {
+    // ============ Live Ошибки (Простейшая проверка) ============
+    function checkErrors() {
+        const code = editor.getValue();
+        try {
+            new Function(code);
+            monaco.editor.setModelMarkers(editor.getModel(), "owner", []);
+        } catch(e) {
+            const line = e.lineNumber ? e.lineNumber-1 : 0;
+            monaco.editor.setModelMarkers(editor.getModel(), "owner", [{
+                startLineNumber: line+1,
+                startColumn: 1,
+                endLineNumber: line+1,
+                endColumn: 1,
+                message: e.message,
+                severity: monaco.MarkerSeverity.Error
+            }]);
+        }
+    }
+
+    editor.onDidChangeModelContent(checkErrors);
+    setInterval(checkErrors, 2000);
+
+    // ============ Тема ============
+    monaco.editor.defineTheme('ludvig-vscode-ultra', {
         base: 'vs-dark',
         inherit: true,
         rules: [
-            { token: 'keyword.import', foreground: 'C586C0', fontStyle: 'bold' },      // Purple
-            { token: 'keyword.library', foreground: '9CDCFE', fontStyle: 'bold' },     // Light Blue for imports
-            { token: 'keyword.control', foreground: '569CD6', fontStyle: 'bold' },     // Blue
-            { token: 'constant.language', foreground: '4EC9B0' },                       // Cyan
-            { token: 'entity.name.function', foreground: 'DCDCAA' },                    // Yellow
-            { token: 'entity.name.class', foreground: '4EC9B0', fontStyle: 'bold' },   // Cyan
-            { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },           // Green italic
-            { token: 'string', foreground: 'CE9178' },                                  // Orange
-            { token: 'number', foreground: 'B5CEA8' },                                  // Light green
-            { token: 'annotation', foreground: 'D4D4D4', fontStyle: 'bold' },          // Decorators
-            { token: 'identifier', foreground: 'D4D4D4' }                               // Default
+            { token: 'keyword.import', foreground: 'C586C0', fontStyle: 'bold' },
+            { token: 'keyword.library', foreground: '9CDCFE', fontStyle: 'bold' },
+            { token: 'keyword.control', foreground: '569CD6', fontStyle: 'bold' },
+            { token: 'constant.language', foreground: '4EC9B0' },
+            { token: 'entity.name.function', foreground: 'DCDCAA' },
+            { token: 'entity.name.class', foreground: '4EC9B0', fontStyle: 'bold' },
+            { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
+            { token: 'string', foreground: 'CE9178' },
+            { token: 'number', foreground: 'B5CEA8' },
+            { token: 'annotation', foreground: 'D4D4D4', fontStyle: 'bold' },
+            { token: 'identifier', foreground: 'D4D4D4' }
         ],
         colors: {
             'editor.background': '#1e1e2f',
@@ -83,32 +92,26 @@ require(['vs/editor/editor.main'], function() {
             'editorCursor.foreground': '#dcdcdc'
         }
     });
-
-    monaco.editor.setTheme('ludvig-vscode-pro');
+    monaco.editor.setTheme('ludvig-vscode-ultra');
 });
 
-// ------------------ PyQt6 Interface ------------------
-window.loadFileFromPy = function(code, lang='python') {
-    if(editor){
-        monaco.editor.setModelLanguage(editor.getModel(), lang);
-        editor.setValue(code);
-    }
+// ============ PyQt6 Bridge ============
+window.loadFileFromPy = function(code, lang='python'){ editor.setValue(code); };
+window.getCodeForPy = function(){ return editor.getValue(); };
+window.appendTerminal = function(text){
+    let t = document.createElement('div');
+    t.className='terminal';
+    t.innerText=text;
+    document.getElementById('terminals').appendChild(t);
+    t.scrollTop=t.scrollHeight;
 };
-window.getCodeForPy = function() {
-    return editor ? editor.getValue() : '';
-};
-window.appendTerminal = function(text) {
-    let term = document.getElementById('terminal');
-    term.innerText += text + "\n";
-    term.scrollTop = term.scrollHeight;
-};
-window.clearTerminal = function() {
-    document.getElementById('terminal').innerText = '';
+window.clearTerminal = function(){
+    document.getElementById('terminals').innerHTML='';
 };
 </script>
 </head>
 <body>
 <div id="editor"></div>
-<div id="terminal">Terminal Output:</div>
+<div id="terminals"></div>
 </body>
 </html>
