@@ -23,12 +23,7 @@ html, body {
     color: #fff;
     font-weight: 600;
     letter-spacing: .4px;
-
-    background: linear-gradient(
-        135deg,
-        rgba(90,60,200,.85),
-        rgba(60,40,160,.85)
-    );
+    background: linear-gradient(135deg, rgba(90,60,200,.85), rgba(60,40,160,.85));
     backdrop-filter: blur(20px) saturate(160%);
     box-shadow: 0 6px 30px rgba(0,0,0,.5);
     border-bottom: 1px solid rgba(255,255,255,.12);
@@ -41,32 +36,21 @@ html, body {
 }
 
 /* ===== SCROLLBAR ===== */
-::-webkit-scrollbar {
-    width: 10px;
-}
-::-webkit-scrollbar-thumb {
-    background: rgba(130,130,220,.4);
-    border-radius: 10px;
-}
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(130,130,220,.4); border-radius: 10px; }
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
 </head>
 
 <body>
-
 <div id="topbar">⚡ LudvigEditor — VS Code style</div>
 <div id="editor"></div>
 
 <script>
-require.config({
-    paths: {
-        vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs"
-    }
-});
+require.config({ paths: { vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs" } });
 
 require(["vs/editor/editor.main"], function () {
-
     monaco.editor.defineTheme("ludvig-gradient", {
         base: "vs-dark",
         inherit: true,
@@ -86,24 +70,20 @@ require(["vs/editor/editor.main"], function () {
         }
     });
 
-    window.editor = monaco.editor.create(
-        document.getElementById("editor"),
-        {
-            value: "# LudvigEditor\nprint('Gradient future 🚀')",
-            language: "python",
-            theme: "ludvig-gradient",
-            automaticLayout: true,
-
-            fontFamily: "JetBrains Mono, Consolas, monospace",
-            fontSize: 14,
-            fontLigatures: true,
-
-            smoothScrolling: true,
-            cursorSmoothCaretAnimation: "on",
-            minimap: { enabled: true },
-            wordWrap: "on",
-        }
-    );
+    window.editor = monaco.editor.create(document.getElementById("editor"), {
+        value: "# LudvigEditor\nprint('Gradient future 🚀')",
+        language: "python",
+        theme: "ludvig-gradient",
+        automaticLayout: true,
+        fontFamily: "JetBrains Mono, Consolas, monospace",
+        fontSize: 14,
+        fontLigatures: true,
+        smoothScrolling: true,
+        cursorSmoothCaretAnimation: "on",
+        minimap: { enabled: true },
+        wordWrap: "on",
+        dragAndDrop: true
+    });
 
     /* ===== API FOR PYQT ===== */
     window.setCode = (code, lang = "python") => {
@@ -112,8 +92,24 @@ require(["vs/editor/editor.main"], function () {
     };
 
     window.getCode = () => editor.getValue();
+
+    /* ===== SEARCH BAR ===== */
+    const searchInput = document.createElement("input");
+    searchInput.type = "text";
+    searchInput.placeholder = "Search...";
+    searchInput.style = "position:absolute;top:10px;right:10px;padding:5px 10px;border-radius:6px;border:none;outline:none;opacity:0.7;";
+    document.body.appendChild(searchInput);
+
+    searchInput.addEventListener("input", () => {
+        const searchTerm = searchInput.value;
+        editor.getAction('actions.find').run().then(() => {
+            editor.getContribution('editor.contrib.findController').getState().change({ searchString: searchTerm }, false);
+        });
+    });
+
+    /* ===== AUTOSAVE EVERY 1 SEC ===== */
+    setInterval(() => { if(window.pySave) pySave(window.getCode()); }, 1000);
 });
 </script>
-
 </body>
 </html>
