@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>LudvigEditor Web ULTRA+ PyQt6 Ready</title>
+<title>LudvigEditor ULTRA+ Py Imports Highlight</title>
 <style>
 html, body { margin:0; padding:0; width:100%; height:100%; background:#0f1224; overflow:hidden; font-family:sans-serif; }
 #editor { position:absolute; top:0; left:0; right:0; bottom:150px; border-radius:10px; }
@@ -23,14 +23,14 @@ require(['vs/editor/editor.main'], function() {
         scrollBeyondLastLine: false
     });
 
-    // Добавляем поддержку подсветки PyQt6 импортов
-    monaco.languages.register({ id: 'python-pyqt6' });
-    monaco.languages.setMonarchTokensProvider('python-pyqt6', {
+    // ===================== PYTHON + IMPORTS =====================
+    monaco.languages.register({ id: 'python-full-imports' });
+    monaco.languages.setMonarchTokensProvider('python-full-imports', {
         tokenizer: {
             root: [
                 [/\b(import|from)\b/, 'keyword'],
-                [/\b(PyQt6\.[\w\.]+)\b/, 'type.identifier'],
-                [/\b(class|def|return|if|elif|else|for|while|try|except|with|as|pass|break|continue)\b/, 'keyword'],
+                [/\b(as|if|elif|else|for|while|try|except|with|pass|break|continue|def|class|return)\b/, 'keyword'],
+                [/\b([A-Za-z_][\w\.]*)\b/, 'type.identifier'], // все идентификаторы, включая модули
                 [/#.*$/, 'comment'],
                 [/'[^']*'/, 'string'],
                 [/"[^"]*"/, 'string'],
@@ -38,11 +38,11 @@ require(['vs/editor/editor.main'], function() {
             ]
         }
     });
-    editor.updateOptions({ language: 'python-pyqt6' });
+    editor.updateOptions({ language: 'python-full-imports' });
 });
 
 // ------------------ Functions for PyQt ------------------
-window.loadFileFromPy = function(code, lang='python-pyqt6') {
+window.loadFileFromPy = function(code, lang='python-full-imports') {
     if(editor) {
         monaco.editor.setModelLanguage(editor.getModel(), lang);
         editor.setValue(code);
