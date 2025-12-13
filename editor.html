@@ -16,7 +16,7 @@ require(['vs/editor/editor.main'], function() {
     editor = monaco.editor.create(document.getElementById('editor'), {
         value: '',
         language: 'python',
-        theme: 'vs-dark',
+        theme: 'ludvig-vscode',
         fontSize: 14,
         automaticLayout: true,
         minimap: { enabled: false },
@@ -25,17 +25,29 @@ require(['vs/editor/editor.main'], function() {
 
     // ===================== Custom Python Highlight =====================
     monaco.languages.register({ id: 'python-pro' });
+
     monaco.languages.setMonarchTokensProvider('python-pro', {
         tokenizer: {
             root: [
-                [/\b(import|from)\b/, 'keyword.import'],
-                [/\b(as|if|elif|else|for|while|try|except|with|pass|break|continue|def|class|return|lambda|yield|await|async)\b/, 'keyword.control'],
+                // Imports
+                [/\b(import|from|as)\b/, 'keyword.import'],
+                // Control flow
+                [/\b(if|elif|else|for|while|try|except|finally|with|pass|break|continue|return|lambda|yield|await|async)\b/, 'keyword.control'],
+                // Constants
                 [/\b(True|False|None)\b/, 'constant.language'],
-                [/\b([A-Za-z_][\w]*)\s*(?=\()/, 'entity.name.function'],
+                // Functions and classes
+                [/\bdef\s+([A-Za-z_][\w]*)/, 'entity.name.function'],
                 [/\bclass\s+([A-Za-z_][\w]*)/, 'entity.name.class'],
+                // Strings
+                [/'[^']*'/, 'string'],
+                [/"[^"]*"/, 'string'],
+                // Numbers
+                [/\b[0-9]+(\.[0-9]+)?\b/, 'number'],
+                // Comments
                 [/#.*$/, 'comment'],
-                [/'[^']*'/, 'string'], [/"[^"]*"/, 'string'],
-                [/\b[0-9]+\b/, 'number'],
+                // Decorators
+                [/^@\w+/, 'annotation'],
+                // Identifiers
                 [/\b([A-Za-z_][\w]*)\b/, 'identifier']
             ]
         }
@@ -45,14 +57,15 @@ require(['vs/editor/editor.main'], function() {
         base: 'vs-dark',
         inherit: true,
         rules: [
-            { token: 'keyword.import', foreground: 'C586C0' },      // Purple
-            { token: 'keyword.control', foreground: '569CD6' },     // Blue
+            { token: 'keyword.import', foreground: 'C586C0', fontStyle: 'bold' },      // Purple
+            { token: 'keyword.control', foreground: '569CD6', fontStyle: 'bold' },     // Blue
             { token: 'constant.language', foreground: '4EC9B0' },   // Cyan
             { token: 'entity.name.function', foreground: 'DCDCAA' },// Yellow
-            { token: 'entity.name.class', foreground: '4EC9B0' },   // Cyan
+            { token: 'entity.name.class', foreground: '4EC9B0', fontStyle: 'bold' },   // Cyan
             { token: 'comment', foreground: '6A9955', fontStyle: 'italic' }, // Green italic
             { token: 'string', foreground: 'CE9178' },              // Orange
             { token: 'number', foreground: 'B5CEA8' },              // Light green
+            { token: 'annotation', foreground: 'D4D4D4', fontStyle: 'bold' }, // Decorators
             { token: 'identifier', foreground: 'D4D4D4' }           // Default
         ],
         colors: {
@@ -67,24 +80,21 @@ require(['vs/editor/editor.main'], function() {
     monaco.editor.setTheme('ludvig-vscode');
 });
 
-// ------------------ PyQt Functions ------------------
+// ------------------ PyQt6 Interface ------------------
 window.loadFileFromPy = function(code, lang='python') {
-    if(editor) {
+    if(editor){
         monaco.editor.setModelLanguage(editor.getModel(), lang);
         editor.setValue(code);
     }
 };
-
 window.getCodeForPy = function() {
     return editor ? editor.getValue() : '';
 };
-
 window.appendTerminal = function(text) {
     let term = document.getElementById('terminal');
     term.innerText += text + "\n";
     term.scrollTop = term.scrollHeight;
 };
-
 window.clearTerminal = function() {
     document.getElementById('terminal').innerText = '';
 };
