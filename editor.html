@@ -2,21 +2,30 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>LudvigEditor ULTRA 4.0</title>
+<title>LudvigEditor ULTRA 5.0</title>
 <style>
 html, body { margin:0; padding:0; width:100%; height:100%; background:#1e1e2f; overflow:hidden; font-family:sans-serif; }
 #editor { position:absolute; top:0; left:0; right:0; bottom:200px; border-radius:5px; }
 #terminals { position:absolute; left:0; right:0; bottom:0; height:200px; display:flex; flex-wrap:wrap; overflow:auto; }
-.terminal { flex:1; min-width:300px; background:#1e1e2f; color:#d4d4d4; font-family:monospace; padding:5px; margin:2px; border-radius:4px; border:2px solid #007acc; overflow:auto; }
+.terminal { flex:1; min-width:300px; background:#1e1e2f; color:#d4d4d4; font-family:monospace; padding:5px; margin:2px; border-radius:4px; border:2px solid #007acc; overflow:auto; white-space: pre-wrap; }
+.stdout { color:#4EC9B0; }
+.stderr { color:#F44747; }
+.info { color:#569CD6; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs/loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pyodide@0.24.0/full/pyodide.js"></script>
 <script>
 require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs' }});
 let editor;
 let terminals = [];
 
+async function initPyodideAndLint() {
+    window.pyodide = await loadPyodide();
+    await pyodide.loadPackage(['pyflakes']);
+}
+initPyodideAndLint();
+
 require(['vs/editor/editor.main'], function() {
-    // ============ Основной редактор ============
     editor = monaco.editor.create(document.getElementById('editor'), {
         value: '',
         language: 'python',
@@ -27,87 +36,92 @@ require(['vs/editor/editor.main'], function() {
         scrollBeyondLastLine: false
     });
 
-    // ============ Autocomplete ============
-    monaco.languages.registerCompletionItemProvider('python', {
-        provideCompletionItems: function(model, position) {
-            const suggestions = [
-                { label: 'sys', kind: monaco.languages.CompletionItemKind.Module, insertText: 'sys' },
-                { label: 'os', kind: monaco.languages.CompletionItemKind.Module, insertText: 'os' },
-                { label: 'subprocess', kind: monaco.languages.CompletionItemKind.Module, insertText: 'subprocess' },
-                { label: 'threading', kind: monaco.languages.CompletionItemKind.Module, insertText: 'threading' },
-                { label: 'PyQt6', kind: monaco.languages.CompletionItemKind.Module, insertText: 'PyQt6' },
-                { label: 'QApplication', kind: monaco.languages.CompletionItemKind.Class, insertText: 'QApplication' },
-                { label: 'QMainWindow', kind: monaco.languages.CompletionItemKind.Class, insertText: 'QMainWindow' },
-                { label: 'QWidget', kind: monaco.languages.CompletionItemKind.Class, insertText: 'QWidget' }
-                // ... добавляй все необходимые библиотеки
-            ];
-            return { suggestions: suggestions };
+    // Autocomplete для всех импортов SuperLauncher
+    const imports = [
+        'sys','os','subprocess','threading','time','json','shutil','requests',
+        'PyQt6','minecraft_launcher_lib','packaging','tqdm','pypresence','random_username','uuid','pathlib'
+    ];
+    monaco.languages.registerCompletionItemProvider('python',{
+        provideCompletionItems:function(model,position){
+            return { suggestions: imports.map(i=>({
+                label:i,
+                kind: monaco.languages.CompletionItemKind.Module,
+                insertText:i
+            }))};
         }
     });
 
-    // ============ Live Ошибки (Простейшая проверка) ============
-    function checkErrors() {
+    // Live lint ошибок
+    async function checkErrors(){
         const code = editor.getValue();
         try {
-            new Function(code);
-            monaco.editor.setModelMarkers(editor.getModel(), "owner", []);
-        } catch(e) {
-            const line = e.lineNumber ? e.lineNumber-1 : 0;
-            monaco.editor.setModelMarkers(editor.getModel(), "owner", [{
-                startLineNumber: line+1,
-                startColumn: 1,
-                endLineNumber: line+1,
-                endColumn: 1,
-                message: e.message,
-                severity: monaco.MarkerSeverity.Error
-            }]);
+            let pyflakes = await pyodide.runPythonAsync(`
+import pyflakes.api, pyflakes.reporter, io
+reporter = pyflakes.reporter.Reporter(io.StringIO(), io.StringIO())
+pyflakes.api.check(${JSON.stringify(code)}, '<string>', reporter=reporter)
+reporter.messages
+`);
+            const markers = [];
+            if (pyflakes){
+                pyflakes.split('\\n').forEach(line=>{
+                    const match = line.match(/<string>:(\\d+):\\s*(.*)/);
+                    if (match){
+                        const lineNumber = parseInt(match[1]);
+                        const msg = match[2];
+                        markers.push({
+                            startLineNumber: lineNumber,
+                            startColumn:1,
+                            endLineNumber: lineNumber,
+                            endColumn:1,
+                            message: msg,
+                            severity: monaco.MarkerSeverity.Error
+                        });
+                    }
+                });
+            }
+            monaco.editor.setModelMarkers(editor.getModel(), "owner", markers);
+        } catch(e){
+            console.log(e);
         }
     }
+    editor.onDidChangeModelContent(()=>checkErrors());
+    setInterval(checkErrors,2000);
 
-    editor.onDidChangeModelContent(checkErrors);
-    setInterval(checkErrors, 2000);
-
-    // ============ Тема ============
-    monaco.editor.defineTheme('ludvig-vscode-ultra', {
-        base: 'vs-dark',
-        inherit: true,
-        rules: [
-            { token: 'keyword.import', foreground: 'C586C0', fontStyle: 'bold' },
-            { token: 'keyword.library', foreground: '9CDCFE', fontStyle: 'bold' },
-            { token: 'keyword.control', foreground: '569CD6', fontStyle: 'bold' },
-            { token: 'constant.language', foreground: '4EC9B0' },
-            { token: 'entity.name.function', foreground: 'DCDCAA' },
-            { token: 'entity.name.class', foreground: '4EC9B0', fontStyle: 'bold' },
-            { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
-            { token: 'string', foreground: 'CE9178' },
-            { token: 'number', foreground: 'B5CEA8' },
-            { token: 'annotation', foreground: 'D4D4D4', fontStyle: 'bold' },
-            { token: 'identifier', foreground: 'D4D4D4' }
+    // Тема VS Code
+    monaco.editor.defineTheme('ludvig-vscode-ultra',{
+        base:'vs-dark',
+        inherit:true,
+        rules:[
+            { token:'keyword', foreground:'C586C0', fontStyle:'bold' },
+            { token:'number', foreground:'B5CEA8' },
+            { token:'string', foreground:'CE9178' },
+            { token:'comment', foreground:'6A9955', fontStyle:'italic' },
+            { token:'entity.name.function', foreground:'DCDCAA' },
+            { token:'entity.name.class', foreground:'4EC9B0', fontStyle:'bold' },
+            { token:'identifier', foreground:'D4D4D4' }
         ],
-        colors: {
-            'editor.background': '#1e1e2f',
-            'editor.foreground': '#d4d4d4',
-            'editor.selectionBackground': '#264f78',
-            'editor.lineHighlightBackground': '#333333',
-            'editorCursor.foreground': '#dcdcdc'
+        colors:{
+            'editor.background':'#1e1e2f',
+            'editor.foreground':'#d4d4d4',
+            'editor.selectionBackground':'#264f78',
+            'editor.lineHighlightBackground':'#333333',
+            'editorCursor.foreground':'#dcdcdc'
         }
     });
     monaco.editor.setTheme('ludvig-vscode-ultra');
 });
 
-// ============ PyQt6 Bridge ============
-window.loadFileFromPy = function(code, lang='python'){ editor.setValue(code); };
-window.getCodeForPy = function(){ return editor.getValue(); };
-window.appendTerminal = function(text){
-    let t = document.createElement('div');
-    t.className='terminal';
+// PyQt6 Bridge
+window.loadFileFromPy=function(code,lang='python'){ editor.setValue(code); };
+window.getCodeForPy=function(){ return editor.getValue(); };
+window.appendTerminal=function(text,type='info'){
+    let t=document.createElement('div');
+    t.className='terminal '+type;
     t.innerText=text;
     document.getElementById('terminals').appendChild(t);
     t.scrollTop=t.scrollHeight;
 };
-window.clearTerminal = function(){
-    document.getElementById('terminals').innerHTML='';
-};
+window.clearTerminal=function(){ document.getElementById('terminals').innerHTML=''; };
 </script>
 </head>
 <body>
