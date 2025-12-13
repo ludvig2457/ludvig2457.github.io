@@ -28,19 +28,27 @@ html, body {
     box-shadow: 0 6px 30px rgba(0,0,0,.5);
     border-bottom: 1px solid rgba(255,255,255,.12);
     position: relative;
+    gap: 10px;
 }
 
 /* ===== SEARCH INPUT ===== */
 #searchInput {
-    position: absolute;
-    right: 10px;
-    top: 8px;
     padding: 4px 8px;
     border-radius: 6px;
     border: none;
     outline: none;
-    opacity: 0.8;
+    opacity: 0.85;
     font-size: 14px;
+}
+
+/* ===== LANGUAGE SELECT ===== */
+#langSelect {
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    background: rgba(255,255,255,.12);
+    color: white;
 }
 
 /* ===== EDITOR ===== */
@@ -58,8 +66,23 @@ html, body {
 </head>
 
 <body>
-<div id="topbar">⚡ LudvigEditor — VS Code style
+<div id="topbar">
+    ⚡ LudvigEditor — VS Code style
     <input type="text" id="searchInput" placeholder="Search..." />
+    <select id="langSelect">
+        <option value="python">Python</option>
+        <option value="javascript">JavaScript</option>
+        <option value="typescript">TypeScript</option>
+        <option value="html">HTML</option>
+        <option value="css">CSS</option>
+        <option value="json">JSON</option>
+        <option value="c">C</option>
+        <option value="cpp">C++</option>
+        <option value="java">Java</option>
+        <option value="markdown">Markdown</option>
+        <option value="shell">Bash</option>
+        <option value="plaintext">Plain Text</option>
+    </select>
 </div>
 <div id="editor"></div>
 
@@ -67,6 +90,8 @@ html, body {
 require.config({ paths: { vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs" } });
 
 require(["vs/editor/editor.main"], function () {
+
+    // ===== THEME =====
     monaco.editor.defineTheme("ludvig-gradient", {
         base: "vs-dark",
         inherit: true,
@@ -86,6 +111,7 @@ require(["vs/editor/editor.main"], function () {
         }
     });
 
+    // ===== EDITOR =====
     window.editor = monaco.editor.create(document.getElementById("editor"), {
         value: "# LudvigEditor\nprint('Gradient future 🚀')",
         language: "python",
@@ -101,6 +127,26 @@ require(["vs/editor/editor.main"], function () {
         dragAndDrop: true
     });
 
+    // ===== LANGUAGE SWITCH =====
+    const langSelect = document.getElementById("langSelect");
+    langSelect.addEventListener("change", () => {
+        monaco.editor.setModelLanguage(editor.getModel(), langSelect.value);
+    });
+
+    // ===== SEARCH =====
+    const searchInput = document.getElementById("searchInput");
+    searchInput.addEventListener("input", () => {
+        const term = searchInput.value;
+        const findController = editor.getContribution('editor.contrib.findController');
+        if(term) {
+            editor.getAction('actions.find').run().then(() => {
+                findController.getState().change({ searchString: term }, false);
+            });
+        } else {
+            findController.getState().change({ searchString: '' }, false);
+        }
+    });
+
     // ===== API FOR PYQT =====
     window.setCode = (code, lang = "python") => {
         monaco.editor.setModelLanguage(editor.getModel(), lang);
@@ -108,24 +154,7 @@ require(["vs/editor/editor.main"], function () {
     };
 
     window.getCode = () => editor.getValue();
-
-    window.pySave = null; // для PyQt, будет вызываться перед запуском
-
-    // ===== SEARCH FUNCTION =====
-    const searchInput = document.getElementById("searchInput");
-    searchInput.addEventListener("input", () => {
-        const term = searchInput.value;
-        if(term) {
-            editor.getAction('actions.find').run().then(() => {
-                editor.getContribution('editor.contrib.findController')
-                      .getState()
-                      .change({ searchString: term }, false);
-            });
-        } else {
-            // Очистка поиска
-            editor.getContribution('editor.contrib.findController').getState().change({ searchString: '' }, false);
-        }
-    });
+    window.pySave = null; // Для PyQt6
 });
 </script>
 </body>
