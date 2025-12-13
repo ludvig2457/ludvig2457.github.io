@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>LudvigEditor Web ULTRA+</title>
+<title>LudvigEditor Web ULTRA+ PyQt6 Ready</title>
 <style>
-  html, body { margin:0; padding:0; width:100%; height:100%; background:#0f1224; overflow:hidden; font-family:sans-serif;}
-  #editor { position:absolute; top:0; left:0; right:0; bottom:150px; border-radius:10px; }
-  #terminal { position:absolute; left:0; right:0; bottom:0; height:150px; background:#1b1e2b; color:#e0e0ff; font-family:monospace; padding:5px; overflow:auto; border-top:2px solid #3f2b96; }
+html, body { margin:0; padding:0; width:100%; height:100%; background:#0f1224; overflow:hidden; font-family:sans-serif; }
+#editor { position:absolute; top:0; left:0; right:0; bottom:150px; border-radius:10px; }
+#terminal { position:absolute; left:0; right:0; bottom:0; height:150px; background:#1b1e2b; color:#e0e0ff; font-family:monospace; padding:5px; overflow:auto; border-top:3px solid #3f2b96; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.39.0/min/vs/loader.js"></script>
 <script>
@@ -23,13 +23,26 @@ require(['vs/editor/editor.main'], function() {
         scrollBeyondLastLine: false
     });
 
-    // Drag&Drop
-    editor.onDidPaste(e => {});
-    editor.onDidChangeModelContent(e => {});
+    // Добавляем поддержку подсветки PyQt6 импортов
+    monaco.languages.register({ id: 'python-pyqt6' });
+    monaco.languages.setMonarchTokensProvider('python-pyqt6', {
+        tokenizer: {
+            root: [
+                [/\b(import|from)\b/, 'keyword'],
+                [/\b(PyQt6\.[\w\.]+)\b/, 'type.identifier'],
+                [/\b(class|def|return|if|elif|else|for|while|try|except|with|as|pass|break|continue)\b/, 'keyword'],
+                [/#.*$/, 'comment'],
+                [/'[^']*'/, 'string'],
+                [/"[^"]*"/, 'string'],
+                [/\b[0-9]+\b/, 'number']
+            ]
+        }
+    });
+    editor.updateOptions({ language: 'python-pyqt6' });
 });
 
 // ------------------ Functions for PyQt ------------------
-window.loadFileFromPy = function(code, lang='python') {
+window.loadFileFromPy = function(code, lang='python-pyqt6') {
     if(editor) {
         monaco.editor.setModelLanguage(editor.getModel(), lang);
         editor.setValue(code);
