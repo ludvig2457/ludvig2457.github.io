@@ -50,10 +50,9 @@ html, body {
     border: none;
     font-size: 14px;
     background: rgba(255,255,255,.12);
-    color: #fff; /* отображение в панели */
+    color: #fff;
 }
 
-/* Сделаем текст внутри раскрывающегося списка чёрным на светлом фоне */
 #langSelect option {
     color: black;
     background: white;
@@ -68,6 +67,11 @@ html, body {
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-thumb { background: rgba(130,130,220,.4); border-radius: 10px; }
+
+/* ===== ERROR HIGHLIGHT ===== */
+.errorLine {
+    background: rgba(255, 107, 107, 0.2);
+}
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
@@ -131,7 +135,7 @@ require(["vs/editor/editor.main"], function () {
 
     // ===== EDITOR =====
     window.editor = monaco.editor.create(document.getElementById("editor"), {
-        value: "# LudvigEditor\nprint('Gradient future 🚀')",
+        value: "# LudvigEditor\nprint('Hello from LudvigEditor! 🚀')\n\n# Try autocomplete:\n# Type 'def ' or 'import ' or 'print('",
         language: "python",
         theme: "ludvig-gradient",
         automaticLayout: true,
@@ -142,7 +146,132 @@ require(["vs/editor/editor.main"], function () {
         cursorSmoothCaretAnimation: "on",
         minimap: { enabled: true },
         wordWrap: "on",
-        dragAndDrop: true
+        dragAndDrop: true,
+        suggestOnTriggerCharacters: true,
+        quickSuggestions: { other: true, comments: false, strings: true },
+        parameterHints: { enabled: true }
+    });
+
+    // ===== PYTHON AUTOCOMPLETE =====
+    monaco.languages.registerCompletionItemProvider('python', {
+        provideCompletionItems: function(model, position) {
+            var word = model.getWordUntilPosition(position);
+            var range = {
+                startLineNumber: position.lineNumber,
+                startColumn: word.startColumn,
+                endLineNumber: position.lineNumber,
+                endColumn: word.endColumn
+            };
+            
+            // Базовые предложения для Python
+            var suggestions = [
+                {
+                    label: 'print',
+                    kind: monaco.languages.CompletionItemKind.Function,
+                    insertText: 'print(${1:value})',
+                    documentation: 'Print to console'
+                },
+                {
+                    label: 'def',
+                    kind: monaco.languages.CompletionItemKind.Keyword,
+                    insertText: 'def ${1:function_name}(${2:args}):\\n\\t${3:pass}',
+                    documentation: 'Define a function'
+                },
+                {
+                    label: 'class',
+                    kind: monaco.languages.CompletionItemKind.Class,
+                    insertText: 'class ${1:ClassName}:\\n\\tdef __init__(self${2:, args}):\\n\\t\\t${3:pass}',
+                    documentation: 'Define a class'
+                },
+                {
+                    label: 'if',
+                    kind: monaco.languages.CompletionItemKind.Keyword,
+                    insertText: 'if ${1:condition}:\\n\\t${2:pass}',
+                    documentation: 'If statement'
+                },
+                {
+                    label: 'for',
+                    kind: monaco.languages.CompletionItemKind.Keyword,
+                    insertText: 'for ${1:item} in ${2:iterable}:\\n\\t${3:pass}',
+                    documentation: 'For loop'
+                },
+                {
+                    label: 'while',
+                    kind: monaco.languages.CompletionItemKind.Keyword,
+                    insertText: 'while ${1:condition}:\\n\\t${2:pass}',
+                    documentation: 'While loop'
+                },
+                {
+                    label: 'import',
+                    kind: monaco.languages.CompletionItemKind.Keyword,
+                    insertText: 'import ',
+                    documentation: 'Import module'
+                },
+                {
+                    label: 'from',
+                    kind: monaco.languages.CompletionItemKind.Keyword,
+                    insertText: 'from ${1:module} import ${2:name}',
+                    documentation: 'Import from module'
+                },
+                {
+                    label: 'return',
+                    kind: monaco.languages.CompletionItemKind.Keyword,
+                    insertText: 'return ',
+                    documentation: 'Return value'
+                },
+                {
+                    label: 'try',
+                    kind: monaco.languages.CompletionItemKind.Keyword,
+                    insertText: 'try:\\n\\t${1:pass}\\nexcept ${2:Exception}:\\n\\t${3:pass}',
+                    documentation: 'Try-except block'
+                },
+                {
+                    label: 'with',
+                    kind: monaco.languages.CompletionItemKind.Keyword,
+                    insertText: 'with ${1:expression} as ${2:var}:\\n\\t${3:pass}',
+                    documentation: 'With statement'
+                },
+                {
+                    label: 'async',
+                    kind: monaco.languages.CompletionItemKind.Keyword,
+                    insertText: 'async ',
+                    documentation: 'Async function'
+                },
+                {
+                    label: 'await',
+                    kind: monaco.languages.CompletionItemKind.Keyword,
+                    insertText: 'await ',
+                    documentation: 'Await expression'
+                }
+            ];
+            
+            // Добавляем встроенные функции Python
+            var builtins = ['abs', 'all', 'any', 'ascii', 'bin', 'bool', 'breakpoint', 
+                          'bytearray', 'bytes', 'callable', 'chr', 'classmethod', 
+                          'compile', 'complex', 'delattr', 'dict', 'dir', 'divmod', 
+                          'enumerate', 'eval', 'exec', 'filter', 'float', 'format', 
+                          'frozenset', 'getattr', 'globals', 'hasattr', 'hash', 
+                          'help', 'hex', 'id', 'input', 'int', 'isinstance', 
+                          'issubclass', 'iter', 'len', 'list', 'locals', 'map', 
+                          'max', 'memoryview', 'min', 'next', 'object', 'oct', 
+                          'open', 'ord', 'pow', 'print', 'property', 'range', 
+                          'repr', 'reversed', 'round', 'set', 'setattr', 'slice', 
+                          'sorted', 'staticmethod', 'str', 'sum', 'super', 'tuple', 
+                          'type', 'vars', 'zip', '__import__'];
+            
+            builtins.forEach(function(func) {
+                if (func !== 'print') { // print уже добавлен
+                    suggestions.push({
+                        label: func,
+                        kind: monaco.languages.CompletionItemKind.Function,
+                        insertText: func + '(${1})',
+                        documentation: 'Built-in function'
+                    });
+                }
+            });
+            
+            return { suggestions: suggestions };
+        }
     });
 
     // ===== LANGUAGE SWITCH =====
@@ -165,6 +294,67 @@ require(["vs/editor/editor.main"], function () {
         }
     });
 
+    // ===== SYNTAX ERROR HIGHLIGHTING =====
+    let errorDecorations = [];
+    editor.onDidChangeModelContent(function() {
+        var model = editor.getModel();
+        var content = model.getValue();
+        
+        // Удаляем старые декорации
+        errorDecorations = editor.deltaDecorations(errorDecorations, []);
+        
+        // Простая проверка синтаксиса (для демо)
+        var lines = content.split('\\n');
+        var newDecorations = [];
+        
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+            
+            // Проверка на отступы перед print (для демо)
+            if (line.includes('  print(') || line.includes('    print(')) {
+                newDecorations.push({
+                    range: new monaco.Range(i+1, 1, i+1, line.length+1),
+                    options: {
+                        isWholeLine: true,
+                        className: 'errorLine',
+                        hoverMessage: { value: '⚠️ Возможная ошибка отступа' }
+                    }
+                });
+            }
+            
+            // Проверка на неопределенные переменные (для демо)
+            if (line.includes('print(') && !line.includes('"') && !line.includes("'")) {
+                var match = line.match(/print\\(([^)]+)\\)/);
+                if (match) {
+                    var arg = match[1].trim();
+                    if (!['"', "'"].some(char => arg.includes(char)) && 
+                        !['True', 'False', 'None', 'self'].includes(arg)) {
+                        // Проверяем, определена ли переменная выше
+                        var varDefined = false;
+                        for (var j = 0; j < i; j++) {
+                            if (lines[j].includes(arg + ' =') || lines[j].includes('def ' + arg)) {
+                                varDefined = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!varDefined) {
+                            newDecorations.push({
+                                range: new monaco.Range(i+1, line.indexOf(arg)+1, i+1, line.indexOf(arg)+arg.length+1),
+                                options: {
+                                    inlineClassName: 'errorInline',
+                                    hoverMessage: { value: '⚠️ Переменная может быть не определена' }
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        
+        errorDecorations = editor.deltaDecorations(errorDecorations, newDecorations);
+    });
+
     // ===== API FOR PYQT =====
     window.setCode = (code, lang = "python") => {
         monaco.editor.setModelLanguage(editor.getModel(), lang);
@@ -172,8 +362,42 @@ require(["vs/editor/editor.main"], function () {
     };
 
     window.getCode = () => editor.getValue();
-    window.pySave = null; // Для PyQt6
+    
+    // Новый API для дебаггера
+    window.getCurrentLine = () => {
+        var position = editor.getPosition();
+        return position.lineNumber;
+    };
+    
+    window.pySave = null;
+    
+    // Сигнализируем о готовности редактора
+    setTimeout(() => {
+        if (window.pyQtBridge && window.pyQtBridge.editorReady) {
+            window.pyQtBridge.editorReady();
+        }
+    }, 1000);
 });
+
+// Мост для общения с PyQt
+window.pyQtBridge = {
+    setBreakpoint: function(line) {
+        console.log('Toggle breakpoint at line:', line);
+        // Здесь будет логика для точек останова
+    },
+    
+    getLineForBreakpoint: function() {
+        if (window.editor) {
+            var position = window.editor.getPosition();
+            return position.lineNumber;
+        }
+        return 1;
+    },
+    
+    editorReady: function() {
+        console.log('Monaco Editor ready!');
+    }
+};
 </script>
 </body>
 </html>
