@@ -1,123 +1,68 @@
 <!DOCTYPE html>
-<html lang="ru"><head><meta charset="UTF-8"><title>🔥 LUDVIG SANDBOX SERVER</title>
+<html lang="ru"><head><meta charset="UTF-8">
+<title>🌐 LudvigSandBOX Remote</title>
 <style>
-body{background:#000;color:#0f0;font:16px monospace;margin:0;padding:20px;}
-h1{color:#f00;text-shadow:0 0 15px #f00;}
-.server-info{background:#111;border:3px solid #0f0;padding:15px;margin:15px 0;}
-.clients{background:#222;border:2px solid #0a0;padding:10px;margin:10px 0;min-height:200px;}
-.clients div{margin:5px;padding:5px;border-left:3px solid #0ff;}
-.cmd{color:#0ff;} .red{color:#f00;} .green{color:#0f0;} .yellow{color:#ff0;}
-button{background:#0a0;color:#000;border:2px solid #0f0;padding:12px;margin:10px;cursor:pointer;font:bold 16px monospace;width:200px;}
-button:hover{background:#0f0;}
+body{background:#000;color:#0f0;font:16px monospace;margin:20px;}
+h1{color:#f00;text-shadow:0 0 10px #f00;}
+.server{background:#111;border:2px solid #0a0;padding:15px;margin:15px 0;}
+.cmd{color:#0ff;} .green{color:#0f0;} .red{color:#f00;}
+button{background:#0a0;color:#000;border:1px solid #0f0;padding:12px;margin:8px;cursor:pointer;}
 </style></head><body>
 
-<h1>🔥 LUDVIG SANDBOX SERVER</h1>
-<h2 class="green">IP: 192.168.56.1 | VirtualBox HOST</h2>
+<h1>🌐 LudvigSandBOX Remote</h1>
+<p class="cmd">Страница на GitHub, сервер на твоём ПК</p>
 
-<div class="server-info">
-    <p class="cmd">> Сервер запущен: <span id="uptime">0:00</span></p>
-    <p class="cmd">> Подключенные клиенты: <span id="clients-count">0</span></p>
-    <p class="cmd">> Порт: 5050 (TCP)</p>
-    <p class="yellow">⚠️ Другие подключаются по IP: 192.168.56.1:5050</p>
+<div class="server">
+    <h3>📡 Подключение к серверу:</h3>
+    <p>IP: <input type="text" id="ip" value="192.168.56.1" size="15"></p>
+    <p>Порт: <input type="number" id="port" value="5050" size="5"></p>
+    
+    <button onclick="connect()">🔗 Подключиться</button>
+    <button onclick="scan()">🔍 Сканировать порты</button>
+    <button onclick="simulate()">🎮 Запуск симуляции</button>
 </div>
 
-<div class="clients" id="clients-list">
-    <p class="cmd">> Список подключений:</p>
-</div>
-
-<div>
-    <button onclick="startServer()">▶️ Запустить сервер</button>
-    <button onclick="stopServer()">⏹️ Остановить сервер</button>
-    <button onclick="sendToAll()">📡 Отправить всем</button>
-    <button onclick="simulateAttack()">🎮 Симуляция атаки</button>
-    <button onclick="clearLogs()">🧹 Очистить логи</button>
-</div>
-
-<div id="terminal" style="background:#111;padding:15px;margin-top:20px;min-height:150px;overflow:auto;">
-    <p class="cmd">> Готов к подключениям...</p>
+<div id="status" style="color:#0ff;">Статус: Ожидание...</div>
+<div id="output" style="background:#222;padding:15px;margin:10px 0;min-height:200px;overflow:auto;">
+<span class="cmd">> Готов к работе</span><br>
 </div>
 
 <script>
-let clients=[],serverRunning=false,startTime=new Date();
-const term=document.getElementById('terminal'),clientsDiv=document.getElementById('clients-list');
-
-function log(msg,color='#0f0'){
-    term.innerHTML+=`<span style="color:${color}">${msg}</span><br>`;
-    term.scrollTop=term.scrollHeight;
-}
-
-function updateUptime(){
-    const now=new Date(),diff=Math.floor((now-startTime)/1000);
-    const mins=Math.floor(diff/60),secs=diff%60;
-    document.getElementById('uptime').innerHTML=`${mins}:${secs<10?'0':''}${secs}`;
-}
-
-function addClient(ip){
-    clients.push(ip);
-    clientsDiv.innerHTML+=`<div>📱 ${ip} | ${new Date().toLocaleTimeString()}</div>`;
-    document.getElementById('clients-count').innerHTML=clients.length;
-    log(`> Новое подключение: ${ip}`,'#0ff');
-}
-
-// Эмуляция WebSocket сервера (для демо)
-function startServer(){
-    if(serverRunning) return;
-    serverRunning=true;
-    log('> Запуск сервера на 192.168.56.1:5050...','#0ff');
+function log(m,c){document.getElementById('output').innerHTML+=`<span style="color:${c||'#0f0'}">${m}</span><br>`;}
+function connect(){
+    const ip=document.getElementById('ip').value;
+    const port=document.getElementById('port').value;
     
-    // Эмуляция подключений
-    setInterval(()=>{
-        if(Math.random()>0.7 && clients.length<10){
-            const ip=`192.168.56.${Math.floor(Math.random()*100)+100}`;
-            addClient(ip);
-        }
-    },3000);
+    log(`> Подключение к ${ip}:${port}...`,'#0ff');
+    document.getElementById('status').innerHTML=`Статус: Подключение к ${ip}:${port}`;
     
-    log('✅ Сервер запущен! Другие могут подключаться','#0f0');
-    log('📡 Жду подключений...','#0ff');
-    setInterval(updateUptime,1000);
+    // Эмуляция WebSocket подключения (реальное будет через сервер)
+    setTimeout(()=>{
+        log('✅ Успешно подключено!','#0f0');
+        log('📡 Сервер: LudvigSecurity VirtualBox','#0ff');
+        document.getElementById('status').innerHTML=`Статус: Подключен к ${ip}:${port}`;
+        document.getElementById('status').style.color='#0f0';
+    },1500);
 }
-
-function stopServer(){
-    serverRunning=false;
-    clients=[];
-    clientsDiv.innerHTML='<p class="cmd">> Список подключений:</p>';
-    document.getElementById('clients-count').innerHTML='0';
-    log('⏹️ Сервер остановлен','#f00');
-}
-
-function sendToAll(){
-    if(clients.length===0){
-        log('❌ Нет подключенных клиентов','#f00');
-        return;
-    }
-    log(`📨 Отправляю сообщение ${clients.length} клиентам...`,'#ff0');
-    clients.forEach((ip,i)=>{
+function scan(){
+    log('> Сканирование портов...','#0ff');
+    const ports=[80,443,5050,8080];
+    ports.forEach((port,i)=>{
         setTimeout(()=>{
-            log(`   📤 ${ip}: "Hello from LudvigSandBOX!"`,'#0af');
+            const status=Math.random()>0.3?'открыт':'закрыт';
+            log(`   Порт ${port}: ${status}`,'#0af');
         },i*500);
     });
 }
-
-function simulateAttack(){
-    log('🎮 Запуск симуляции атаки...','#f00');
+function simulate(){
+    log('> Запуск удалённой симуляции...','#f00');
     const steps=[
-        '🔍 Сканирование сети...',
-        '🦠 Обнаружение уязвимостей...',
-        '⚡ Эксплойт запущен...',
-        '📡 Установка бэкдора...',
-        '✅ Контроль получен [СИМУЛЯЦИЯ]'
+        '🦠 Загрузка вирусного модуля',
+        '🔒 Шифрование тестовых данных',
+        '📡 Отправка на сервер 192.168.56.1',
+        '✅ Симуляция завершена'
     ];
-    steps.forEach((step,i)=>{
-        setTimeout(()=>log(step,'#f00'),i*1000);
-    });
+    steps.forEach((s,i)=>setTimeout(()=>log(s,'#ff0'),i*1000));
 }
-
-function clearLogs(){
-    term.innerHTML='<p class="cmd">> Логи очищены...</p>';
-}
-
-// Автозапуск сервера через 2 сек
-setTimeout(startServer,2000);
 </script>
 </body></html>
