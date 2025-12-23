@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>📱 Ludvig Client</title>
+<style>
+body{background:#000;color:#0f0;font:14px monospace;margin:20px;}
+.conn{background:#111;border:2px solid #0a0;padding:15px;margin:15px 0;}
+button{background:#0a0;color:#000;border:1px solid #0f0;padding:10px;margin:5px;cursor:pointer;}
+</style></head><body>
+
+<h1>📱 LudvigSandBOX Client</h1>
+<div class="conn">
+    <p>Сервер: <input type="text" id="serverIp" value="192.168.56.1" size="15"></p>
+    <p>Порт: <input type="number" id="serverPort" value="5050" size="5"></p>
+    <button onclick="connect()">🔗 Подключиться</button>
+    <button onclick="sendData()">📨 Отправить данные</button>
+    <button onclick="disconnect()">🔌 Отключиться</button>
+</div>
+
+<div id="status" style="color:#0ff;">Статус: Отключен</div>
+<div id="output" style="background:#222;padding:10px;margin-top:15px;min-height:100px;"></div>
+
+<script>
+let socket=null;
+function log(m,c){document.getElementById('output').innerHTML+=`<span style="color:${c||'#0f0'}">${m}</span><br>`;}
+function connect(){
+    const ip=document.getElementById('serverIp').value;
+    const port=document.getElementById('serverPort').value;
+    
+    log(`🔗 Подключение к ${ip}:${port}...`,'#0ff');
+    
+    // Эмуляция WebSocket подключения
+    setTimeout(()=>{
+        log('✅ Успешно подключено!','#0f0');
+        document.getElementById('status').innerHTML='Статус: Подключен';
+        document.getElementById('status').style.color='#0f0';
+    },1000);
+}
+function sendData(){
+    const data={
+        type: "system_info",
+        hostname: navigator.platform,
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString(),
+        message: "Привет от клиента!"
+    };
+    log(`📨 Отправляю: ${JSON.stringify(data)}`,'#ff0');
+    // Здесь будет реальная отправка через WebSocket
+}
+function disconnect(){
+    log('🔌 Отключение...','#f00');
+    document.getElementById('status').innerHTML='Статус: Отключен';
+    document.getElementById('status').style.color='#f00';
+}
+</script>
+</body></html>
