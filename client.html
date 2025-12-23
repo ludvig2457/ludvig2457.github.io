@@ -1,54 +1,92 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><title>📱 Ludvig Client</title>
+<html><head><meta charset="UTF-8">
+<title>📱 Ludvig Remote Client</title>
 <style>
 body{background:#000;color:#0f0;font:14px monospace;margin:20px;}
 .conn{background:#111;border:2px solid #0a0;padding:15px;margin:15px 0;}
 button{background:#0a0;color:#000;border:1px solid #0f0;padding:10px;margin:5px;cursor:pointer;}
+.status{color:#0ff;font-weight:bold;margin:10px 0;}
 </style></head><body>
 
-<h1>📱 LudvigSandBOX Client</h1>
+<h1>📱 Ludvig Remote Client</h1>
+<p class="red">⚠️ GitHub Pages → Локальный сервер на 192.168.56.1</p>
+
 <div class="conn">
-    <p>Сервер: <input type="text" id="serverIp" value="192.168.56.1" size="15"></p>
-    <p>Порт: <input type="number" id="serverPort" value="5050" size="5"></p>
-    <button onclick="connect()">🔗 Подключиться</button>
-    <button onclick="sendData()">📨 Отправить данные</button>
-    <button onclick="disconnect()">🔌 Отключиться</button>
+    <p>Сервер IP: <input type="text" id="serverIp" value="192.168.56.1"></p>
+    <p>Порт: <input type="number" id="serverPort" value="5050"></p>
+    <button onclick="connectWS()">🔗 WebSocket</button>
+    <button onclick="connectHTTP()">🌐 HTTP</button>
+    <button onclick="sendPing()">🏓 Ping</button>
 </div>
 
-<div id="status" style="color:#0ff;">Статус: Отключен</div>
-<div id="output" style="background:#222;padding:10px;margin-top:15px;min-height:100px;"></div>
+<div class="status" id="status">Статус: Отключен</div>
+
+<div style="margin:20px 0;">
+    <button onclick="sendSystemInfo()">💻 Отправить системную инфо</button>
+    <button onclick="simulateMalware()">🦠 Симуляция malware</button>
+    <button onclick="clearOutput()">🧹 Очистить</button>
+</div>
+
+<div id="output" style="background:#222;padding:15px;min-height:200px;overflow:auto;">
+<span class="cmd">> Клиент готов. Сервер должен быть запущен локально.</span><br>
+</div>
 
 <script>
-let socket=null;
-function log(m,c){document.getElementById('output').innerHTML+=`<span style="color:${c||'#0f0'}">${m}</span><br>`;}
-function connect(){
+const output=document.getElementById('output');
+function log(msg,color='#0f0'){
+    output.innerHTML+=`<span style="color:${color}">${msg}</span><br>`;
+    output.scrollTop=output.scrollHeight;
+}
+function connectWS(){
     const ip=document.getElementById('serverIp').value;
     const port=document.getElementById('serverPort').value;
     
-    log(`🔗 Подключение к ${ip}:${port}...`,'#0ff');
+    log(`> WebSocket подключение к ws://${ip}:${port}`,'#0ff');
     
-    // Эмуляция WebSocket подключения
+    // Эмуляция - в реальности тут будет new WebSocket()
     setTimeout(()=>{
-        log('✅ Успешно подключено!','#0f0');
-        document.getElementById('status').innerHTML='Статус: Подключен';
+        log('✅ WebSocket соединение установлено','#0f0');
+        document.getElementById('status').innerHTML='Статус: WebSocket подключен';
         document.getElementById('status').style.color='#0f0';
     },1000);
 }
-function sendData(){
-    const data={
-        type: "system_info",
-        hostname: navigator.platform,
-        userAgent: navigator.userAgent,
-        timestamp: new Date().toISOString(),
-        message: "Привет от клиента!"
-    };
-    log(`📨 Отправляю: ${JSON.stringify(data)}`,'#ff0');
-    // Здесь будет реальная отправка через WebSocket
+function connectHTTP(){
+    const ip=document.getElementById('serverIp').value;
+    const port=document.getElementById('serverPort').value;
+    
+    log(`> HTTP запрос к http://${ip}:${port}`,'#0ff');
+    
+    // В реальности: fetch(`http://${ip}:${port}`)
+    setTimeout(()=>{
+        log('✅ HTTP ответ: Сервер LudvigSecurity активен','#0f0');
+        document.getElementById('status').innerHTML='Статус: HTTP подключен';
+    },800);
 }
-function disconnect(){
-    log('🔌 Отключение...','#f00');
-    document.getElementById('status').innerHTML='Статус: Отключен';
-    document.getElementById('status').style.color='#f00';
+function sendPing(){
+    log('🏓 Отправка ping на сервер...','#ff0');
+    setTimeout(()=>log('📡 Ответ: pong (64ms)','#0f0'),500);
+}
+function sendSystemInfo(){
+    const info={
+        os:navigator.platform,
+        browser:navigator.userAgent,
+        time:new Date().toLocaleTimeString(),
+        origin:'GitHub Pages'
+    };
+    log(`📨 Отправка системной информации: ${JSON.stringify(info)}`,'#0af');
+}
+function simulateMalware(){
+    log('🦠 Запуск симуляции вредоносного ПО...','#f00');
+    const steps=[
+        '1. Инъекция кода [СИМУЛЯЦИЯ]',
+        '2. Сокрытие процессов [СИМУЛЯЦИЯ]',
+        '3. Отправка данных на 192.168.56.1 [СИМУЛЯЦИЯ]',
+        '4. Очистка следов [СИМУЛЯЦИЯ]'
+    ];
+    steps.forEach((step,i)=>setTimeout(()=>log(step,'#ff0'),i*800));
+}
+function clearOutput(){
+    output.innerHTML='<span class="cmd">> Логи очищены</span><br>';
 }
 </script>
 </body></html>
