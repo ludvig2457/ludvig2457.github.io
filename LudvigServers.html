@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8">
+<title>🔥 LUDVIGSERVERS - БЕСПЛАТНЫЙ СЕРВЕР</title>
+<style>
+body{background:#000;color:#0f0;font:16px monospace;margin:0;padding:20px;}
+h1{color:#f00;text-shadow:0 0 15px #f00;text-align:center;}
+.status{background:#111;border:3px solid #0f0;padding:20px;margin:20px auto;max-width:800px;}
+.cmd{color:#0ff;} .green{color:#0f0;} .red{color:#f00;} .yellow{color:#ff0;}
+button{background:#0a0;color:#000;border:2px solid #0f0;padding:15px;margin:10px;cursor:pointer;font:bold 16px monospace;}
+button:hover{background:#0f0;box-shadow:0 0 20px #0f0;}
+.server-info{background:#222;border:2px solid #0a0;padding:15px;margin:15px 0;}
+.online-users{background:#111;border:2px solid #00f;padding:15px;margin:15px 0;min-height:100px;}
+</style></head><body>
+
+<h1>🔥 LUDVIGSERVERS</h1>
+<h3 style="text-align:center;color:#0ff;">Бесплатный сервер на Windows VirtualBox</h3>
+
+<div class="status">
+    <h2>📡 Статус сервера:</h2>
+    <p class="cmd">IP: <span id="serverIp">192.168.56.1</span></p>
+    <p class="cmd">Порт: <span id="serverPort">5050</span></p>
+    <p class="cmd">Статус: <span id="status" class="red">Проверка...</span></p>
+    <p class="yellow">⚠️ Сервер должен быть запущен в VirtualBox на Windows!</p>
+</div>
+
+<div style="text-align:center;margin:30px 0;">
+    <button onclick="connectToServer()">🔗 Подключиться к серверу</button>
+    <button onclick="pingServer()">🏓 Ping сервер</button>
+    <button onclick="sendTestData()">📨 Отправить тест</button>
+    <button onclick="simulateHack()">🦠 Симуляция хака</button>
+    <button onclick="clearLogs()">🧹 Очистить логи</button>
+</div>
+
+<div class="server-info">
+    <h3>💻 Информация о сервере:</h3>
+    <p>• Сервер: Windows VirtualBox</p>
+    <p>• IP: 192.168.56.1 (твоя виртуалка)</p>
+    <p>• Порт: 5050 (TCP)</p>
+    <p>• Доступ: Бесплатно для всех в сети</p>
+    <p>• Хостинг: Твой компьютер</p>
+</div>
+
+<div class="online-users">
+    <h3>👥 Онлайн пользователи:</h3>
+    <div id="usersList">Загрузка...</div>
+</div>
+
+<div id="terminal" style="background:#111;border:2px solid #0f0;padding:20px;margin:20px 0;min-height:300px;overflow:auto;">
+    <span class="cmd">> Добро пожаловать в LudvigServers!</span><br>
+    <span class="cmd">> Сервер: Windows VirtualBox Edition</span><br>
+    <span class="cmd">> Ожидание подключения...</span><br>
+</div>
+
+<script>
+const terminal = document.getElementById('terminal');
+const usersList = document.getElementById('usersList');
+let isConnected = false;
+
+function log(msg, color = '#0f0') {
+    const time = new Date().toLocaleTimeString();
+    terminal.innerHTML += `<span style="color:#888">[${time}]</span> <span style="color:${color}">${msg}</span><br>`;
+    terminal.scrollTop = terminal.scrollHeight;
+}
+
+// Проверка сервера
+function checkServer() {
+    log('> Проверка сервера 192.168.56.1:5050...', '#0ff');
+    
+    // Эмуляция проверки (в реальности fetch или WebSocket)
+    setTimeout(() => {
+        const isOnline = Math.random() > 0.3; // 70% шанс что онлайн
+        if (isOnline) {
+            log('✅ Сервер онлайн! VirtualBox работает.', '#0f0');
+            document.getElementById('status').innerHTML = 'ОНЛАЙН';
+            document.getElementById('status').className = 'green';
+            isConnected = true;
+            
+            // Обновляем список пользователей
+            updateUsers();
+        } else {
+            log('❌ Сервер оффлайн. Запусти LudvigServers.py в VirtualBox!', '#f00');
+            document.getElementById('status').innerHTML = 'ОФФЛАЙН';
+            document.getElementById('status').className = 'red';
+        }
+    }, 1500);
+}
+
+function connectToServer() {
+    const ip = document.getElementById('serverIp').innerText;
+    const port = document.getElementById('serverPort').innerText;
+    
+    log(`> Подключение к ${ip}:${port}...`, '#0ff');
+    
+    // Эмуляция WebSocket подключения
+    setTimeout(() => {
+        log('✅ Подключение установлено!', '#0f0');
+        log('📡 Сервер LudvigServers приветствует тебя!', '#0ff');
+        
+        // Симуляция получения данных
+        setTimeout(() => {
+            log('📨 Получено от сервера: {"status":"ok","users":5,"uptime":"2:30"}', '#0af');
+        }, 800);
+        
+        isConnected = true;
+    }, 2000);
+}
+
+function pingServer() {
+    if (!isConnected) {
+        log('❌ Сначала подключись к серверу!', '#f00');
+        return;
+    }
+    
+    log('🏓 Отправка ping на сервер...', '#ff0');
+    
+    // Эмуляция ping
+    for (let i = 1; i <= 4; i++) {
+        setTimeout(() => {
+            const time = Math.floor(Math.random() * 100) + 20;
+            log(`📡 Ответ от 192.168.56.1: time=${time}ms TTL=64`, '#0f0');
+        }, i * 500);
+    }
+}
+
+function sendTestData() {
+    const testData = {
+        user: 'Гость',
+        action: 'test',
+        time: new Date().toISOString(),
+        message: 'Привет от LudvigServers!'
+    };
+    
+    log(`📨 Отправляю данные: ${JSON.stringify(testData)}`, '#0af');
+    
+    // Эмуляция отправки
+    setTimeout(() => {
+        log('✅ Данные отправлены успешно!', '#0f0');
+        log('📨 Ответ сервера: {"received":true,"processed":"ok"}', '#0ff');
+    }, 1000);
+}
+
+function simulateHack() {
+    log('🦠 Запуск симуляции хака на сервер...', '#f00');
+    
+    const steps = [
+        '🔍 Сканирование портов сервера...',
+        '🔄 Поиск уязвимостей...',
+        '⚡ Эксплойт: CVE-2024-LUDVIG [ШУТКА]',
+        '🔓 Доступ получен [СИМУЛЯЦИЯ]',
+        '📡 Установка backdoor...',
+        '✅ Хака симуляция завершена!'
+    ];
+    
+    steps.forEach((step, i) => {
+        setTimeout(() => {
+            log(step, i >= 2 ? '#f00' : '#ff0');
+        }, i * 800);
+    });
+}
+
+function updateUsers() {
+    // Симуляция списка пользователей
+    const users = [
+        {name: 'ludvig2457', ip: '192.168.56.1', time: '2:30'},
+        {name: 'hacker1337', ip: '10.0.0.5', time: '1:15'},
+        {name: 'anonymous', ip: '192.168.1.50', time: '0:45'},
+        {name: 'test_user', ip: '172.16.0.3', time: '0:20'}
+    ];
+    
+    usersList.innerHTML = '';
+    users.forEach(user => {
+        usersList.innerHTML += `
+            <div style="margin:5px;padding:5px;border-bottom:1px solid #333">
+                👤 ${user.name} (${user.ip}) - онлайн ${user.time}
+            </div>
+        `;
+    });
+}
+
+function clearLogs() {
+    terminal.innerHTML = '<span class="cmd">> Логи очищены</span><br>';
+}
+
+// Автопроверка при загрузке
+setTimeout(checkServer, 1000);
+setInterval(() => {
+    if (isConnected) {
+        updateUsers();
+    }
+}, 5000);
+
+log('> Страница LudvigServers загружена', '#0ff');
+log('> Жду подключения к твоему VirtualBox...', '#0af');
+</script>
+
+</body></html>
