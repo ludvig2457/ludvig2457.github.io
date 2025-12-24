@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LudvigOS - Revolutionary Operating System</title>
+    <title>LudvigOS - Next Generation Operating System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="icon" type="image/svg+xml" href="assets/cube.svg" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -15,6 +18,8 @@
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
                         'gradient': 'gradient 8s ease infinite',
+                        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-in': 'slideIn 0.5s ease-out',
                     },
                     keyframes: {
                         float: {
@@ -24,6 +29,10 @@
                         gradient: {
                             '0%, 100%': { 'background-position': '0% 50%' },
                             '50%': { 'background-position': '100% 50%' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
                         }
                     }
                 }
@@ -54,23 +63,6 @@
             transform: translateY(-10px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
-        .download-btn {
-            transition: all 0.3s ease;
-        }
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        .theme-toggle {
-            transition: all 0.3s ease;
-        }
-        .theme-toggle:hover {
-            transform: rotate(12deg);
-        }
         .dark .gradient-bg {
             background: linear-gradient(-45deg, #4c51bf, #7e22ce, #a855f7, #5b21b6);
             background-size: 400% 400%;
@@ -85,19 +77,36 @@
             background: rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .typewriter {
-            overflow: hidden;
-            border-right: 2px solid;
-            white-space: nowrap;
-            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        .terminal-bg {
+            background: #1a202c;
         }
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
+        .dark .terminal-bg {
+            background: #0a0a0a;
         }
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: #8a2be2 }
+        .code-line {
+            counter-increment: line;
+        }
+        .code-line:before {
+            content: counter(line);
+            display: inline-block;
+            width: 2em;
+            margin-right: 1em;
+            text-align: right;
+            color: #666;
+        }
+        .lpm-command {
+            font-family: 'Courier New', monospace;
+            background: rgba(139, 92, 246, 0.1);
+            padding: 0.2em 0.4em;
+            border-radius: 0.25em;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .copy-btn {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .code-block:hover .copy-btn {
+            opacity: 1;
         }
     </style>
 </head>
@@ -121,14 +130,15 @@
                     <div class="hidden sm:ml-8 sm:flex sm:space-x-8">
                         <a href="#home" class="border-purple-500 text-gray-900 dark:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Home</a>
                         <a href="#features" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Features</a>
+                        <a href="#lpm" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">LPM</a>
+                        <a href="#wiki" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Wiki</a>
                         <a href="#download" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Download</a>
-                        <a href="#docs" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Documentation</a>
-                        <a href="#contact" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Contact</a>
+                        <a href="#docs" class="border-transparent text-gray-500 dark:text-gray-300 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition duration-300">Docs</a>
                     </div>
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center">
                     <a href="#download" class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                        Download Now
+                        <i class="fas fa-download mr-2"></i>Get LudvigOS
                     </a>
                 </div>
                 <div class="-mr-2 flex items-center sm:hidden">
@@ -145,12 +155,13 @@
             <div class="pt-2 pb-3 space-y-1">
                 <a href="#home" class="bg-purple-50 dark:bg-purple-900 border-purple-500 text-purple-700 dark:text-purple-300 block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Home</a>
                 <a href="#features" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Features</a>
+                <a href="#lpm" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">LPM</a>
+                <a href="#wiki" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Wiki</a>
                 <a href="#download" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Download</a>
                 <a href="#docs" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Documentation</a>
-                <a href="#contact" class="border-transparent text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:text-gray-700 dark:hover:text-white block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition duration-300">Contact</a>
                 <div class="mt-4 pl-3 pr-4 pb-3">
                     <a href="#download" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-3 rounded-lg text-base font-medium transition duration-300 shadow-lg hover:shadow-xl block text-center">
-                        Download LudvigOS
+                        <i class="fas fa-download mr-2"></i>Download LudvigOS
                     </a>
                 </div>
             </div>
@@ -163,24 +174,29 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="lg:flex lg:items-center lg:justify-between">
                 <div class="lg:w-1/2">
+                    <div class="mb-4 inline-flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                        <i class="fas fa-terminal mr-2"></i>
+                        <span class="text-sm font-mono">$ lpm install ludvigos</span>
+                    </div>
                     <h1 class="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl mb-6">
                         <span class="block mb-2">LudvigOS</span>
-                        <span class="block text-purple-200 typewriter">The Future of Computing</span>
+                        <span class="block text-purple-200 text-4xl sm:text-5xl lg:text-6xl font-mono">Next-Gen Operating System</span>
                     </h1>
                     <p class="text-xl lg:text-2xl text-purple-100 max-w-lg mb-8 leading-relaxed">
-                        A revolutionary operating system designed for ultimate performance, security, and seamless user experience.
+                        A professional-grade operating system with modern architecture, 
+                        Windows XP-compatible graphics, and Ludvig Package Manager.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <a href="#download" class="download-btn bg-white text-purple-600 px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl hover:bg-purple-50 text-center group">
                             <span class="flex items-center justify-center">
-                                <i class="fas fa-download mr-3 group-hover:animate-bounce"></i>
-                                Download Now
+                                <i class="fas fa-rocket mr-3 group-hover:animate-bounce"></i>
+                                Get Started
                             </span>
                         </a>
-                        <a href="#features" class="download-btn glass-effect text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl hover:bg-white/20 text-center group">
+                        <a href="#wiki" class="download-btn glass-effect text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-2xl hover:bg-white/20 text-center group">
                             <span class="flex items-center justify-center">
-                                <i class="fas fa-star mr-3 group-hover:animate-bounce"></i>
-                                Explore Features
+                                <i class="fas fa-book-open mr-3"></i>
+                                Read Wiki
                             </span>
                         </a>
                     </div>
@@ -190,7 +206,7 @@
                         <div class="absolute -top-6 -left-6 w-40 h-40 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
                         <div class="absolute -bottom-6 -right-6 w-40 h-40 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 1s;"></div>
                         <div class="relative glass-effect rounded-3xl p-8 shadow-2xl border border-white/20">
-                            <div class="bg-gray-900 rounded-2xl p-1">
+                            <div class="terminal-bg rounded-2xl p-1">
                                 <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-t-2xl p-3 flex items-center">
                                     <div class="flex space-x-2">
                                         <div class="w-3 h-3 rounded-full bg-red-500"></div>
@@ -198,23 +214,29 @@
                                         <div class="w-3 h-3 rounded-full bg-green-500"></div>
                                     </div>
                                     <div class="text-white text-sm font-mono mx-auto font-bold">
-                                        LudvigOS Terminal
+                                        LudvigOS Terminal - LPM
                                     </div>
                                 </div>
-                                <div class="bg-black text-green-400 font-mono p-4 rounded-b-2xl text-sm">
-                                    <div class="mb-2">$ ludvigos --version</div>
-                                    <div class="text-green-300 mb-3">LudvigOS 1.2 Stable Release</div>
-                                    <div class="mb-2">$ system status</div>
-                                    <div class="text-blue-300 mb-3">All systems operational</div>
-                                    <div class="text-gray-500">Welcome to the future of computing</div>
+                                <div class="p-4 rounded-b-2xl text-sm font-mono">
+                                    <div class="mb-2 text-green-400">$ lpm update</div>
+                                    <div class="text-blue-300 mb-1">Updating package database...</div>
+                                    <div class="mb-2 text-green-400">$ lpm install ludvig-editor</div>
+                                    <div class="text-blue-300 mb-1">Installing LudvigEditor (v2.3.1)</div>
+                                    <div class="mb-2 text-green-400">$ lpm search game</div>
+                                    <div class="text-blue-300 mb-1">superlauncher-mc - 2.1.0</div>
+                                    <div class="text-gray-500">ludvig-games - 1.0.0</div>
+                                    <div class="mt-3 text-purple-300">7 packages available</div>
                                 </div>
                             </div>
                             <div class="mt-6 flex justify-between items-center">
-                                <span class="text-purple-200 font-semibold text-lg">v1.2 Latest</span>
+                                <div class="flex items-center">
+                                    <i class="fas fa-code-branch text-purple-300 mr-2"></i>
+                                    <span class="text-purple-200 font-semibold text-lg">v2.0.0 Latest</span>
+                                </div>
                                 <div class="flex space-x-2">
-                                    <span class="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">x64</span>
-                                    <span class="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">Secure</span>
-                                    <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">Fast</span>
+                                    <span class="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">UEFI</span>
+                                    <span class="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">LPM</span>
+                                    <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">x64</span>
                                 </div>
                             </div>
                         </div>
@@ -229,357 +251,658 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-20">
                 <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl mb-6">
-                    Why Choose LudvigOS?
+                    Professional Features
                 </h2>
                 <p class="text-xl lg:text-2xl text-gray-500 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                    Built from the ground up for performance, security, and user experience.
+                    Enterprise-grade capabilities in a modern operating system.
                 </p>
             </div>
 
             <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-20">
                 <div class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-bolt"></i>
+                    <div class="gradient-text text-4xl mb-4">
+                        <i class="fas fa-cogs"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Lightning Fast</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Dual Architecture</h3>
                     <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-                        Optimized kernel and lightweight architecture ensure blazing fast performance on any hardware.
+                        32-bit BIOS & 64-bit UEFI support with automatic detection and optimal configuration.
                     </p>
                 </div>
 
                 <div class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
+                    <div class="gradient-text text-4xl mb-4">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">LPM - Ludvig Package Manager</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                        Advanced package management with dependency resolution, signed packages, and rollback support.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
+                    <div class="gradient-text text-4xl mb-4">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Windows XP Graphics</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                        Native graphics with Windows XP-style interface compatibility. True 32-bit color support.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
+                    <div class="gradient-text text-4xl mb-4">
                         <i class="fas fa-shield-alt"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Military-Grade Security</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Secure Boot</h3>
                     <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-                        Built-in security features protect your data and privacy from modern threats.
+                        UEFI Secure Boot compatible with signed kernels and verified boot process.
                     </p>
                 </div>
 
                 <div class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-rocket"></i>
+                    <div class="gradient-text text-4xl mb-4">
+                        <i class="fas fa-bolt"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Gaming Optimized</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Performance Optimized</h3>
                     <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-                        Built-in SuperLauncher integration and gaming optimizations for the best gaming experience.
+                        Optimized kernel with modern C++17, minimal footprint, and real hardware support.
                     </p>
                 </div>
 
                 <div class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-palette"></i>
+                    <div class="gradient-text text-4xl mb-4">
+                        <i class="fas fa-network-wired"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Beautiful Interface</h3>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Network Ready</h3>
                     <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-                        Modern, customizable desktop environment with dark/light themes and stunning visuals.
+                        Built-in networking stack with TCP/IP support and driver abstraction layer.
                     </p>
                 </div>
+            </div>
+        </div>
+    </section>
 
-                <div class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-plug"></i>
+    <!-- LPM Section -->
+    <section id="lpm" class="py-24 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900/20 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl mb-6">
+                    Ludvig Package Manager
+                </h2>
+                <p class="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                    Advanced package management inspired by Arch Linux's pacman and AUR.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">Package Management Commands</h3>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-xl mr-4">
+                                    <i class="fas fa-sync-alt text-purple-600 dark:text-purple-400 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 dark:text-white text-lg">System Update</h4>
+                                    <p class="text-gray-500 dark:text-gray-400">Update all packages and system</p>
+                                </div>
+                            </div>
+                            <div class="code-block relative">
+                                <button class="copy-btn absolute top-2 right-2 bg-gray-700 text-white p-2 rounded hover:bg-gray-600 transition">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <pre class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm"><code>$ lpm update
+$ lpm upgrade --full
+$ lpm sync</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-xl mr-4">
+                                    <i class="fas fa-download text-blue-600 dark:text-blue-400 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 dark:text-white text-lg">Package Installation</h4>
+                                    <p class="text-gray-500 dark:text-gray-400">Install packages with dependencies</p>
+                                </div>
+                            </div>
+                            <div class="code-block relative">
+                                <button class="copy-btn absolute top-2 right-2 bg-gray-700 text-white p-2 rounded hover:bg-gray-600 transition">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <pre class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm"><code>$ lpm install ludvig-editor
+$ lpm install superlauncher-mc --no-deps
+$ lpm install --repo community package-name</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-green-100 dark:bg-green-900 p-3 rounded-xl mr-4">
+                                    <i class="fas fa-search text-green-600 dark:text-green-400 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 dark:text-white text-lg">Package Query</h4>
+                                    <p class="text-gray-500 dark:text-gray-400">Search and query packages</p>
+                                </div>
+                            </div>
+                            <div class="code-block relative">
+                                <button class="copy-btn absolute top-2 right-2 bg-gray-700 text-white p-2 rounded hover:bg-gray-600 transition">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <pre class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm"><code>$ lpm search editor
+$ lpm info package-name
+$ lpm list --installed
+$ lpm depends package-name</code></pre>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Hardware Support</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-                        Extensive driver support for modern hardware and peripherals out of the box.
-                    </p>
                 </div>
 
-                <div class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group">
-                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-sync-alt"></i>
+                <div>
+                    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-600">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Available Repositories</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="p-4 rounded-2xl bg-purple-50 dark:bg-purple-900/30">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-gray-900 dark:text-white">core</h4>
+                                    <span class="bg-purple-600 text-white px-2 py-1 rounded text-xs font-bold">126 packages</span>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    Essential system packages: kernel, drivers, basic utilities
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/30">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-gray-900 dark:text-white">extra</h4>
+                                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold">87 packages</span>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    Additional software: editors, tools, development packages
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-green-50 dark:bg-green-900/30">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-gray-900 dark:text-white">community</h4>
+                                    <span class="bg-green-600 text-white px-2 py-1 rounded text-xs font-bold">45 packages</span>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    User-contributed packages: games, themes, utilities
+                                </p>
+                            </div>
+
+                            <div class="p-4 rounded-2xl bg-orange-50 dark:bg-orange-900/30">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-gray-900 dark:text-white">testing</h4>
+                                    <span class="bg-orange-600 text-white px-2 py-1 rounded text-xs font-bold">23 packages</span>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    Experimental packages: beta software, development versions
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                            <h4 class="font-bold text-gray-900 dark:text-white mb-3">LPM Configuration</h4>
+                            <div class="code-block relative">
+                                <button class="copy-btn absolute top-2 right-2 bg-gray-700 text-white p-2 rounded hover:bg-gray-600 transition">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <pre class="bg-gray-900 text-blue-300 p-4 rounded-lg overflow-x-auto text-xs"><code># /etc/lpm.conf
+[options]
+Architecture = auto
+CheckSpace = true
+SigLevel = Required DatabaseOptional
+
+[core]
+Server = https://repo.ludvigos.com/$arch/core
+
+[extra]
+Server = https://repo.ludvigos.com/$arch/extra
+
+[community]
+Server = https://repo.ludvigos.com/$arch/community
+
+[testing]
+Server = https://repo.ludvigos.com/$arch/testing</code></pre>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Auto Updates</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-                        Seamless updates keep your system secure and up-to-date with the latest features.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wiki Section -->
+    <section id="wiki" class="py-24 bg-white dark:bg-gray-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl mb-6">
+                    LudvigOS Wiki
+                </h2>
+                <p class="text-xl lg:text-2xl text-gray-500 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                    Complete documentation, tutorials, and community knowledge base.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <a href="#installation" class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group block hover:no-underline">
+                    <div class="gradient-text text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Installation Guide</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
+                        Step-by-step installation for BIOS/UEFI, dual-boot setup, and hardware compatibility.
                     </p>
+                    <div class="flex items-center text-purple-600 dark:text-purple-400 font-semibold">
+                        <span>Read Guide</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <a href="#kernel-development" class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group block hover:no-underline">
+                    <div class="gradient-text text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Kernel Development</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
+                        Kernel architecture, driver development, and system programming guides.
+                    </p>
+                    <div class="flex items-center text-purple-600 dark:text-purple-400 font-semibold">
+                        <span>View Docs</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <a href="#lpm-guide" class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group block hover:no-underline">
+                    <div class="gradient-text text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">LPM Package Creation</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
+                        Creating LPM packages, maintaining repositories, and submission guidelines.
+                    </p>
+                    <div class="flex items-center text-purple-600 dark:text-purple-400 font-semibold">
+                        <span>Learn More</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <a href="#troubleshooting" class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group block hover:no-underline">
+                    <div class="gradient-text text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Troubleshooting</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
+                        Common issues, boot problems, hardware compatibility, and recovery procedures.
+                    </p>
+                    <div class="flex items-center text-purple-600 dark:text-purple-400 font-semibold">
+                        <span>Get Help</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <a href="#api-docs" class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group block hover:no-underline">
+                    <div class="gradient-text text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">API Documentation</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
+                        System calls, library APIs, and development references for LudvigOS applications.
+                    </p>
+                    <div class="flex items-center text-purple-600 dark:text-purple-400 font-semibold">
+                        <span>Browse API</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <a href="#community" class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group block hover:no-underline">
+                    <div class="gradient-text text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Community Wiki</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
+                        User-contributed guides, tutorials, and best practices from the LudvigOS community.
+                    </p>
+                    <div class="flex items-center text-purple-600 dark:text-purple-400 font-semibold">
+                        <span>Join Community</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+            </div>
+
+            <div class="mt-16 text-center">
+                <a href="#full-wiki" class="inline-flex items-center bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg transition duration-300 transform hover:scale-105">
+                    <i class="fas fa-external-link-alt mr-3"></i>
+                    Browse Complete Wiki
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Sample Section -->
+    <section class="py-24 bg-gradient-to-br from-gray-900 to-purple-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold sm:text-5xl lg:text-6xl mb-6">
+                    Professional Build System
+                </h2>
+                <p class="text-xl lg:text-2xl text-purple-200 max-w-3xl mx-auto leading-relaxed">
+                    Enterprise-grade build script with auto-detection and multiple architecture support.
+                </p>
+            </div>
+
+            <div class="bg-black/50 backdrop-blur-sm rounded-3xl p-8 border border-purple-500/30">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                        <span class="text-gray-300 ml-4 font-mono">build.sh</span>
+                    </div>
+                    <button onclick="copyBuildScript()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition">
+                        <i class="fas fa-copy mr-2"></i>Copy Script
+                    </button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <pre class="text-green-400 font-mono text-sm leading-relaxed"><code>#!/bin/bash
+set -e
+
+# Цвета для вывода
+GREEN="\e[32m"
+YELLOW="\e[33m"
+RED="\e[31m"
+CYAN="\e[36m"
+RESET="\e[0m"
+
+OS_NAME="LudvigOS"
+BUILD_DIR="$PWD/build"
+ISO_DIR="$PWD/iso"
+
+# Выбор архитектуры
+echo -e "${CYAN}Выбери архитектуру:${RESET}"
+echo "1) 32-bit (i686) - BIOS"
+echo "2) 64-bit (x86_64) - UEFI"
+read -p "Введите выбор [1-2]: " ARCH_CHOICE
+
+if [ "$ARCH_CHOICE" = "1" ]; then
+    ARCH="i686-elf"
+    BUILD_SUBDIR="i686"
+    QEMU="qemu-system-i386"
+    EFI_MODE=false
+elif [ "$ARCH_CHOICE" = "2" ]; then
+    ARCH="x86_64-elf"
+    BUILD_SUBDIR="x86_64"
+    QEMU="qemu-system-x86_64"
+    EFI_MODE=true
+else
+    echo -e "${RED}Invalid choice! Defaulting to 32-bit.${RESET}"
+    ARCH="i686-elf"
+    BUILD_SUBDIR="i686"
+    QEMU="qemu-system-i386"
+    EFI_MODE=false
+fi
+
+echo -e "${GREEN}[*] Selected architecture: $ARCH${RESET}"
+if [ "$EFI_MODE" = true ]; then
+    echo -e "${GREEN}[*] Using UEFI boot${RESET}"
+else
+    echo -e "${GREEN}[*] Using BIOS boot${RESET}"
+fi
+
+# Основные шаги сборки
+echo -e "${YELLOW}[1] Cleaning previous builds...${RESET}"
+mkdir -p "$BUILD_DIR" "$ISO_DIR"
+rm -rf "$BUILD_PATH" "$ISO_PATH"
+mkdir -p "$BUILD_PATH/boot" "$BUILD_PATH/kernel" "$ISO_PATH/boot/grub"
+
+# Компиляция ядра
+echo -e "${YELLOW}[2] Compiling kernel...${RESET}"
+"$ARCH-g++" -ffreestanding -O2 -Wall -Wextra -std=c++17 \
+    -c kernel.cpp -o kernel.o
+
+# Линковка
+echo -e "${YELLOW}[3] Linking kernel...${RESET}"
+"$ARCH-ld" -n -T linker.ld -o kernel.elf kernel.o
+
+# Создание загрузочных файлов
+echo -e "${YELLOW}[4] Creating boot files...${RESET}"
+cp kernel.elf "$ISO_PATH/boot/"
+
+# Конфигурация GRUB
+echo -e "${YELLOW}[5] Configuring GRUB...${RESET}"
+cat > "$ISO_PATH/boot/grub/grub.cfg" << EOF
+set timeout=3
+menuentry "LudvigOS" {
+    multiboot /boot/kernel.elf
+    boot
+}
+EOF
+
+# Создание ISO
+echo -e "${YELLOW}[6] Creating ISO image...${RESET}"
+grub-mkrescue -o "${OS_NAME}-${BUILD_SUBDIR}.iso" "$ISO_PATH"
+
+echo -e "${GREEN}[✓] Build completed!${RESET}"
+echo -e "${GREEN}[✓] ISO: ${OS_NAME}-${BUILD_SUBDIR}.iso${RESET}"</code></pre>
+                </div>
+                
+                <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="text-center p-4 bg-purple-900/30 rounded-xl">
+                        <div class="text-2xl font-bold">2</div>
+                        <div class="text-sm text-purple-300">Architectures</div>
+                    </div>
+                    <div class="text-center p-4 bg-blue-900/30 rounded-xl">
+                        <div class="text-2xl font-bold">C++17</div>
+                        <div class="text-sm text-blue-300">Kernel Language</div>
+                    </div>
+                    <div class="text-center p-4 bg-green-900/30 rounded-xl">
+                        <div class="text-2xl font-bold">GRUB2</div>
+                        <div class="text-sm text-green-300">Bootloader</div>
+                    </div>
+                    <div class="text-center p-4 bg-orange-900/30 rounded-xl">
+                        <div class="text-2xl font-bold">QEMU</div>
+                        <div class="text-sm text-orange-300">Tested With</div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Download Section -->
-    <section id="download" class="py-24 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900/20 transition-colors duration-300">
+    <section id="download" class="py-24 bg-white dark:bg-gray-800 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl mb-6">
                     Download LudvigOS
                 </h2>
-                <p class="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                    Get started with the future of computing today. Choose your preferred installation method.
+                <p class="text-xl lg:text-2xl text-gray-500 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                    Choose your preferred edition and installation method.
                 </p>
             </div>
 
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <div>
-                    <div class="bg-green-100 dark:bg-green-900 border-l-4 border-green-500 text-green-700 dark:text-green-300 p-6 mb-8 rounded-r-2xl shadow-lg">
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle mr-3 text-xl"></i>
-                            <div>
-                                <p class="font-bold text-lg">Latest Stable Release: Version 1.2</p>
-                                <p class="text-sm mt-1">Ready for production use</p>
-                            </div>
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-3xl shadow-2xl border border-purple-200 dark:border-purple-700">
+                    <div class="text-center mb-6">
+                        <div class="gradient-text text-5xl mb-4">
+                            <i class="fas fa-desktop"></i>
                         </div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Standard Edition</h3>
+                        <p class="text-gray-600 dark:text-gray-300">For most users</p>
                     </div>
-
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">System Requirements:</h3>
                     <ul class="space-y-3 mb-8">
                         <li class="flex items-center">
                             <i class="fas fa-check text-green-500 mr-3"></i>
-                            <span class="text-gray-700 dark:text-gray-300">64-bit processor (x86-64)</span>
+                            <span class="text-gray-700 dark:text-gray-300">64-bit UEFI & 32-bit BIOS</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-check text-green-500 mr-3"></i>
-                            <span class="text-gray-700 dark:text-gray-300">4GB RAM (8GB recommended)</span>
+                            <span class="text-gray-700 dark:text-gray-300">LPM Package Manager</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-check text-green-500 mr-3"></i>
-                            <span class="text-gray-700 dark:text-gray-300">20GB free disk space</span>
+                            <span class="text-gray-700 dark:text-gray-300">Basic drivers included</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-check text-green-500 mr-3"></i>
-                            <span class="text-gray-700 dark:text-gray-300">USB port for installation</span>
+                            <span class="text-gray-700 dark:text-gray-300">Documentation</span>
                         </li>
                     </ul>
-
-                    <div class="space-y-4">
-                        <a href="https://github.com/ludvig2457/LudvigOS/releases/download/v1.2/LudvigOS.iso" 
-                           class="download-btn bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-xl text-xl font-semibold shadow-2xl inline-flex items-center group w-full justify-center">
-                            <i class="fas fa-download mr-4 text-2xl group-hover:animate-bounce"></i>
-                            Download ISO (29.4 MB)
-                        </a>
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <a href="#docs" class="download-btn bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:border-purple-500 px-6 py-3 rounded-xl text-lg font-semibold shadow-lg inline-flex items-center justify-center group">
-                                <i class="fas fa-book mr-3 group-hover:scale-110 transition-transform"></i>
-                                Documentation
-                            </a>
-                            <a href="#docs" class="download-btn bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:border-purple-500 px-6 py-3 rounded-xl text-lg font-semibold shadow-lg inline-flex items-center justify-center group">
-                                <i class="fas fa-question-circle mr-3 group-hover:scale-110 transition-transform"></i>
-                                Installation Guide
-                            </a>
-                        </div>
-                    </div>
+                    <a href="#" class="block w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 rounded-xl text-lg font-semibold text-center transition duration-300 transform hover:scale-105">
+                        Download (29.4 MB)
+                    </a>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-600">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Quick Installation</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-start p-4 rounded-2xl bg-purple-50 dark:bg-purple-900/30">
-                            <div class="bg-purple-100 dark:bg-purple-800 p-3 rounded-xl mr-4">
-                                <i class="fas fa-download text-purple-600 dark:text-purple-400 text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900 dark:text-white mb-1">1. Download ISO</h4>
-                                <p class="text-gray-600 dark:text-gray-300 text-sm">Get the latest LudvigOS installation image</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/30">
-                            <div class="bg-blue-100 dark:bg-blue-800 p-3 rounded-xl mr-4">
-                                <i class="fas fa-usb text-blue-600 dark:text-blue-400 text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900 dark:text-white mb-1">2. Create Bootable USB</h4>
-                                <p class="text-gray-600 dark:text-gray-300 text-sm">Use Rufus or Etcher to create installation media</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start p-4 rounded-2xl bg-green-50 dark:bg-green-900/30">
-                            <div class="bg-green-100 dark:bg-green-800 p-3 rounded-xl mr-4">
-                                <i class="fas fa-play text-green-600 dark:text-green-400 text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900 dark:text-white mb-1">3. Boot & Install</h4>
-                                <p class="text-gray-600 dark:text-gray-300 text-sm">Boot from USB and follow the installation wizard</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start p-4 rounded-2xl bg-orange-50 dark:bg-orange-900/30">
-                            <div class="bg-orange-100 dark:bg-orange-800 p-3 rounded-xl mr-4">
-                                <i class="fas fa-cog text-orange-600 dark:text-orange-400 text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900 dark:text-white mb-1">4. Enjoy!</h4>
-                                <p class="text-gray-600 dark:text-gray-300 text-sm">Customize your system and start exploring</p>
-                            </div>
-                        </div>
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-3xl shadow-2xl border border-blue-200 dark:border-blue-700 relative">
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                        <span class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-bold">POPULAR</span>
                     </div>
+                    <div class="text-center mb-6">
+                        <div class="gradient-text text-5xl mb-4">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Developer Edition</h3>
+                        <p class="text-gray-600 dark:text-gray-300">For developers</p>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span class="text-gray-700 dark:text-gray-300">All Standard features</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Development tools</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Kernel headers</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Debug symbols</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Build system</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="block w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-xl text-lg font-semibold text-center transition duration-300 transform hover:scale-105">
+                        Download (48.2 MB)
+                    </a>
+                </div>
+
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-3xl shadow-2xl border border-green-200 dark:border-green-700">
+                    <div class="text-center mb-6">
+                        <div class="gradient-text text-5xl mb-4">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Server Edition</h3>
+                        <p class="text-gray-600 dark:text-gray-300">For servers</p>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Headless installation</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span class="text-gray-700 dark:text-gray-300">SSH server included</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Network utilities</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Minimal footprint</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="block w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-3 rounded-xl text-lg font-semibold text-center transition duration-300 transform hover:scale-105">
+                        Download (21.8 MB)
+                    </a>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <p class="text-gray-600 dark:text-gray-300 mb-8">
+                    Need help choosing? Check our <a href="#wiki" class="text-purple-600 dark:text-purple-400 hover:underline font-semibold">installation guide</a>.
+                </p>
+                <div class="inline-flex flex-col sm:flex-row gap-4">
+                    <a href="#docs" class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:border-purple-500 px-6 py-3 rounded-xl text-lg font-semibold shadow-lg inline-flex items-center justify-center group">
+                        <i class="fas fa-book mr-3"></i>
+                        Documentation
+                    </a>
+                    <a href="#wiki" class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:border-purple-500 px-6 py-3 rounded-xl text-lg font-semibold shadow-lg inline-flex items-center justify-center group">
+                        <i class="fas fa-question-circle mr-3"></i>
+                        Installation Guide
+                    </a>
+                    <a href="#lpm" class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:border-purple-500 px-6 py-3 rounded-xl text-lg font-semibold shadow-lg inline-flex items-center justify-center group">
+                        <i class="fas fa-box-open mr-3"></i>
+                        Package List
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Documentation Section -->
-    <section id="docs" class="py-24 bg-white dark:bg-gray-800 transition-colors duration-300">
+    <section id="docs" class="py-24 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl mb-6">
                     Documentation & Support
                 </h2>
                 <p class="text-xl lg:text-2xl text-gray-500 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                    Everything you need to get the most out of LudvigOS.
+                    Everything you need to master LudvigOS.
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group text-center">
-                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-book-open"></i>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="bg-purple-100 dark:bg-purple-900 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-book gradient-text text-2xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">User Guide</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
-                        Complete documentation for getting started and mastering LudvigOS.
-                    </p>
-                    <a href="#" class="inline-flex items-center text-purple-600 dark:text-purple-400 font-semibold group-hover:underline">
-                        Read Guide <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-                    </a>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">User Manual</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Complete guide for end users</p>
                 </div>
 
-                <div class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group text-center">
-                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-tools"></i>
+                <div class="text-center">
+                    <div class="bg-blue-100 dark:bg-blue-900 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-code gradient-text text-2xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Developer Docs</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
-                        API documentation and development guides for extending LudvigOS.
-                    </p>
-                    <a href="#" class="inline-flex items-center text-purple-600 dark:text-purple-400 font-semibold group-hover:underline">
-                        Developer Portal <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-                    </a>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Developer Guide</h3>
+                    <p class="text-gray-600 dark:text-gray-300">API documentation and tutorials</p>
                 </div>
 
-                <div class="card-hover bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-600 group text-center">
-                    <div class="feature-icon gradient-text group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-users"></i>
+                <div class="text-center">
+                    <div class="bg-green-100 dark:bg-green-900 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-tools gradient-text text-2xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Community</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
-                        Join our community for support, discussions, and sharing ideas.
-                    </p>
-                    <a href="#" class="inline-flex items-center text-purple-600 dark:text-purple-400 font-semibold group-hover:underline">
-                        Join Community <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-                    </a>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Administrator Guide</h3>
+                    <p class="text-gray-600 dark:text-gray-300">System administration and maintenance</p>
+                </div>
+
+                <div class="text-center">
+                    <div class="bg-orange-100 dark:bg-orange-900 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users gradient-text text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Community</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Forums, chat, and user contributions</p>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-24 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl mb-6">
-                    Get In Touch
-                </h2>
-                <p class="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                    Have questions or want to contribute? We'd love to hear from you!
-                </p>
-            </div>
-
-            <div class="grid lg:grid-cols-2 gap-12">
-                <div>
-                    <div class="space-y-8">
-                        <div class="flex items-start group">
-                            <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-900 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                                <i class="fas fa-envelope gradient-text text-2xl"></i>
-                            </div>
-                            <div class="ml-6">
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Email Support</h3>
-                                <p class="text-lg text-gray-600 dark:text-gray-300">support@ludvigos.com</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start group">
-                            <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-900 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                                <i class="fas fa-bug gradient-text text-2xl"></i>
-                            </div>
-                            <div class="ml-6">
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Bug Reports</h3>
-                                <p class="text-lg text-gray-600 dark:text-gray-300">GitHub Issues</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start group">
-                            <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-900 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                                <i class="fas fa-comments gradient-text text-2xl"></i>
-                            </div>
-                            <div class="ml-6">
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Community</h3>
-                                <div class="flex space-x-4 mt-2">
-                                    <a href="https://discord.gg/ludvigos" class="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition duration-300 text-2xl">
-                                        <i class="fab fa-discord"></i>
-                                    </a>
-                                    <a href="https://github.com/ludvig2457/LudvigOS" class="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition duration-300 text-2xl">
-                                        <i class="fab fa-github"></i>
-                                    </a>
-                                    <a href="https://reddit.com/r/ludvigos" class="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition duration-300 text-2xl">
-                                        <i class="fab fa-reddit"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <form action="https://formspree.io/f/mpwdvlbb" method="POST"
-                          class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
-                        <div class="mb-6">
-                            <label for="name" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Name</label>
-                            <input type="text" id="name" name="name" required
-                                class="w-full border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm py-4 px-4 
-                                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-lg
-                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
-                                       transition duration-300">
-                        </div>
-
-                        <div class="mb-6">
-                            <label for="email" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Email</label>
-                            <input type="email" id="email" name="email" required
-                                class="w-full border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm py-4 px-4 
-                                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-lg
-                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
-                                       transition duration-300">
-                        </div>
-
-                        <div class="mb-6">
-                            <label for="subject" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Subject</label>
-                            <select id="subject" name="subject" required
-                                class="w-full border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm py-4 px-4 
-                                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-lg
-                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
-                                       transition duration-300">
-                                <option>General Inquiry</option>
-                                <option>Technical Support</option>
-                                <option>Feature Request</option>
-                                <option>Bug Report</option>
-                                <option>Partnership</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-6">
-                            <label for="message" class="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Message</label>
-                            <textarea id="message" name="message" rows="5" required
-                                class="w-full border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm py-4 px-4 
-                                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-lg
-                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
-                                       transition duration-300"></textarea>
-                        </div>
-
-                        <div class="mt-8">
-                            <button type="submit"
-                                class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 
-                                       text-white py-4 px-6 rounded-xl shadow-lg text-lg font-semibold 
-                                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500
-                                       transition duration-300 transform hover:scale-105">
-                                Send Message
-                            </button>
-                        </div>
-                    </form>
-                </div>
+            <div class="mt-16 text-center">
+                <a href="#full-docs" class="inline-flex items-center bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg transition duration-300 transform hover:scale-105">
+                    <i class="fas fa-graduation-cap mr-3"></i>
+                    Access Full Documentation
+                </a>
             </div>
         </div>
     </section>
@@ -594,50 +917,57 @@
                         <span class="text-2xl font-bold">LudvigOS</span>
                     </div>
                     <p class="text-gray-400 text-lg leading-relaxed">
-                        The revolutionary operating system for the future of computing.
+                        A next-generation operating system with modern architecture and professional tooling.
                     </p>
                 </div>
                 <div>
-                    <h3 class="text-xl font-semibold mb-6">LudvigOS</h3>
+                    <h3 class="text-xl font-semibold mb-6">Product</h3>
                     <ul class="space-y-4">
-                        <li><a href="#home" class="text-gray-400 hover:text-white text-lg transition duration-300">Home</a></li>
                         <li><a href="#features" class="text-gray-400 hover:text-white text-lg transition duration-300">Features</a></li>
+                        <li><a href="#lpm" class="text-gray-400 hover:text-white text-lg transition duration-300">Package Manager</a></li>
+                        <li><a href="#wiki" class="text-gray-400 hover:text-white text-lg transition duration-300">Wiki</a></li>
                         <li><a href="#download" class="text-gray-400 hover:text-white text-lg transition duration-300">Download</a></li>
-                        <li><a href="#docs" class="text-gray-400 hover:text-white text-lg transition duration-300">Documentation</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-xl font-semibold mb-6">Support</h3>
+                    <h3 class="text-xl font-semibold mb-6">Documentation</h3>
                     <ul class="space-y-4">
-                        <li><a href="#docs" class="text-gray-400 hover:text-white text-lg transition duration-300">Help Center</a></li>
-                        <li><a href="#contact" class="text-gray-400 hover:text-white text-lg transition duration-300">Contact</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">Community</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">Status</a></li>
+                        <li><a href="#docs" class="text-gray-400 hover:text-white text-lg transition duration-300">Getting Started</a></li>
+                        <li><a href="#wiki" class="text-gray-400 hover:text-white text-lg transition duration-300">Installation Guide</a></li>
+                        <li><a href="#wiki" class="text-gray-400 hover:text-white text-lg transition duration-300">User Manual</a></li>
+                        <li><a href="#wiki" class="text-gray-400 hover:text-white text-lg transition duration-300">Developer Guide</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-xl font-semibold mb-6">Connect</h3>
-                    <div class="flex space-x-6">
+                    <h3 class="text-xl font-semibold mb-6">Community</h3>
+                    <div class="flex space-x-6 mb-6">
                         <a href="https://github.com/ludvig2457/LudvigOS" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
                             <i class="fab fa-github"></i>
                         </a>
-                        <a href="https://discord.gg/ludvigos" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
                             <i class="fab fa-discord"></i>
                         </a>
-                        <a href="https://reddit.com/r/ludvigos" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
                             <i class="fab fa-reddit"></i>
                         </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
+                            <i class="fab fa-twitter"></i>
+                        </a>
                     </div>
+                    <p class="text-gray-400">
+                        Join our community for support and discussions.
+                    </p>
                 </div>
             </div>
             <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
                 <div class="text-gray-400 text-lg mb-4 md:mb-0">
-                    &copy; 2025 LudvigOS. All rights reserved.
+                    &copy; 2025 LudvigOS Project. All rights reserved.
                 </div>
                 <div class="flex space-x-8">
-                    <a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">Privacy Policy</a>
-                    <a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">Terms of Service</a>
-                    <a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">License</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">Privacy</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">Terms</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">Cookies</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">Security</a>
                 </div>
             </div>
         </div>
@@ -648,7 +978,6 @@
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = themeToggle.querySelector('i');
         
-        // Check for saved theme or prefer-color-scheme
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
             themeIcon.classList.replace('fa-moon', 'fa-sun');
@@ -668,13 +997,13 @@
             }
         });
 
-        // Mobile menu toggle
+        // Mobile menu
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');
         });
 
-        // Smooth scrolling with offset for fixed header
+        // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -689,7 +1018,6 @@
                         behavior: 'smooth'
                     });
                     
-                    // Close mobile menu if open
                     const mobileMenu = document.getElementById('mobile-menu');
                     if (!mobileMenu.classList.contains('hidden')) {
                         mobileMenu.classList.add('hidden');
@@ -698,36 +1026,46 @@
             });
         });
 
-        // Add scroll animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+        // Copy buttons
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const code = this.parentElement.querySelector('code');
+                navigator.clipboard.writeText(code.textContent);
+                
+                const originalIcon = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check"></i>';
+                
+                setTimeout(() => {
+                    this.innerHTML = originalIcon;
+                }, 2000);
+            });
+        });
 
+        // Copy build script function
+        function copyBuildScript() {
+            const code = document.querySelector('pre code');
+            navigator.clipboard.writeText(code.textContent);
+            
+            const btn = document.querySelector('button[onclick="copyBuildScript()"]');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+            }, 2000);
+        }
+
+        // Scroll animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.classList.add('animate-slide-in');
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.1 });
 
-        // Observe elements for animation
-        document.querySelectorAll('.card-hover, .download-btn, .feature-icon').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        document.querySelectorAll('.card-hover').forEach(el => {
             observer.observe(el);
-        });
-
-        // Add loading animation
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 100);
         });
     </script>
 </body>
