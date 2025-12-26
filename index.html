@@ -3,488 +3,447 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ludvig2457 - Happy New Year 2026! 🎄</title>
+    <title>Ludvig2457 - Welcome 2026! 🎄</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Новогодние шрифты -->
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/cube.svg" />
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
         :root {
             --holiday-red: #e74c3c;
             --holiday-green: #27ae60;
             --holiday-gold: #f1c40f;
             --holiday-blue: #3498db;
-            --holiday-silver: #bdc3c7;
         }
         
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0c2b4b 0%, #1a3a5f 30%, #0c4a6e 70%, #1e5a8a 100%);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0c4a6e 100%);
             min-height: 100vh;
-            overflow-x: hidden;
         }
         
-        .new-year-font {
-            font-family: 'Dancing Script', cursive;
-            font-weight: 700;
+        .holiday-font {
+            font-family: 'Mountains of Christmas', cursive;
         }
         
-        .elegant-font {
-            font-family: 'Great Vibes', cursive;
-        }
-        
-        /* Анимация снежинок */
         .snowflake {
             position: absolute;
             background: white;
             border-radius: 50%;
             opacity: 0.8;
             pointer-events: none;
-            filter: blur(0.5px);
         }
         
-        /* Новогодний градиент */
-        .new-year-gradient {
-            background: linear-gradient(45deg, 
-                #e74c3c 0%, #f1c40f 25%, 
-                #27ae60 50%, #3498db 75%, 
-                #9b59b6 100%);
+        .new-year-countdown {
+            background: linear-gradient(45deg, #e74c3c, #f1c40f, #27ae60, #3498db);
             background-size: 400% 400%;
-            animation: gradientFlow 15s ease infinite;
+            animation: gradientBG 15s ease infinite;
         }
         
-        @keyframes gradientFlow {
+        @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
         
-        /* Анимация гирлянды */
-        .christmas-light {
-            position: relative;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin: 0 15px;
-            display: inline-block;
-            animation: lightTwinkle 1.5s infinite alternate;
-        }
-        
-        @keyframes lightTwinkle {
-            0% { opacity: 0.3; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1.2); }
-        }
-        
-        /* Стили для подарков */
-        .gift-box {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .gift-box::before {
-            content: '🎀';
+        .firework {
             position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 2rem;
-            z-index: 10;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .ornament {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            position: absolute;
+            animation: swing 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes swing {
+            0% { transform: rotate(-10deg); }
+            100% { transform: rotate(10deg); }
+        }
+        
+        .glow-effect {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 20px var(--holiday-gold); }
+            to { box-shadow: 0 0 30px var(--holiday-red), 0 0 40px var(--holiday-gold); }
+        }
+        
+        .gift-box {
+            perspective: 1000px;
+            transition: transform 0.5s;
         }
         
         .gift-box:hover {
-            transform: translateY(-15px) rotate(-2deg);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: translateY(-10px) rotateX(10deg);
         }
         
-        /* Эффект сияния */
-        .glow-effect {
-            animation: glowPulse 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes glowPulse {
-            from {
-                box-shadow: 0 0 15px rgba(241, 196, 15, 0.5),
-                            0 0 30px rgba(231, 76, 60, 0.3);
-            }
-            to {
-                box-shadow: 0 0 25px rgba(241, 196, 15, 0.8),
-                            0 0 50px rgba(231, 76, 60, 0.5);
-            }
-        }
-        
-        /* Стиль для снежинок на заднем плане */
-        .snow-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 2%),
-                radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 2%),
-                radial-gradient(circle at 60% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 2%),
-                radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 2%),
-                radial-gradient(circle at 30% 90%, rgba(255, 255, 255, 0.1) 0%, transparent 2%);
-            background-size: 300px 300px;
-        }
-        
-        /* Новогодние иконки */
-        .holiday-icon {
-            font-size: 3rem;
-            display: inline-block;
-            animation: floatIcon 3s ease-in-out infinite;
-        }
-        
-        @keyframes floatIcon {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
-        }
-        
-        /* Стиль для елки */
-        .christmas-tree {
+        .santa-hat {
             position: relative;
-            width: 100px;
-            height: 150px;
-            margin: 0 auto;
         }
         
-        .tree-part {
+        .santa-hat::before {
+            content: "🎅";
             position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 50px solid transparent;
-            border-right: 50px solid transparent;
-            border-bottom: 50px solid #27ae60;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
         }
         
-        .tree-part:nth-child(1) { top: 100px; }
-        .tree-part:nth-child(2) { top: 60px; width: 0; height: 0; border-left: 40px solid transparent; border-right: 40px solid transparent; border-bottom: 40px solid #2ecc71; }
-        .tree-part:nth-child(3) { top: 30px; width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-bottom: 30px solid #1abc9c; }
-        
-        /* Модальное окно в новогоднем стиле */
         .login-modal {
-            background: rgba(12, 43, 75, 0.95);
-            backdrop-filter: blur(20px);
-            border: 2px solid rgba(241, 196, 15, 0.3);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
         }
         
-        /* Кнопки входа */
-        .login-btn {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
+        .christmas-lights {
+            height: 10px;
+            background: linear-gradient(90deg,
+                #e74c3c 0%, #e74c3c 10%,
+                #f1c40f 10%, #f1c40f 20%,
+                #27ae60 20%, #27ae60 30%,
+                #3498db 30%, #3498db 40%,
+                #9b59b6 40%, #9b59b6 50%,
+                #e74c3c 50%, #e74c3c 60%,
+                #f1c40f 60%, #f1c40f 70%,
+                #27ae60 70%, #27ae60 80%,
+                #3498db 80%, #3498db 90%,
+                #9b59b6 90%, #9b59b6 100%
+            );
+            animation: lightsMove 10s linear infinite;
         }
         
-        .login-btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-        
-        .login-btn:hover::after {
-            left: 100%;
-        }
-        
-        /* Новогодние украшения текста */
-        .text-ornament {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .text-ornament::before,
-        .text-ornament::after {
-            content: '❄️';
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.5rem;
-            opacity: 0.7;
-        }
-        
-        .text-ornament::before {
-            left: -40px;
-        }
-        
-        .text-ornament::after {
-            right: -40px;
-        }
-        
-        /* Адаптивные стили */
-        @media (max-width: 768px) {
-            .text-ornament::before,
-            .text-ornament::after {
-                display: none;
-            }
-            
-            .holiday-icon {
-                font-size: 2rem;
-            }
+        @keyframes lightsMove {
+            0% { background-position: 0px 0px; }
+            100% { background-position: 100px 0px; }
         }
     </style>
 </head>
-<body class="text-white">
-    <!-- Фоновые снежинки -->
-    <div class="snow-background"></div>
+<body class="text-white overflow-x-hidden">
+    <!-- Christmas Lights -->
+    <div class="christmas-lights w-full fixed top-0 left-0 z-50"></div>
+    
+    <!-- Snowflakes Container -->
     <div id="snowflakes"></div>
     
-    <!-- Новогодняя гирлянда сверху -->
-    <div class="w-full py-2 fixed top-0 left-0 z-40 flex justify-center">
-        <div class="christmas-light bg-red-500" style="animation-delay: 0s"></div>
-        <div class="christmas-light bg-yellow-500" style="animation-delay: 0.2s"></div>
-        <div class="christmas-light bg-green-500" style="animation-delay: 0.4s"></div>
-        <div class="christmas-light bg-blue-500" style="animation-delay: 0.6s"></div>
-        <div class="christmas-light bg-purple-500" style="animation-delay: 0.8s"></div>
-        <div class="christmas-light bg-red-500" style="animation-delay: 1s"></div>
-        <div class="christmas-light bg-yellow-500" style="animation-delay: 1.2s"></div>
-        <div class="christmas-light bg-green-500" style="animation-delay: 1.4s"></div>
-    </div>
-    
-    <!-- Навигация -->
-    <nav class="fixed w-full z-50 py-4 px-4 md:px-6 backdrop-blur-md bg-slate-900/70 border-b border-yellow-500/30">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-40 py-4 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center">
-                <!-- Логотип с новогодней иконкой -->
                 <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-yellow-500 flex items-center justify-center shadow-lg">
-                            <i class="fas fa-star text-white text-2xl"></i>
-                        </div>
-                        <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                            <span class="text-xs font-bold">26</span>
-                        </div>
+                    <div class="santa-hat">
+                        <i class="fas fa-cube text-3xl text-red-500"></i>
                     </div>
-                    <div>
-                        <h1 class="text-2xl font-bold new-year-font tracking-wide">
-                            Ludvig<span class="text-yellow-400">2457</span>
-                        </h1>
-                        <p class="text-xs text-slate-300">🎉 Happy New Year 2026! 🎉</p>
-                    </div>
+                    <h1 class="text-2xl font-bold holiday-font">
+                        Ludvig<span class="text-green-500">2457</span>
+                        <span class="text-yellow-400 text-sm">🎄 2026</span>
+                    </h1>
                 </div>
                 
-                <!-- Основное меню -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="hover:text-yellow-400 transition-colors flex items-center">
-                        <i class="fas fa-home mr-2"></i> Home
-                    </a>
-                    <a href="#gifts" class="hover:text-yellow-400 transition-colors flex items-center">
-                        <i class="fas fa-gift mr-2"></i> Gifts
-                    </a>
-                    <a href="#superlauncher" class="hover:text-yellow-400 transition-colors flex items-center">
-                        <i class="fas fa-rocket mr-2"></i> SuperLauncher
-                    </a>
-                    <a href="#ludvigos" class="hover:text-yellow-400 transition-colors flex items-center">
-                        <i class="fas fa-desktop mr-2"></i> LudvigOS
-                    </a>
-                    
-                    <!-- Кнопка входа/пользователь -->
-                    <button id="loginBtn" class="bg-gradient-to-r from-red-600 to-yellow-600 hover:from-red-700 hover:to-yellow-700 px-6 py-2 rounded-full font-bold transition-all transform hover:scale-105 flex items-center">
+                    <a href="#home" class="hover:text-yellow-400 transition-colors">Home</a>
+                    <a href="#superlauncher" class="hover:text-yellow-400 transition-colors">SuperLauncher</a>
+                    <a href="#ludvigos" class="hover:text-yellow-400 transition-colors">LudvigOS</a>
+                    <a href="#gifts" class="hover:text-yellow-400 transition-colors">New Year Gifts</a>
+                    <button id="loginBtn" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-full font-bold transition-all">
                         <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                     </button>
-                    
-                    <div id="userMenu" class="hidden items-center space-x-3 bg-slate-800/50 px-4 py-2 rounded-full">
+                    <div id="userMenu" class="hidden items-center space-x-3">
                         <img id="userAvatar" class="w-8 h-8 rounded-full border-2 border-yellow-400" src="" alt="">
                         <span id="userName" class="font-medium"></span>
-                        <button id="logoutBtn" class="text-slate-300 hover:text-white">
+                        <button id="logoutBtn" class="text-sm text-gray-400 hover:text-white">
                             <i class="fas fa-sign-out-alt"></i>
                         </button>
                     </div>
                 </div>
                 
-                <!-- Мобильное меню -->
-                <button id="mobileMenuBtn" class="md:hidden text-2xl hover:text-yellow-400 transition-colors">
+                <button id="mobileMenuBtn" class="md:hidden text-2xl">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Модальное окно входа -->
+    <!-- Login Modal -->
     <div id="loginModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 login-modal">
-        <div class="bg-gradient-to-br from-slate-900 to-blue-900/50 rounded-2xl p-8 max-w-md w-full relative border-2 border-yellow-500/50 shadow-2xl">
-            <!-- Новогоднее украшение модального окна -->
-            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
-                    <i class="fas fa-star text-white"></i>
-                </div>
-            </div>
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 max-w-md w-full relative border-2 border-yellow-500">
+            <button id="closeLogin" class="absolute top-4 right-4 text-2xl hover:text-yellow-400">×</button>
             
-            <button id="closeLogin" class="absolute top-4 right-4 text-2xl hover:text-yellow-400 transition-colors">×</button>
-            
-            <h2 class="text-3xl font-bold mb-2 text-center new-year-font">
-                Welcome to 2026! <span class="text-yellow-400">🎄</span>
-            </h2>
-            <p class="text-center text-slate-300 mb-8">Sign in to unlock special New Year gifts!</p>
+            <h2 class="text-3xl font-bold mb-2 text-center holiday-font">Welcome to 2026! 🎄</h2>
+            <p class="text-center text-gray-300 mb-8">Sign in to unlock special New Year gifts!</p>
             
             <div class="space-y-4">
-                <button id="googleLogin" class="login-btn w-full bg-white text-gray-800 py-4 rounded-xl font-bold flex items-center justify-center space-x-3 hover:bg-gray-100 transition-all transform hover:scale-105">
-                    <i class="fab fa-google text-red-500 text-2xl"></i>
-                    <span class="text-lg">Continue with Google</span>
+                <button id="googleLogin" class="w-full bg-white text-gray-800 py-3 rounded-lg font-bold flex items-center justify-center space-x-3 hover:bg-gray-100 transition">
+                    <i class="fab fa-google text-red-500 text-xl"></i>
+                    <span>Continue with Google</span>
                 </button>
                 
-                <button id="yandexLogin" class="login-btn w-full bg-red-600 text-white py-4 rounded-xl font-bold flex items-center justify-center space-x-3 hover:bg-red-700 transition-all transform hover:scale-105">
-                    <span class="text-2xl font-bold">Я</span>
-                    <span class="text-lg">Continue with Yandex</span>
+                <button id="yandexLogin" class="w-full bg-red-600 text-white py-3 rounded-lg font-bold flex items-center justify-center space-x-3 hover:bg-red-700 transition">
+                    <span class="text-xl">Я</span>
+                    <span>Continue with Yandex</span>
                 </button>
                 
-                <button id="microsoftLogin" class="login-btn w-full bg-blue-600 text-white py-4 rounded-xl font-bold flex items-center justify-center space-x-3 hover:bg-blue-700 transition-all transform hover:scale-105">
-                    <i class="fab fa-microsoft text-2xl"></i>
-                    <span class="text-lg">Continue with Microsoft</span>
+                <button id="microsoftLogin" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold flex items-center justify-center space-x-3 hover:bg-blue-700 transition">
+                    <i class="fab fa-microsoft text-xl"></i>
+                    <span>Continue with Microsoft</span>
                 </button>
             </div>
             
-            <div class="mt-8 pt-8 border-t border-slate-700 text-center">
-                <p class="text-slate-400 text-sm">
-                    <i class="fas fa-tree mr-2 text-green-500"></i>
-                    Sign in and celebrate New Year with us!
-                    <i class="fas fa-tree ml-2 text-green-500"></i>
+            <div class="mt-8 pt-8 border-t border-gray-700">
+                <p class="text-center text-gray-400 text-sm">
+                    By signing in, you agree to our New Year celebration terms! 🎅
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- Главный герой-секция -->
-    <section id="home" class="min-h-screen flex items-center justify-center relative pt-24 px-4">
-        <div class="max-w-6xl mx-auto text-center relative z-10">
-            <!-- Новогодние украшения -->
-            <div class="mb-8 flex justify-center space-x-4">
-                <span class="holiday-icon">🎄</span>
-                <span class="holiday-icon" style="animation-delay: 0.5s">🎁</span>
-                <span class="holiday-icon" style="animation-delay: 1s">❄️</span>
-                <span class="holiday-icon" style="animation-delay: 1.5s">✨</span>
-                <span class="holiday-icon" style="animation-delay: 2s">🎆</span>
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative pt-16">
+        <div class="max-w-6xl mx-auto px-4 py-20 text-center relative z-10">
+            <div class="inline-block mb-8 px-6 py-3 bg-gradient-to-r from-red-600 to-yellow-500 rounded-full animate-bounce">
+                <span class="font-bold">🎉 Happy New Year 2026! 🎉</span>
             </div>
             
-            <h1 class="text-5xl md:text-8xl font-bold mb-6 new-year-font text-center">
-                <span class="text-red-400">Happy</span>
-                <span class="text-yellow-400">New</span>
-                <span class="text-green-400">Year</span>
-                <span class="text-blue-400">2026</span>
+            <h1 class="text-6xl md:text-8xl font-bold mb-6 holiday-font">
+                <span class="text-red-500">New Year</span>
+                <span class="text-green-500">Update</span>
+                <span class="text-yellow-400">2026</span>
             </h1>
             
-            <p class="text-xl md:text-3xl mb-12 text-slate-200 max-w-3xl mx-auto leading-relaxed">
-                Welcome to the future of gaming! SuperLauncher & LudvigOS present 
-                exclusive New Year updates and gifts for our community!
+            <p class="text-2xl md:text-3xl mb-12 text-gray-200 max-w-3xl mx-auto">
+                SuperLauncher & LudvigOS bring you special Christmas gifts and amazing new features!
             </p>
             
-            <!-- Обратный отсчет до Нового года -->
-            <div class="new-year-gradient rounded-2xl p-8 mb-12 shadow-2xl">
-                <h3 class="text-2xl font-bold mb-6 text-white flex items-center justify-center">
-                    <i class="fas fa-clock mr-3"></i>
-                    Countdown to 2026 Celebration
-                    <i class="fas fa-clock ml-3"></i>
-                </h3>
+            <!-- New Year Countdown -->
+            <div class="new-year-countdown rounded-2xl p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4">🎄 Countdown to 2026 🎄</h3>
                 <div class="flex justify-center space-x-4 md:space-x-8">
                     <div class="text-center">
-                        <div class="text-4xl md:text-6xl font-bold bg-slate-900/50 rounded-xl p-4" id="days">00</div>
-                        <div class="text-lg mt-2">Days</div>
+                        <div class="text-4xl md:text-6xl font-bold" id="days">00</div>
+                        <div class="text-sm md:text-lg">Days</div>
                     </div>
-                    <div class="text-4xl font-bold text-yellow-400 self-center">:</div>
+                    <div class="text-4xl font-bold text-yellow-400">:</div>
                     <div class="text-center">
-                        <div class="text-4xl md:text-6xl font-bold bg-slate-900/50 rounded-xl p-4" id="hours">00</div>
-                        <div class="text-lg mt-2">Hours</div>
+                        <div class="text-4xl md:text-6xl font-bold" id="hours">00</div>
+                        <div class="text-sm md:text-lg">Hours</div>
                     </div>
-                    <div class="text-4xl font-bold text-yellow-400 self-center">:</div>
+                    <div class="text-4xl font-bold text-yellow-400">:</div>
                     <div class="text-center">
-                        <div class="text-4xl md:text-6xl font-bold bg-slate-900/50 rounded-xl p-4" id="minutes">00</div>
-                        <div class="text-lg mt-2">Minutes</div>
+                        <div class="text-4xl md:text-6xl font-bold" id="minutes">00</div>
+                        <div class="text-sm md:text-lg">Minutes</div>
                     </div>
-                    <div class="text-4xl font-bold text-yellow-400 self-center">:</div>
+                    <div class="text-4xl font-bold text-yellow-400">:</div>
                     <div class="text-center">
-                        <div class="text-4xl md:text-6xl font-bold bg-slate-900/50 rounded-xl p-4" id="seconds">00</div>
-                        <div class="text-lg mt-2">Seconds</div>
+                        <div class="text-4xl md:text-6xl font-bold" id="seconds">00</div>
+                        <div class="text-sm md:text-lg">Seconds</div>
                     </div>
                 </div>
-                <p class="mt-6 text-slate-200 text-lg">
-                    🎉 The celebration starts in just...
-                </p>
             </div>
             
-            <!-- Кнопки действия -->
             <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-8">
-                <button id="heroLoginBtn" class="bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 glow-effect flex items-center justify-center">
-                    <i class="fas fa-gift mr-3 text-2xl"></i>Get Your New Year Gifts
+                <button id="heroLoginBtn" class="bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 glow-effect">
+                    <i class="fas fa-gift mr-3"></i>Get Your New Year Gift
                 </button>
-                <a href="#superlauncher" class="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 flex items-center justify-center">
-                    <i class="fas fa-download mr-3 text-2xl"></i>Download Now
+                <a href="#superlauncher" class="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105">
+                    <i class="fas fa-download mr-3"></i>Download Now
                 </a>
             </div>
         </div>
+        
+        <!-- Decorative Ornaments -->
+        <div class="ornament bg-red-500 top-20 left-10 shadow-lg"></div>
+        <div class="ornament bg-green-500 top-40 right-10 shadow-lg" style="animation-delay: 0.5s;"></div>
+        <div class="ornament bg-yellow-500 bottom-20 left-20 shadow-lg" style="animation-delay: 1s;"></div>
+        <div class="ornament bg-blue-500 bottom-40 right-20 shadow-lg" style="animation-delay: 1.5s;"></div>
     </section>
 
-    <!-- Секция подарков -->
-    <section id="gifts" class="py-20 px-4 bg-slate-900/30">
+    <!-- Special New Year Gifts -->
+    <section id="gifts" class="py-20 px-4">
         <div class="max-w-6xl mx-auto">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 new-year-font">
-                <span class="text-ornament">
-                    <span class="text-yellow-400">Exclusive</span>
-                    <span class="text-red-400"> New Year</span>
-                    <span class="text-green-400"> Gifts</span>
-                </span>
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 holiday-font">
+                <span class="text-yellow-400">🎁 Special </span>
+                <span class="text-red-500">New Year </span>
+                <span class="text-green-500">Gifts 2026</span>
             </h2>
             
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Подарок 1 -->
-                <div class="gift-box bg-gradient-to-br from-red-900/30 to-red-600/20 p-8 rounded-2xl border-2 border-red-500/50 text-center relative overflow-hidden">
-                    <div class="absolute top-4 right-4 text-3xl">🎮</div>
-                    <div class="text-6xl mb-6">🕹️</div>
-                    <h3 class="text-2xl font-bold mb-4">Premium Game Skins</h3>
-                    <p class="text-slate-300 mb-6">Exclusive Christmas-themed Minecraft skins pack</p>
-                    <div id="gift1" class="text-yellow-400 font-bold text-lg min-h-8">
-                        Sign in to unlock!
-                    </div>
+                <div class="gift-box bg-gradient-to-br from-red-900/30 to-red-600/20 p-8 rounded-2xl border-2 border-red-500 text-center">
+                    <div class="text-6xl mb-6">🎮</div>
+                    <h3 class="text-2xl font-bold mb-4">Exclusive Skins Pack</h3>
+                    <p class="text-gray-300 mb-6">Get 10 exclusive Christmas-themed Minecraft skins for free!</p>
+                    <div id="gift1" class="text-yellow-400 font-bold text-lg">Sign in to unlock!</div>
                 </div>
                 
-                <!-- Подарок 2 -->
-                <div class="gift-box bg-gradient-to-br from-green-900/30 to-green-600/20 p-8 rounded-2xl border-2 border-green-500/50 text-center relative overflow-hidden">
-                    <div class="absolute top-4 right-4 text-3xl">✨</div>
-                    <div class="text-6xl mb-6">🎨</div>
-                    <h3 class="text-2xl font-bold mb-4">New Year Theme</h3>
-                    <p class="text-slate-300 mb-6">Animated winter theme for SuperLauncher</p>
-                    <div id="gift2" class="text-yellow-400 font-bold text-lg min-h-8">
-                        Sign in to unlock!
-                    </div>
+                <div class="gift-box bg-gradient-to-br from-green-900/30 to-green-600/20 p-8 rounded-2xl border-2 border-green-500 text-center">
+                    <div class="text-6xl mb-6">⭐</div>
+                    <h3 class="text-2xl font-bold mb-4">Premium Theme 2026</h3>
+                    <p class="text-gray-300 mb-6">Special New Year theme for SuperLauncher with animations</p>
+                    <div id="gift2" class="text-yellow-400 font-bold text-lg">Sign in to unlock!</div>
                 </div>
                 
-                <!-- Подарок 3 -->
-                <div class="gift-box bg-gradient-to-br from-blue-900/30 to-blue-600/20 p-8 rounded-2xl border-2 border-blue-500/50 text-center relative overflow-hidden">
-                    <div class="absolute top-4 right-4 text-3xl">⭐</div>
-                    <div class="text-6xl mb-6">🎵</div>
-                    <h3 class="text-2xl font-bold mb-4">Holiday Sound Pack</h3>
-                    <p class="text-slate-300 mb-6">Christmas music and sound effects pack</p>
-                    <div id="gift3" class="text-yellow-400 font-bold text-lg min-h-8">
-                        Sign in to unlock!
-                    </div>
+                <div class="gift-box bg-gradient-to-br from-blue-900/30 to-blue-600/20 p-8 rounded-2xl border-2 border-blue-500 text-center">
+                    <div class="text-6xl mb-6">🎄</div>
+                    <h3 class="text-2xl font-bold mb-4">Christmas Resource Pack</h3>
+                    <p class="text-gray-300 mb-6">Holiday texture pack with snow, lights and decorations</p>
+                    <div id="gift3" class="text-yellow-400 font-bold text-lg">Sign in to unlock!</div>
                 </div>
             </div>
             
-            <div class="mt-16 text-center">
-                <p class="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-                    🎅 Sign in to claim all your New Year gifts! 
-                    Available until January 15, 2026
-                </p>
-                <button id="giftsLoginBtn" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-4 rounded-xl text-2xl font-bold transition-all transform hover:scale-105 glow-effect">
-                    <i class="fas fa-unlock-alt mr-3"></i>Sign In & Unlock Gifts
+            <div class="mt-12 text-center">
+                <p class="text-xl text-gray-300 mb-6">🎅 Sign in to claim all your gifts! Available until January 15, 2026</p>
+                <button id="giftsLoginBtn" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105">
+                    <i class="fas fa-sign-in-alt mr-3"></i>Sign In & Claim Gifts
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- Остальные секции остаются похожими, но с новогодним стилем -->
-    
-    <!-- Firebase скрипты -->
+    <!-- SuperLauncher Section -->
+    <section id="superlauncher" class="py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center bg-gradient-to-r from-blue-600 to-cyan-500 px-6 py-3 rounded-full mb-6">
+                    <i class="fas fa-star mr-3"></i>
+                    <span class="font-bold">NEW YEAR UPDATE v2.0.0</span>
+                </div>
+                <h2 class="text-5xl font-bold mb-6">SuperLauncher 2026 Edition</h2>
+                <p class="text-2xl text-gray-300">Completely redesigned with holiday magic! ✨</p>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-3xl font-bold mb-8">What's New for 2026:</h3>
+                    <ul class="space-y-6">
+                        <li class="flex items-start">
+                            <i class="fas fa-snowflake text-blue-400 text-2xl mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Winter UI Theme</h4>
+                                <p class="text-gray-300">Snow animations and holiday decorations</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-gift text-red-400 text-2xl mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Gift System</h4>
+                                <p class="text-gray-300">Daily Christmas gifts for logged in users</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-tachometer-alt text-green-400 text-2xl mr-4 mt-1"></i>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">2x Faster Performance</h4>
+                                <p class="text-gray-300">Optimized for New Year gaming sessions</p>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-12">
+                        <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.7/SuperLauncher1.4.0.7.exe" 
+                           class="inline-block bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 mr-4 mb-4">
+                            <i class="fab fa-windows mr-3"></i>Download for Windows
+                        </a>
+                        <button id="superlauncherLoginBtn" class="inline-block bg-gradient-to-r from-yellow-600 to-amber-500 hover:from-yellow-700 hover:to-amber-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105">
+                            <i class="fas fa-user-plus mr-3"></i>Register for Beta
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-3xl border-2 border-cyan-500 shadow-2xl">
+                    <div class="bg-slate-900 rounded-2xl p-6">
+                        <div class="flex items-center mb-6">
+                            <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                            <div class="ml-4 text-gray-400 font-mono">SuperLauncher 2026</div>
+                        </div>
+                        <div class="text-center py-12">
+                            <div class="text-8xl mb-6">🎄</div>
+                            <h4 class="text-2xl font-bold mb-4">Merry Christmas & Happy New Year!</h4>
+                            <p class="text-gray-400 mb-6">Launching your holiday gaming experience...</p>
+                            <div class="inline-block px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full">
+                                <span id="userStatus" class="font-bold">Sign in to continue</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LudvigOS Section -->
+    <section id="ludvigos" class="py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold mb-6 holiday-font">
+                    <span class="text-red-500">Ludvig</span>
+                    <span class="text-green-500">OS</span>
+                    <span class="text-yellow-400">2026</span>
+                </h2>
+                <p class="text-2xl text-gray-300">The future of gaming operating systems has arrived! 🚀</p>
+            </div>
+            
+            <div class="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 border-2 border-yellow-500 shadow-2xl">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-6">🎁 Special Holiday Release</h3>
+                        <p class="text-xl text-gray-300 mb-8">
+                            LudvigOS 2026 comes with built-in Christmas celebrations, 
+                            exclusive themes, and special gaming optimizations for the New Year!
+                        </p>
+                        
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 text-2xl mr-4"></i>
+                                <span class="text-lg">Automatic holiday decorations</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 text-2xl mr-4"></i>
+                                <span class="text-lg">Integrated SuperLauncher 2026</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 text-2xl mr-4"></i>
+                                <span class="text-lg">New Year countdown widget</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 text-2xl mr-4"></i>
+                                <span class="text-lg">Special gift delivery system</span>
+                            </div>
+                        </div>
+                        
+                        <a href="https://github.com/ludvig2457/LudvigOS/releases/download/v1.2/LudvigOS.iso" 
+                           class="inline-block bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105">
+                            <i class="fas fa-download mr-3"></i>Download LudvigOS 2026
+                        </a>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="text-9xl mb-8 animate-pulse">🎅</div>
+                        <div id="ludvigosStatus" class="text-xl font-bold text-yellow-400 mb-4">
+                            Sign in to access installation guide
+                        </div>
+                        <button id="ludvigosLoginBtn" class="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 px-6 py-3 rounded-lg font-bold">
+                            <i class="fas fa-unlock mr-2"></i>Unlock Features
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Firebase Configuration and Scripts -->
     <script>
-        // Инициализация Firebase
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyC4RANR8kR2e7q5kQ7Q8m8wY9z0a1b2c3d4",
             authDomain: "ludvig2457-2026.firebaseapp.com",
@@ -494,15 +453,15 @@
             appId: "1:123456789012:web:abcdef1234567890abcdef"
         };
         
-        // Инициализация Firebase
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         
-        // Провайдеры аутентификации
+        // Auth Providers
         const googleProvider = new firebase.auth.GoogleAuthProvider();
         const microsoftProvider = new firebase.auth.OAuthProvider('microsoft.com');
         
-        // Элементы DOM
+        // DOM Elements
         const loginModal = document.getElementById('loginModal');
         const loginBtn = document.getElementById('loginBtn');
         const closeLogin = document.getElementById('closeLogin');
@@ -515,15 +474,18 @@
         const userAvatar = document.getElementById('userAvatar');
         const heroLoginBtn = document.getElementById('heroLoginBtn');
         const giftsLoginBtn = document.getElementById('giftsLoginBtn');
+        const superlauncherLoginBtn = document.getElementById('superlauncherLoginBtn');
+        const ludvigosLoginBtn = document.getElementById('ludvigosLoginBtn');
+        const userStatus = document.getElementById('userStatus');
+        const ludvigosStatus = document.getElementById('ludvigosStatus');
         const gift1 = document.getElementById('gift1');
         const gift2 = document.getElementById('gift2');
         const gift3 = document.getElementById('gift3');
         
-        // Управление модальным окном
+        // Modal Functions
         function openLoginModal() {
             loginModal.classList.remove('hidden');
             loginModal.classList.add('flex');
-            createConfetti();
         }
         
         function closeLoginModal() {
@@ -531,99 +493,110 @@
             loginModal.classList.add('hidden');
         }
         
-        // Аутентификация через Google
+        // Login Functions
         async function loginWithGoogle() {
             try {
                 const result = await auth.signInWithPopup(googleProvider);
                 updateUI(result.user);
                 closeLoginModal();
-                showSuccessMessage('🎉 Welcome! New Year gifts unlocked!');
-                createFireworks();
+                showSuccessMessage('Successfully logged in with Google! 🎄');
             } catch (error) {
                 console.error('Google login error:', error);
-                alert('❌ Login failed: ' + error.message);
+                alert('Failed to login with Google: ' + error.message);
             }
         }
         
-        // Аутентификация через Microsoft
         async function loginWithMicrosoft() {
             try {
                 const result = await auth.signInWithPopup(microsoftProvider);
                 updateUI(result.user);
                 closeLoginModal();
-                showSuccessMessage('🎉 Welcome! Happy New Year 2026!');
-                createFireworks();
+                showSuccessMessage('Successfully logged in with Microsoft! 🎄');
             } catch (error) {
                 console.error('Microsoft login error:', error);
-                alert('❌ Login failed: ' + error.message);
+                alert('Failed to login with Microsoft: ' + error.message);
             }
         }
         
-        // Симуляция входа через Яндекс
+        // Yandex login (simulated since Firebase doesn't have direct Yandex support)
         async function loginWithYandex() {
+            // Simulate Yandex login - in production, you'd use Yandex OAuth
             const simulatedUser = {
                 displayName: 'Yandex User',
                 email: 'user@yandex.ru',
-                photoURL: 'https://cdn-icons-png.flaticon.com/512/124/124034.png'
+                photoURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Yandex_icon.svg/512px-Yandex_icon.svg.png'
             };
             
             updateUI(simulatedUser);
             closeLoginModal();
-            showSuccessMessage('🎉 Welcome from Yandex! Gifts unlocked!');
-            createFireworks();
+            showSuccessMessage('Successfully logged in with Yandex! 🎄');
             unlockGifts();
         }
         
-        // Выход из системы
+        // Logout Function
         function logout() {
             auth.signOut().then(() => {
                 userMenu.classList.add('hidden');
                 loginBtn.classList.remove('hidden');
                 resetGifts();
-                showSuccessMessage('👋 See you next year!');
+                showSuccessMessage('Logged out successfully! 👋');
             });
         }
         
-        // Обновление интерфейса
+        // Update UI with User Info
         function updateUI(user) {
-            userName.textContent = user.displayName || 'New Year User';
-            userAvatar.src = user.photoURL || 'https://cdn-icons-png.flaticon.com/512/1077/1077012.png';
+            userName.textContent = user.displayName || 'User';
+            userAvatar.src = user.photoURL || 'https://via.placeholder.com/150';
             userAvatar.onerror = function() {
-                this.src = 'https://cdn-icons-png.flaticon.com/512/1077/1077012.png';
+                this.src = 'https://via.placeholder.com/150';
             };
             
             loginBtn.classList.add('hidden');
             userMenu.classList.remove('hidden');
+            
+            // Update status messages
+            userStatus.textContent = `Welcome, ${user.displayName}! 🎄`;
+            ludvigosStatus.textContent = `Welcome ${user.displayName}! Access granted ✅`;
+            
+            // Unlock gifts
             unlockGifts();
         }
         
-        // Разблокировка подарков
+        // Unlock New Year Gifts
         function unlockGifts() {
-            gift1.innerHTML = '<div class="animate-pulse"><i class="fas fa-check-circle mr-2"></i>Unlocked! <button class="ml-2 text-green-400 hover:text-green-300">Download</button></div>';
-            gift2.innerHTML = '<div class="animate-pulse"><i class="fas fa-check-circle mr-2"></i>Unlocked! <button class="ml-2 text-green-400 hover:text-green-300">Apply Theme</button></div>';
-            gift3.innerHTML = '<div class="animate-pulse"><i class="fas fa-check-circle mr-2"></i>Unlocked! <button class="ml-2 text-green-400 hover:text-green-300">Install Pack</button></div>';
+            gift1.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Unlocked! Downloading...';
+            gift2.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Unlocked! Applied theme';
+            gift3.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Unlocked! Installing...';
+            
+            // Add download functionality
+            setTimeout(() => {
+                gift1.innerHTML = '<button class="text-green-400 hover:text-green-300"><i class="fas fa-download mr-2"></i>Download Skins Pack</button>';
+                gift2.innerHTML = '<button class="text-green-400 hover:text-green-300"><i class="fas fa-palette mr-2"></i>Apply Theme</button>';
+                gift3.innerHTML = '<button class="text-green-400 hover:text-green-300"><i class="fas fa-download mr-2"></i>Download Resource Pack</button>';
+            }, 2000);
         }
         
         function resetGifts() {
             gift1.textContent = 'Sign in to unlock!';
             gift2.textContent = 'Sign in to unlock!';
             gift3.textContent = 'Sign in to unlock!';
+            userStatus.textContent = 'Sign in to continue';
+            ludvigosStatus.textContent = 'Sign in to access installation guide';
         }
         
-        // Уведомления
+        // Show Success Message
         function showSuccessMessage(message) {
             const toast = document.createElement('div');
-            toast.className = 'fixed top-20 right-4 bg-gradient-to-r from-green-600 to-emerald-500 text-white px-6 py-3 rounded-xl shadow-2xl z-50 animate-slide-in';
-            toast.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${message}`;
+            toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            toast.textContent = message;
             document.body.appendChild(toast);
             
             setTimeout(() => {
-                toast.classList.add('animate-slide-out');
-                setTimeout(() => toast.remove(), 300);
+                toast.remove();
             }, 3000);
         }
         
-        // Слушатель состояния аутентификации
+        // Check Auth State
         auth.onAuthStateChanged((user) => {
             if (user) {
                 updateUI(user);
@@ -632,7 +605,7 @@
             }
         });
         
-        // События
+        // Event Listeners
         loginBtn.addEventListener('click', openLoginModal);
         closeLogin.addEventListener('click', closeLoginModal);
         googleLogin.addEventListener('click', loginWithGoogle);
@@ -641,15 +614,22 @@
         logoutBtn.addEventListener('click', logout);
         heroLoginBtn.addEventListener('click', openLoginModal);
         giftsLoginBtn.addEventListener('click', openLoginModal);
+        superlauncherLoginBtn.addEventListener('click', openLoginModal);
+        ludvigosLoginBtn.addEventListener('click', openLoginModal);
         
-        // Закрытие модального окна при клике снаружи
+        // Close modal when clicking outside
         loginModal.addEventListener('click', (e) => {
             if (e.target === loginModal) {
                 closeLoginModal();
             }
         });
         
-        // Обратный отсчет до Нового года
+        // Mobile Menu
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            alert('Mobile menu would open here in production! 📱');
+        });
+        
+        // New Year Countdown
         function updateCountdown() {
             const newYear2026 = new Date('January 1, 2026 00:00:00').getTime();
             const now = new Date().getTime();
@@ -665,20 +645,27 @@
                 document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
                 document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
                 document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            } else {
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
             }
         }
         
         setInterval(updateCountdown, 1000);
         updateCountdown();
         
-        // Создание снежинок
+        // Create Snowflakes
         function createSnowflakes() {
             const container = document.getElementById('snowflakes');
-            for (let i = 0; i < 30; i++) {
+            const snowflakeCount = 50;
+            
+            for (let i = 0; i < snowflakeCount; i++) {
                 const snowflake = document.createElement('div');
                 snowflake.className = 'snowflake';
                 
-                const size = Math.random() * 4 + 2;
+                const size = Math.random() * 5 + 2;
                 const posX = Math.random() * 100;
                 const duration = Math.random() * 10 + 10;
                 const delay = Math.random() * 5;
@@ -687,140 +674,87 @@
                 snowflake.style.height = `${size}px`;
                 snowflake.style.left = `${posX}vw`;
                 snowflake.style.top = '-10px';
-                snowflake.style.opacity = Math.random() * 0.6 + 0.3;
+                snowflake.style.animation = `fall ${duration}s linear ${delay}s infinite`;
+                snowflake.style.opacity = Math.random() * 0.5 + 0.3;
                 
-                const animation = document.createElement('style');
-                animation.textContent = `
-                    @keyframes fall${i} {
+                // Create fall animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes fall {
                         0% {
-                            transform: translateY(-10px) translateX(0) rotate(0deg);
+                            transform: translateY(-10px) rotate(0deg);
+                            opacity: ${snowflake.style.opacity};
                         }
                         100% {
-                            transform: translateY(100vh) translateX(${Math.random() * 100 - 50}px) rotate(360deg);
+                            transform: translateY(100vh) rotate(360deg);
                             opacity: 0;
                         }
                     }
                 `;
-                document.head.appendChild(animation);
-                
-                snowflake.style.animation = `fall${i} ${duration}s linear ${delay}s infinite`;
+                document.head.appendChild(style);
                 
                 container.appendChild(snowflake);
                 
-                setTimeout(() => snowflake.remove(), (duration + delay) * 1000);
-            }
-        }
-        
-        // Создание конфетти
-        function createConfetti() {
-            for (let i = 0; i < 50; i++) {
+                // Remove snowflake after animation
                 setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    const colors = ['#e74c3c', '#f1c40f', '#27ae60', '#3498db', '#9b59b6'];
-                    const color = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    confetti.style.position = 'fixed';
-                    confetti.style.width = '10px';
-                    confetti.style.height = '10px';
-                    confetti.style.backgroundColor = color;
-                    confetti.style.borderRadius = '50%';
-                    confetti.style.left = Math.random() * 100 + 'vw';
-                    confetti.style.top = '-10px';
-                    confetti.style.zIndex = '1000';
-                    confetti.style.pointerEvents = 'none';
-                    
-                    document.body.appendChild(confetti);
-                    
-                    const animation = document.createElement('style');
-                    animation.textContent = `
-                        @keyframes confettiFall {
-                            0% {
-                                transform: translateY(0) rotate(0deg);
-                            }
-                            100% {
-                                transform: translateY(100vh) rotate(720deg);
-                                opacity: 0;
-                            }
-                        }
-                    `;
-                    document.head.appendChild(animation);
-                    
-                    confetti.style.animation = `confettiFall 2s ease-out forwards`;
-                    
-                    setTimeout(() => confetti.remove(), 2000);
-                }, i * 100);
+                    snowflake.remove();
+                }, (duration + delay) * 1000);
             }
         }
         
-        // Создание фейерверков
-        function createFireworks() {
-            for (let i = 0; i < 20; i++) {
-                setTimeout(() => {
-                    const firework = document.createElement('div');
-                    firework.style.position = 'fixed';
-                    firework.style.width = '5px';
-                    firework.style.height = '5px';
-                    firework.style.borderRadius = '50%';
-                    firework.style.left = Math.random() * 100 + 'vw';
-                    firework.style.top = Math.random() * 100 + 'vh';
-                    firework.style.zIndex = '1000';
-                    firework.style.pointerEvents = 'none';
-                    
-                    const colors = ['#e74c3c', '#f1c40f', '#27ae60', '#3498db'];
-                    firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    document.body.appendChild(firework);
-                    
-                    let size = 5;
-                    const interval = setInterval(() => {
-                        size += 10;
-                        firework.style.width = `${size}px`;
-                        firework.style.height = `${size}px`;
-                        firework.style.opacity = 1 - (size / 100);
-                        
-                        if (size > 100) {
-                            clearInterval(interval);
-                            firework.remove();
-                        }
-                    }, 20);
-                }, i * 150);
-            }
+        // Create fireworks
+        function createFirework(x, y) {
+            const colors = ['#e74c3c', '#f1c40f', '#27ae60', '#3498db', '#9b59b6'];
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            firework.style.left = `${x}px`;
+            firework.style.top = `${y}px`;
+            firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            document.body.appendChild(firework);
+            
+            // Animate firework
+            let size = 5;
+            const interval = setInterval(() => {
+                size += 10;
+                firework.style.width = `${size}px`;
+                firework.style.height = `${size}px`;
+                firework.style.opacity = 1 - (size / 100);
+                
+                if (size > 100) {
+                    clearInterval(interval);
+                    firework.remove();
+                }
+            }, 20);
         }
         
-        // Инициализация анимаций
-        setInterval(createSnowflakes, 1000);
+        // Create periodic snowflakes
+        setInterval(createSnowflakes, 500);
         createSnowflakes();
         
-        // Мобильное меню
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-            alert('🎄 Mobile menu - Coming soon in 2026! 🎄');
-        });
+        // Create occasional fireworks
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                createFirework(x, y);
+            }
+        }, 1000);
         
-        // Плавная прокрутка
+        // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
                     target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                        behavior: 'smooth'
                     });
                 }
             });
         });
         
-        // Запуск новогодней музыки (опционально)
-        function playNewYearMusic() {
-            // Здесь можно добавить новогоднюю музыку
-            console.log('🎵 New Year music ready to play!');
-        }
-        
-        // Инициализация при загрузке
-        window.addEventListener('load', () => {
-            console.log('🎉 Happy New Year 2026 from Ludvig2457! 🎉');
-            playNewYearMusic();
-        });
+        // Initialize
+        console.log('🎄 Happy New Year 2026 from Ludvig2457! 🎄');
     </script>
 </body>
 </html>
