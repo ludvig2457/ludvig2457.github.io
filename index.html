@@ -10,6 +10,7 @@
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
         
@@ -128,6 +129,49 @@
             0% { background-position: 0px 0px; }
             100% { background-position: 100px 0px; }
         }
+        
+        .profile-modal {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            background: #2d3748;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .achievement-card {
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .unlocked {
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2) 0%, rgba(241, 196, 15, 0.1) 100%);
+            border-color: #f1c40f;
+        }
     </style>
 </head>
 <body class="text-white overflow-x-hidden">
@@ -138,7 +182,7 @@
     <div id="snowflakes"></div>
     
     <!-- Navigation -->
-    <nav class="fixed w-full z-40 py-4 px-6">
+    <nav class="fixed w-full z-40 py-4 px-6 bg-slate-900/80 backdrop-blur-md">
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-4">
@@ -156,16 +200,12 @@
                     <a href="#superlauncher" class="hover:text-yellow-400 transition-colors">SuperLauncher</a>
                     <a href="#ludvigos" class="hover:text-yellow-400 transition-colors">LudvigOS</a>
                     <a href="#gifts" class="hover:text-yellow-400 transition-colors">New Year Gifts</a>
+                    <button id="profileBtn" class="hover:text-yellow-400 transition-colors hidden">
+                        <i class="fas fa-user-circle text-2xl"></i>
+                    </button>
                     <button id="loginBtn" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-full font-bold transition-all">
                         <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                     </button>
-                    <div id="userMenu" class="hidden items-center space-x-3">
-                        <img id="userAvatar" class="w-8 h-8 rounded-full border-2 border-yellow-400" src="" alt="">
-                        <span id="userName" class="font-medium"></span>
-                        <button id="logoutBtn" class="text-sm text-gray-400 hover:text-white">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </button>
-                    </div>
                 </div>
                 
                 <button id="mobileMenuBtn" class="md:hidden text-2xl">
@@ -205,6 +245,99 @@
                     By signing in, you agree to our New Year celebration terms! 🎅
                 </p>
             </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 profile-modal">
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 max-w-2xl w-full relative border-2 border-blue-500">
+            <button id="closeProfile" class="absolute top-4 right-4 text-2xl hover:text-yellow-400">×</button>
+            
+            <div class="flex items-center mb-8">
+                <img id="profileAvatar" class="w-20 h-20 rounded-full border-4 border-yellow-500" src="" alt="Avatar">
+                <div class="ml-6">
+                    <h2 id="profileName" class="text-3xl font-bold"></h2>
+                    <p id="profileEmail" class="text-gray-300"></p>
+                    <div class="flex items-center mt-2">
+                        <span class="text-yellow-400 mr-2">⭐</span>
+                        <span id="profileLevel" class="font-bold">Level 1</span>
+                        <span class="mx-2">•</span>
+                        <span id="profileXP" class="text-gray-300">0/100 XP</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <div class="flex justify-between mb-2">
+                    <span class="font-bold">Progress to Level 2</span>
+                    <span id="xpPercentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="xpProgress" class="progress-fill bg-gradient-to-r from-green-500 to-blue-500" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-slate-800/50 p-4 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4">🎁 Your Gifts</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span>Exclusive Skins Pack</span>
+                            <span id="gift1Status" class="text-yellow-400">🔒</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Premium Theme 2026</span>
+                            <span id="gift2Status" class="text-yellow-400">🔒</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Christmas Resource Pack</span>
+                            <span id="gift3Status" class="text-yellow-400">🔒</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800/50 p-4 rounded-xl">
+                    <h3 class="text-xl font-bold mb-4">📊 Statistics</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span>Days Registered</span>
+                            <span id="daysRegistered">1</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Gifts Claimed</span>
+                            <span id="giftsClaimed">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Total XP</span>
+                            <span id="totalXP">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold mb-4">🏆 Achievements</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="achievement-card bg-slate-800/50 p-4 rounded-xl text-center border border-gray-700">
+                    <div class="badge bg-yellow-500 text-slate-900 mb-2 mx-auto">🎮</div>
+                    <span class="text-sm">First Login</span>
+                </div>
+                <div class="achievement-card bg-slate-800/50 p-4 rounded-xl text-center border border-gray-700">
+                    <div class="badge bg-gray-700 text-gray-400 mb-2 mx-auto">🎁</div>
+                    <span class="text-sm">Gift Collector</span>
+                </div>
+                <div class="achievement-card bg-slate-800/50 p-4 rounded-xl text-center border border-gray-700">
+                    <div class="badge bg-gray-700 text-gray-400 mb-2 mx-auto">⭐</div>
+                    <span class="text-sm">SuperUser</span>
+                </div>
+                <div class="achievement-card bg-slate-800/50 p-4 rounded-xl text-center border border-gray-700">
+                    <div class="badge bg-gray-700 text-gray-400 mb-2 mx-auto">🎄</div>
+                    <span class="text-sm">Holiday Spirit</span>
+                </div>
+            </div>
+            
+            <button id="logoutBtn" class="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 py-3 rounded-lg font-bold transition-all">
+                <i class="fas fa-sign-out-alt mr-2"></i>Log Out
+            </button>
         </div>
     </div>
 
@@ -457,6 +590,7 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        const db = firebase.firestore();
         
         // Auth Providers
         const googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -464,15 +598,15 @@
         
         // DOM Elements
         const loginModal = document.getElementById('loginModal');
+        const profileModal = document.getElementById('profileModal');
         const loginBtn = document.getElementById('loginBtn');
+        const profileBtn = document.getElementById('profileBtn');
         const closeLogin = document.getElementById('closeLogin');
+        const closeProfile = document.getElementById('closeProfile');
         const googleLogin = document.getElementById('googleLogin');
         const microsoftLogin = document.getElementById('microsoftLogin');
         const yandexLogin = document.getElementById('yandexLogin');
         const logoutBtn = document.getElementById('logoutBtn');
-        const userMenu = document.getElementById('userMenu');
-        const userName = document.getElementById('userName');
-        const userAvatar = document.getElementById('userAvatar');
         const heroLoginBtn = document.getElementById('heroLoginBtn');
         const giftsLoginBtn = document.getElementById('giftsLoginBtn');
         const superlauncherLoginBtn = document.getElementById('superlauncherLoginBtn');
@@ -482,6 +616,24 @@
         const gift1 = document.getElementById('gift1');
         const gift2 = document.getElementById('gift2');
         const gift3 = document.getElementById('gift3');
+        
+        // Profile elements
+        const profileName = document.getElementById('profileName');
+        const profileEmail = document.getElementById('profileEmail');
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileLevel = document.getElementById('profileLevel');
+        const profileXP = document.getElementById('profileXP');
+        const xpProgress = document.getElementById('xpProgress');
+        const xpPercentage = document.getElementById('xpPercentage');
+        const daysRegistered = document.getElementById('daysRegistered');
+        const giftsClaimed = document.getElementById('giftsClaimed');
+        const totalXP = document.getElementById('totalXP');
+        const gift1Status = document.getElementById('gift1Status');
+        const gift2Status = document.getElementById('gift2Status');
+        const gift3Status = document.getElementById('gift3Status');
+        
+        // User profile data
+        let userProfile = null;
         
         // Modal Functions
         function openLoginModal() {
@@ -494,13 +646,26 @@
             loginModal.classList.add('hidden');
         }
         
+        function openProfileModal() {
+            loadProfileData();
+            profileModal.classList.remove('hidden');
+            profileModal.classList.add('flex');
+        }
+        
+        function closeProfileModal() {
+            profileModal.classList.remove('flex');
+            profileModal.classList.add('hidden');
+        }
+        
         // Login Functions
         async function loginWithGoogle() {
             try {
                 const result = await auth.signInWithPopup(googleProvider);
+                await createUserProfile(result.user);
                 updateUI(result.user);
                 closeLoginModal();
                 showSuccessMessage('Successfully logged in with Google! 🎄');
+                await awardGift('gift1');
             } catch (error) {
                 console.error('Google login error:', error);
                 alert('Failed to login with Google: ' + error.message);
@@ -510,9 +675,11 @@
         async function loginWithMicrosoft() {
             try {
                 const result = await auth.signInWithPopup(microsoftProvider);
+                await createUserProfile(result.user);
                 updateUI(result.user);
                 closeLoginModal();
                 showSuccessMessage('Successfully logged in with Microsoft! 🎄');
+                await awardGift('gift1');
             } catch (error) {
                 console.error('Microsoft login error:', error);
                 alert('Failed to login with Microsoft: ' + error.message);
@@ -521,94 +688,290 @@
         
         // Yandex login (simulated since Firebase doesn't have direct Yandex support)
         async function loginWithYandex() {
-            // Simulate Yandex login - in production, you'd use Yandex OAuth
-            const simulatedUser = {
-                displayName: 'Yandex User',
-                email: 'user@yandex.ru',
-                photoURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Yandex_icon.svg/512px-Yandex_icon.svg.png'
-            };
-            
-            updateUI(simulatedUser);
-            closeLoginModal();
-            showSuccessMessage('Successfully logged in with Yandex! 🎄');
-            unlockGifts();
+            try {
+                // Create a simulated Yandex user
+                const simulatedUser = {
+                    uid: 'yandex_' + Date.now(),
+                    displayName: 'Yandex User',
+                    email: 'user@yandex.ru',
+                    photoURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Yandex_icon.svg/512px-Yandex_icon.svg.png',
+                    providerId: 'yandex.com'
+                };
+                
+                await createUserProfile(simulatedUser);
+                updateUI(simulatedUser);
+                closeLoginModal();
+                showSuccessMessage('Successfully logged in with Yandex! 🎄');
+                await awardGift('gift1');
+            } catch (error) {
+                console.error('Yandex login error:', error);
+                alert('Failed to login with Yandex');
+            }
         }
         
-        // Logout Function
-        function logout() {
-            auth.signOut().then(() => {
-                userMenu.classList.add('hidden');
-                loginBtn.classList.remove('hidden');
-                resetGifts();
-                showSuccessMessage('Logged out successfully! 👋');
-            });
+        // Create or get user profile in Firestore
+        async function createUserProfile(user) {
+            const userRef = db.collection('users').doc(user.uid);
+            const doc = await userRef.get();
+            
+            if (!doc.exists) {
+                // Create new profile
+                const profileData = {
+                    uid: user.uid,
+                    displayName: user.displayName,
+                    email: user.email,
+                    photoURL: user.photoURL,
+                    level: 1,
+                    xp: 0,
+                    gifts: {
+                        gift1: false,
+                        gift2: false,
+                        gift3: false
+                    },
+                    stats: {
+                        daysRegistered: 1,
+                        giftsClaimed: 0,
+                        totalXP: 0,
+                        lastLogin: new Date().toISOString()
+                    },
+                    achievements: ['firstLogin'],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                
+                await userRef.set(profileData);
+                userProfile = profileData;
+            } else {
+                // Update existing profile
+                const profileData = doc.data();
+                const daysDiff = Math.floor((new Date() - new Date(profileData.stats.lastLogin)) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff > 0) {
+                    await userRef.update({
+                        'stats.daysRegistered': firebase.firestore.FieldValue.increment(daysDiff),
+                        'stats.lastLogin': new Date().toISOString(),
+                        'updatedAt': new Date().toISOString()
+                    });
+                }
+                
+                userProfile = profileData;
+            }
+            
+            return userRef;
         }
+        
+        // Load profile data
+        async function loadProfileData() {
+            if (!auth.currentUser) return;
+            
+            const userRef = db.collection('users').doc(auth.currentUser.uid);
+            const doc = await userRef.get();
+            
+            if (doc.exists) {
+                userProfile = doc.data();
+                updateProfileUI();
+            }
+        }
+        
+        // Award a gift to user
+        async function awardGift(giftId) {
+            if (!auth.currentUser) return;
+            
+            const userRef = db.collection('users').doc(auth.currentUser.uid);
+            const giftKey = `gifts.${giftId}`;
+            
+            // Check if gift already claimed
+            if (userProfile && userProfile.gifts[giftId]) {
+                showSuccessMessage('You already claimed this gift! 🎁');
+                return;
+            }
+            
+            // Award gift
+            await userRef.update({
+                [giftKey]: true,
+                'stats.giftsClaimed': firebase.firestore.FieldValue.increment(1),
+                'stats.totalXP': firebase.firestore.FieldValue.increment(50),
+                'xp': firebase.firestore.FieldValue.increment(50),
+                'updatedAt': new Date().toISOString()
+            });
+            
+            // Check level up
+            const newXP = (userProfile?.xp || 0) + 50;
+            const newLevel = Math.floor(newXP / 100) + 1;
+            
+            if (newLevel > (userProfile?.level || 1)) {
+                await userRef.update({
+                    'level': newLevel
+                });
+                showSuccessMessage(`🎉 Level Up! You're now Level ${newLevel}!`);
+            }
+            
+            // Update local profile
+            userProfile = await userRef.get().then(doc => doc.data());
+            updateGiftsUI();
+            showSuccessMessage(`🎁 Gift "${getGiftName(giftId)}" claimed successfully! +50 XP`);
+        }
+        
+        function getGiftName(giftId) {
+            const giftNames = {
+                'gift1': 'Exclusive Skins Pack',
+                'gift2': 'Premium Theme 2026',
+                'gift3': 'Christmas Resource Pack'
+            };
+            return giftNames[giftId] || 'Unknown Gift';
+        }
+        
+        // Update Profile UI
+        function updateProfileUI() {
+            if (!userProfile) return;
+            
+            profileName.textContent = userProfile.displayName || 'User';
+            profileEmail.textContent = userProfile.email || '';
+            profileAvatar.src = userProfile.photoURL || 'https://via.placeholder.com/150';
+            profileLevel.textContent = `Level ${userProfile.level || 1}`;
+            
+            const currentXP = userProfile.xp || 0;
+            const levelXP = currentXP % 100;
+            const level = userProfile.level || 1;
+            
+            profileXP.textContent = `${levelXP}/100 XP`;
+            xpProgress.style.width = `${levelXP}%`;
+            xpPercentage.textContent = `${levelXP}%`;
+            
+            daysRegistered.textContent = userProfile.stats?.daysRegistered || 1;
+            giftsClaimed.textContent = userProfile.stats?.giftsClaimed || 0;
+            totalXP.textContent = userProfile.stats?.totalXP || 0;
+            
+            // Update gift status
+            gift1Status.textContent = userProfile.gifts?.gift1 ? '✅' : '🔒';
+            gift2Status.textContent = userProfile.gifts?.gift2 ? '✅' : '🔒';
+            gift3Status.textContent = userProfile.gifts?.gift3 ? '✅' : '🔒';
+            
+            // Update achievement badges
+            const achievementCards = document.querySelectorAll('.achievement-card');
+            if (userProfile.achievements?.includes('firstLogin')) {
+                achievementCards[0].classList.add('unlocked');
+                achievementCards[0].querySelector('.badge').className = 'badge bg-yellow-500 text-slate-900 mb-2 mx-auto';
+                achievementCards[0].querySelector('.badge').textContent = '🎮';
+            }
+            if (userProfile.stats?.giftsClaimed >= 3) {
+                achievementCards[1].classList.add('unlocked');
+                achievementCards[1].querySelector('.badge').className = 'badge bg-yellow-500 text-slate-900 mb-2 mx-auto';
+                achievementCards[1].querySelector('.badge').textContent = '🎁';
+            }
+        }
+        
+        // Update Gifts UI
+        function updateGiftsUI() {
+            if (!userProfile) return;
+            
+            // Gift 1
+            if (userProfile.gifts?.gift1) {
+                gift1.innerHTML = `
+                    <button onclick="claimGift('gift1')" class="text-green-400 hover:text-green-300">
+                        <i class="fas fa-download mr-2"></i>Download Skins Pack
+                    </button>
+                `;
+            }
+            
+            // Gift 2
+            if (userProfile.gifts?.gift2) {
+                gift2.innerHTML = `
+                    <button onclick="claimGift('gift2')" class="text-green-400 hover:text-green-300">
+                        <i class="fas fa-palette mr-2"></i>Apply Theme
+                    </button>
+                `;
+            }
+            
+            // Gift 3
+            if (userProfile.gifts?.gift3) {
+                gift3.innerHTML = `
+                    <button onclick="claimGift('gift3')" class="text-green-400 hover:text-green-300">
+                        <i class="fas fa-download mr-2"></i>Download Resource Pack
+                    </button>
+                `;
+            }
+        }
+        
+        // Global function for gift claiming
+        window.claimGift = async function(giftId) {
+            await awardGift(giftId);
+            updateGiftsUI();
+        };
         
         // Update UI with User Info
         function updateUI(user) {
-            userName.textContent = user.displayName || 'User';
-            userAvatar.src = user.photoURL || 'https://via.placeholder.com/150';
-            userAvatar.onerror = function() {
-                this.src = 'https://via.placeholder.com/150';
-            };
-            
+            // Update navbar
             loginBtn.classList.add('hidden');
-            userMenu.classList.remove('hidden');
+            profileBtn.classList.remove('hidden');
             
             // Update status messages
-            userStatus.textContent = `Welcome, ${user.displayName}! 🎄`;
-            ludvigosStatus.textContent = `Welcome ${user.displayName}! Access granted ✅`;
+            userStatus.textContent = `Welcome, ${user.displayName || 'User'}! 🎄`;
+            ludvigosStatus.textContent = `Welcome ${user.displayName || 'User'}! Access granted ✅`;
             
-            // Unlock gifts
-            unlockGifts();
+            // Load profile data
+            loadProfileData();
         }
         
-        // Unlock New Year Gifts
-        function unlockGifts() {
-            gift1.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Unlocked! Downloading...';
-            gift2.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Unlocked! Applied theme';
-            gift3.innerHTML = '<i class="fas fa-check-circle mr-2"></i>Unlocked! Installing...';
+        // Reset UI on logout
+        function resetUI() {
+            loginBtn.classList.remove('hidden');
+            profileBtn.classList.add('hidden');
+            userStatus.textContent = 'Sign in to continue';
+            ludvigosStatus.textContent = 'Sign in to access installation guide';
             
-            // Add download functionality
-            setTimeout(() => {
-                gift1.innerHTML = '<button class="text-green-400 hover:text-green-300"><i class="fas fa-download mr-2"></i>Download Skins Pack</button>';
-                gift2.innerHTML = '<button class="text-green-400 hover:text-green-300"><i class="fas fa-palette mr-2"></i>Apply Theme</button>';
-                gift3.innerHTML = '<button class="text-green-400 hover:text-green-300"><i class="fas fa-download mr-2"></i>Download Resource Pack</button>';
-            }, 2000);
-        }
-        
-        function resetGifts() {
             gift1.textContent = 'Sign in to unlock!';
             gift2.textContent = 'Sign in to unlock!';
             gift3.textContent = 'Sign in to unlock!';
-            userStatus.textContent = 'Sign in to continue';
-            ludvigosStatus.textContent = 'Sign in to access installation guide';
+            
+            userProfile = null;
+        }
+        
+        // Logout Function
+        async function logout() {
+            try {
+                await auth.signOut();
+                closeProfileModal();
+                resetUI();
+                showSuccessMessage('Logged out successfully! 👋');
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
         }
         
         // Show Success Message
         function showSuccessMessage(message) {
             const toast = document.createElement('div');
-            toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-            toast.textContent = message;
+            toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center';
+            toast.innerHTML = `
+                <i class="fas fa-check-circle mr-3"></i>
+                <span>${message}</span>
+            `;
             document.body.appendChild(toast);
             
             setTimeout(() => {
-                toast.remove();
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100px)';
+                setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
         
         // Check Auth State
-        auth.onAuthStateChanged((user) => {
+        auth.onAuthStateChanged(async (user) => {
             if (user) {
+                await createUserProfile(user);
                 updateUI(user);
+                updateGiftsUI();
             } else {
-                resetGifts();
+                resetUI();
             }
         });
         
         // Event Listeners
         loginBtn.addEventListener('click', openLoginModal);
+        profileBtn.addEventListener('click', openProfileModal);
         closeLogin.addEventListener('click', closeLoginModal);
+        closeProfile.addEventListener('click', closeProfileModal);
         googleLogin.addEventListener('click', loginWithGoogle);
         microsoftLogin.addEventListener('click', loginWithMicrosoft);
         yandexLogin.addEventListener('click', loginWithYandex);
@@ -618,11 +981,13 @@
         superlauncherLoginBtn.addEventListener('click', openLoginModal);
         ludvigosLoginBtn.addEventListener('click', openLoginModal);
         
-        // Close modal when clicking outside
+        // Close modals when clicking outside
         loginModal.addEventListener('click', (e) => {
-            if (e.target === loginModal) {
-                closeLoginModal();
-            }
+            if (e.target === loginModal) closeLoginModal();
+        });
+        
+        profileModal.addEventListener('click', (e) => {
+            if (e.target === profileModal) closeProfileModal();
         });
         
         // Mobile Menu
@@ -756,6 +1121,7 @@
         
         // Initialize
         console.log('🎄 Happy New Year 2026 from Ludvig2457! 🎄');
+        console.log('Profile system activated! Users can now track their progress and gifts.');
     </script>
 </body>
 </html>
