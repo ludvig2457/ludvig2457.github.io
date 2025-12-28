@@ -582,8 +582,7 @@
       projectId: "ludvigplatform",
       storageBucket: "ludvigplatform.firebasestorage.app",
       messagingSenderId: "1006980254374",
-      appId: "1:1006980254374:web:20557d678fc1e889668267",
-      measurementId: "G-X5MG726WF2"
+      appId: "1:1006980254374:web:20557d678fc1e889668267"
     };
     
     firebase.initializeApp(firebaseConfig);
@@ -591,23 +590,18 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
     
-    /* OFFLINE SAFE */
-    db.enablePersistence({ synchronizeTabs: true })
-      .catch(e => console.warn("Persistence disabled:", e.code));
+    db.enablePersistence({ synchronizeTabs: true }).catch(()=>{});
     
     /* ================= PROVIDERS ================= */
     const googleProvider = new firebase.auth.GoogleAuthProvider();
     const microsoftProvider = new firebase.auth.OAuthProvider("microsoft.com");
     
-    /* ================= STATE ================= */
+    /* ================= GLOBAL STATE ================= */
     let userProfile = null;
     
     /* ================= AUTH ================= */
     auth.onAuthStateChanged(async user => {
-      if (!user) {
-        resetUI();
-        return;
-      }
+      if (!user) return resetUI();
     
       const ref = db.collection("users").doc(user.uid);
       const snap = await ref.get();
@@ -615,17 +609,15 @@
       if (!snap.exists) {
         await ref.set({
           uid: user.uid,
-          name: user.displayName,
+          name: user.displayName || "User",
           email: user.email,
           avatar: user.photoURL,
-          level: 1,
           xp: 0,
+          level: 1,
           gifts: { gift1:false, gift2:false, gift3:false },
           stats: {
             giftsClaimed: 0,
-            totalXP: 0,
-            daysRegistered: 1,
-            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            totalXP: 0
           },
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -638,124 +630,116 @@
     });
     
     /* ================= LOGIN ================= */
-    async function loginWithGoogle() {
-      await auth.signInWithPopup(googleProvider);
-      toast("Logged in with Google 🎄");
-    }
-    
-    async function loginWithMicrosoft() {
-      await auth.signInWithPopup(microsoftProvider);
-      toast("Logged in with Microsoft 🎄");
-    }
-    
-    /* ⚠️ DEMO ONLY */
-    async function loginWithYandex() {
-      const fake = {
-        uid: "yandex_demo",
-        displayName: "Yandex Demo User",
-        email: "demo@yandex.ru",
-        photoURL: "https://upload.wikimedia.org/wikipedia/commons/f/f5/Yandex_icon.svg"
-      };
-      await createDemoProfile(fake);
-      updateUI(fake);
-      toast("Yandex DEMO login 🎅");
-    }
+    googleLogin.onclick = ()=> auth.signInWithPopup(googleProvider);
+    microsoftLogin.onclick = ()=> auth.signInWithPopup(microsoftProvider);
+    logoutBtn.onclick = ()=> auth.signOut();
     
     /* ================= GIFTS ================= */
-    async function claimGift(giftId) {
-      if (!auth.currentUser) return;
-    
+    async function claimGift(id){
       const ref = db.collection("users").doc(auth.currentUser.uid);
     
-      await db.runTransaction(async tx => {
+      await db.runTransaction(async tx=>{
         const snap = await tx.get(ref);
-        const data = snap.data();
+        const d = snap.data();
+        if(d.gifts[id]) throw "claimed";
     
-        if (data.gifts[giftId]) throw "Already claimed";
-    
-        const newXP = data.xp + 50;
-        const newLevel = Math.floor(newXP / 100) + 1;
-    
-        tx.update(ref, {
-          [`gifts.${giftId}`]: true,
-          xp: newXP,
-          level: newLevel,
-          "stats.giftsClaimed": firebase.firestore.FieldValue.increment(1),
-          "stats.totalXP": firebase.firestore.FieldValue.increment(50)
+        const xp = d.xp + 50;
+        tx.update(ref,{
+          [`gifts.${id}`]:true,
+          xp,
+          level: Math.floor(xp/100)+1,
+          "stats.giftsClaimed":firebase.firestore.FieldValue.increment(1),
+          "stats.totalXP":firebase.firestore.FieldValue.increment(50)
         });
       });
     
       userProfile = (await ref.get()).data();
       updateProfileUI();
       updateGiftsUI();
-      toast(`🎁 ${giftName(giftId)} claimed +50 XP`);
+      toast("🎁 Gift claimed +50 XP");
     }
     
     /* ================= UI ================= */
     function updateUI(user){
       loginBtn.classList.add("hidden");
       profileBtn.classList.remove("hidden");
-      userStatus.textContent = `Welcome, ${user.displayName || "User"} 🎄`;
+      userStatus.textContent = `Welcome, ${user.displayName}`;
     }
     
     function resetUI(){
       loginBtn.classList.remove("hidden");
       profileBtn.classList.add("hidden");
       userStatus.textContent = "Sign in to continue";
-      userProfile = null;
     }
     
     function updateProfileUI(){
-      if(!userProfile) return;
-    
+      const xp = userProfile.xp % 100;
       profileName.textContent = userProfile.name;
       profileEmail.textContent = userProfile.email;
       profileAvatar.src = userProfile.avatar;
       profileLevel.textContent = `Level ${userProfile.level}`;
-    
-      const xp = userProfile.xp % 100;
-      xpProgress.style.width = xp + "%";
       profileXP.textContent = `${xp}/100 XP`;
+      xpProgress.style.width = xp + "%";
+      xpPercentage.textContent = xp + "%";
+    
+      giftsClaimed.textContent = userProfile.stats.giftsClaimed;
+      totalXP.textContent = userProfile.stats.totalXP;
+    
+      const days = Math.max(1,
+        Math.floor((Date.now()-userProfile.createdAt.toDate())/86400000)+1
+      );
+      daysRegistered.textContent = days;
     }
     
     function updateGiftsUI(){
-      gift1.innerHTML = userProfile?.gifts.gift1
-        ? `<button onclick="claimGift('gift1')">Download Skins</button>`
-        : "🔒 Locked";
-    
-      gift2.innerHTML = userProfile?.gifts.gift2
-        ? `<button onclick="claimGift('gift2')">Apply Theme</button>`
-        : "🔒 Locked";
-    
-      gift3.innerHTML = userProfile?.gifts.gift3
-        ? `<button onclick="claimGift('gift3')">Download Pack</button>`
-        : "🔒 Locked";
+      renderGift(gift1, gift1Status, "gift1", "Download Skins");
+      renderGift(gift2, gift2Status, "gift2", "Apply Theme");
+      renderGift(gift3, gift3Status, "gift3", "Download Pack");
     }
     
-    /* ================= UTILS ================= */
-    function giftName(id){
-      return {
-        gift1:"Exclusive Skins Pack",
-        gift2:"Premium Theme 2026",
-        gift3:"Christmas Resource Pack"
-      }[id];
+    function renderGift(el,status,id,label){
+      if(userProfile.gifts[id]){
+        status.textContent="✅";
+        el.innerHTML=`<span class="text-green-400">Claimed</span>`;
+      }else{
+        status.textContent="🔓";
+        el.innerHTML=`<button class="text-yellow-400" onclick="claimGift('${id}')">${label}</button>`;
+      }
     }
     
+    /* ================= MODALS ================= */
+    loginBtn.onclick =
+    heroLoginBtn.onclick =
+    giftsLoginBtn.onclick =
+    superlauncherLoginBtn.onclick =
+    ludvigosLoginBtn.onclick = ()=> loginModal.classList.remove("hidden");
+    
+    profileBtn.onclick = ()=> profileModal.classList.remove("hidden");
+    closeLogin.onclick = ()=> loginModal.classList.add("hidden");
+    closeProfile.onclick = ()=> profileModal.classList.add("hidden");
+    
+    /* ================= COUNTDOWN ================= */
+    const target = new Date("2026-01-01T00:00:00");
+    setInterval(()=>{
+      const diff = target - new Date();
+      if(diff<=0) return;
+    
+      days.textContent = Math.floor(diff/86400000);
+      hours.textContent = Math.floor(diff/3600000)%24;
+      minutes.textContent = Math.floor(diff/60000)%60;
+      seconds.textContent = Math.floor(diff/1000)%60;
+    },1000);
+    
+    /* ================= TOAST ================= */
     function toast(text){
       const t=document.createElement("div");
-      t.className="fixed top-4 right-4 bg-green-600 text-white px-5 py-3 rounded";
+      t.className="fixed top-4 right-4 bg-green-600 px-6 py-3 rounded-xl font-bold";
       t.textContent=text;
       document.body.appendChild(t);
       setTimeout(()=>t.remove(),3000);
     }
     
-    /* ================= EVENTS ================= */
-    googleLogin.onclick = loginWithGoogle;
-    microsoftLogin.onclick = loginWithMicrosoft;
-    yandexLogin.onclick = loginWithYandex;
-    logoutBtn.onclick = ()=>auth.signOut();
-    
-    console.log("🎄 LudvigPlatform 2026 ready");
+    console.log("🎄 LudvigPlatform 2026 • PRO READY");
     </script>
 </body>
 </html>
