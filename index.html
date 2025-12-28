@@ -573,555 +573,189 @@
             </div>
         </div>
     </section>
-
-    <!-- Firebase Configuration and Scripts -->
+    
     <script>
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-            apiKey: "AIzaSyDbLKz2eRtCRySbAqdJtWckSdP5TRD1Ieo",
-            authDomain: "ludvigplatform.firebaseapp.com",
-            projectId: "ludvigplatform",
-            storageBucket: "ludvigplatform.firebasestorage.app",
-            messagingSenderId: "1006980254374",
-            appId: "1:1006980254374:web:20557d678fc1e889668267",
-            measurementId: "G-X5MG726WF2"
-        };
-        
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        
-        // Auth Providers
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-        const microsoftProvider = new firebase.auth.OAuthProvider('microsoft.com');
-        
-        // DOM Elements
-        const loginModal = document.getElementById('loginModal');
-        const profileModal = document.getElementById('profileModal');
-        const loginBtn = document.getElementById('loginBtn');
-        const profileBtn = document.getElementById('profileBtn');
-        const closeLogin = document.getElementById('closeLogin');
-        const closeProfile = document.getElementById('closeProfile');
-        const googleLogin = document.getElementById('googleLogin');
-        const microsoftLogin = document.getElementById('microsoftLogin');
-        const yandexLogin = document.getElementById('yandexLogin');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const heroLoginBtn = document.getElementById('heroLoginBtn');
-        const giftsLoginBtn = document.getElementById('giftsLoginBtn');
-        const superlauncherLoginBtn = document.getElementById('superlauncherLoginBtn');
-        const ludvigosLoginBtn = document.getElementById('ludvigosLoginBtn');
-        const userStatus = document.getElementById('userStatus');
-        const ludvigosStatus = document.getElementById('ludvigosStatus');
-        const gift1 = document.getElementById('gift1');
-        const gift2 = document.getElementById('gift2');
-        const gift3 = document.getElementById('gift3');
-        
-        // Profile elements
-        const profileName = document.getElementById('profileName');
-        const profileEmail = document.getElementById('profileEmail');
-        const profileAvatar = document.getElementById('profileAvatar');
-        const profileLevel = document.getElementById('profileLevel');
-        const profileXP = document.getElementById('profileXP');
-        const xpProgress = document.getElementById('xpProgress');
-        const xpPercentage = document.getElementById('xpPercentage');
-        const daysRegistered = document.getElementById('daysRegistered');
-        const giftsClaimed = document.getElementById('giftsClaimed');
-        const totalXP = document.getElementById('totalXP');
-        const gift1Status = document.getElementById('gift1Status');
-        const gift2Status = document.getElementById('gift2Status');
-        const gift3Status = document.getElementById('gift3Status');
-        
-        // User profile data
-        let userProfile = null;
-        
-        // Modal Functions
-        function openLoginModal() {
-            loginModal.classList.remove('hidden');
-            loginModal.classList.add('flex');
-        }
-        
-        function closeLoginModal() {
-            loginModal.classList.remove('flex');
-            loginModal.classList.add('hidden');
-        }
-        
-        function openProfileModal() {
-            loadProfileData();
-            profileModal.classList.remove('hidden');
-            profileModal.classList.add('flex');
-        }
-        
-        function closeProfileModal() {
-            profileModal.classList.remove('flex');
-            profileModal.classList.add('hidden');
-        }
-        
-        // Login Functions
-        async function loginWithGoogle() {
-            try {
-                const result = await auth.signInWithPopup(googleProvider);
-                await createUserProfile(result.user);
-                updateUI(result.user);
-                closeLoginModal();
-                showSuccessMessage('Successfully logged in with Google! 🎄');
-                await awardGift('gift1');
-            } catch (error) {
-                console.error('Google login error:', error);
-                alert('Failed to login with Google: ' + error.message);
-            }
-        }
-        
-        async function loginWithMicrosoft() {
-            try {
-                const result = await auth.signInWithPopup(microsoftProvider);
-                await createUserProfile(result.user);
-                updateUI(result.user);
-                closeLoginModal();
-                showSuccessMessage('Successfully logged in with Microsoft! 🎄');
-                await awardGift('gift1');
-            } catch (error) {
-                console.error('Microsoft login error:', error);
-                alert('Failed to login with Microsoft: ' + error.message);
-            }
-        }
-        
-        // Yandex login (simulated since Firebase doesn't have direct Yandex support)
-        async function loginWithYandex() {
-            try {
-                // Create a simulated Yandex user
-                const simulatedUser = {
-                    uid: 'yandex_' + Date.now(),
-                    displayName: 'Yandex User',
-                    email: 'user@yandex.ru',
-                    photoURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Yandex_icon.svg/512px-Yandex_icon.svg.png',
-                    providerId: 'yandex.com'
-                };
-                
-                await createUserProfile(simulatedUser);
-                updateUI(simulatedUser);
-                closeLoginModal();
-                showSuccessMessage('Successfully logged in with Yandex! 🎄');
-                await awardGift('gift1');
-            } catch (error) {
-                console.error('Yandex login error:', error);
-                alert('Failed to login with Yandex');
-            }
-        }
-        
-        // Create or get user profile in Firestore
-        async function createUserProfile(user) {
-            const userRef = db.collection('users').doc(user.uid);
-            const doc = await userRef.get();
-            
-            if (!doc.exists) {
-                // Create new profile
-                const profileData = {
-                    uid: user.uid,
-                    displayName: user.displayName,
-                    email: user.email,
-                    photoURL: user.photoURL,
-                    level: 1,
-                    xp: 0,
-                    gifts: {
-                        gift1: false,
-                        gift2: false,
-                        gift3: false
-                    },
-                    stats: {
-                        daysRegistered: 1,
-                        giftsClaimed: 0,
-                        totalXP: 0,
-                        lastLogin: new Date().toISOString()
-                    },
-                    achievements: ['firstLogin'],
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                };
-                
-                await userRef.set(profileData);
-                userProfile = profileData;
-            } else {
-                // Update existing profile
-                const profileData = doc.data();
-                const daysDiff = Math.floor((new Date() - new Date(profileData.stats.lastLogin)) / (1000 * 60 * 60 * 24));
-                
-                if (daysDiff > 0) {
-                    await userRef.update({
-                        'stats.daysRegistered': firebase.firestore.FieldValue.increment(daysDiff),
-                        'stats.lastLogin': new Date().toISOString(),
-                        'updatedAt': new Date().toISOString()
-                    });
-                }
-                
-                userProfile = profileData;
-            }
-            
-            return userRef;
-        }
-        
-        // Load profile data
-        async function loadProfileData() {
-            if (!auth.currentUser) return;
-            
-            const userRef = db.collection('users').doc(auth.currentUser.uid);
-            const doc = await userRef.get();
-            
-            if (doc.exists) {
-                userProfile = doc.data();
-                updateProfileUI();
-            }
-        }
-        
-        // Award a gift to user
-        async function awardGift(giftId) {
-            if (!auth.currentUser) return;
-            
-            const userRef = db.collection('users').doc(auth.currentUser.uid);
-            const giftKey = `gifts.${giftId}`;
-            
-            // Check if gift already claimed
-            if (userProfile && userProfile.gifts[giftId]) {
-                showSuccessMessage('You already claimed this gift! 🎁');
-                return;
-            }
-            
-            // Award gift
-            await userRef.update({
-                [giftKey]: true,
-                'stats.giftsClaimed': firebase.firestore.FieldValue.increment(1),
-                'stats.totalXP': firebase.firestore.FieldValue.increment(50),
-                'xp': firebase.firestore.FieldValue.increment(50),
-                'updatedAt': new Date().toISOString()
-            });
-            
-            // Check level up
-            const newXP = (userProfile?.xp || 0) + 50;
-            const newLevel = Math.floor(newXP / 100) + 1;
-            
-            if (newLevel > (userProfile?.level || 1)) {
-                await userRef.update({
-                    'level': newLevel
-                });
-                showSuccessMessage(`🎉 Level Up! You're now Level ${newLevel}!`);
-            }
-            
-            // Update local profile
-            userProfile = await userRef.get().then(doc => doc.data());
-            updateGiftsUI();
-            showSuccessMessage(`🎁 Gift "${getGiftName(giftId)}" claimed successfully! +50 XP`);
-        }
-        
-        function getGiftName(giftId) {
-            const giftNames = {
-                'gift1': 'Exclusive Skins Pack',
-                'gift2': 'Premium Theme 2026',
-                'gift3': 'Christmas Resource Pack'
-            };
-            return giftNames[giftId] || 'Unknown Gift';
-        }
-        
-        // Update Profile UI
-        function updateProfileUI() {
-            if (!userProfile) return;
-            
-            profileName.textContent = userProfile.displayName || 'User';
-            profileEmail.textContent = userProfile.email || '';
-            profileAvatar.src = userProfile.photoURL || 'https://via.placeholder.com/150';
-            profileLevel.textContent = `Level ${userProfile.level || 1}`;
-            
-            const currentXP = userProfile.xp || 0;
-            const levelXP = currentXP % 100;
-            const level = userProfile.level || 1;
-            
-            profileXP.textContent = `${levelXP}/100 XP`;
-            xpProgress.style.width = `${levelXP}%`;
-            xpPercentage.textContent = `${levelXP}%`;
-            
-            daysRegistered.textContent = userProfile.stats?.daysRegistered || 1;
-            giftsClaimed.textContent = userProfile.stats?.giftsClaimed || 0;
-            totalXP.textContent = userProfile.stats?.totalXP || 0;
-            
-            // Update gift status
-            gift1Status.textContent = userProfile.gifts?.gift1 ? '✅' : '🔒';
-            gift2Status.textContent = userProfile.gifts?.gift2 ? '✅' : '🔒';
-            gift3Status.textContent = userProfile.gifts?.gift3 ? '✅' : '🔒';
-            
-            // Update achievement badges
-            const achievementCards = document.querySelectorAll('.achievement-card');
-            if (userProfile.achievements?.includes('firstLogin')) {
-                achievementCards[0].classList.add('unlocked');
-                achievementCards[0].querySelector('.badge').className = 'badge bg-yellow-500 text-slate-900 mb-2 mx-auto';
-                achievementCards[0].querySelector('.badge').textContent = '🎮';
-            }
-            if (userProfile.stats?.giftsClaimed >= 3) {
-                achievementCards[1].classList.add('unlocked');
-                achievementCards[1].querySelector('.badge').className = 'badge bg-yellow-500 text-slate-900 mb-2 mx-auto';
-                achievementCards[1].querySelector('.badge').textContent = '🎁';
-            }
-        }
-        
-        // Update Gifts UI
-        function updateGiftsUI() {
-            if (!userProfile) return;
-            
-            // Gift 1
-            if (userProfile.gifts?.gift1) {
-                gift1.innerHTML = `
-                    <button onclick="claimGift('gift1')" class="text-green-400 hover:text-green-300">
-                        <i class="fas fa-download mr-2"></i>Download Skins Pack
-                    </button>
-                `;
-            }
-            
-            // Gift 2
-            if (userProfile.gifts?.gift2) {
-                gift2.innerHTML = `
-                    <button onclick="claimGift('gift2')" class="text-green-400 hover:text-green-300">
-                        <i class="fas fa-palette mr-2"></i>Apply Theme
-                    </button>
-                `;
-            }
-            
-            // Gift 3
-            if (userProfile.gifts?.gift3) {
-                gift3.innerHTML = `
-                    <button onclick="claimGift('gift3')" class="text-green-400 hover:text-green-300">
-                        <i class="fas fa-download mr-2"></i>Download Resource Pack
-                    </button>
-                `;
-            }
-        }
-        
-        // Global function for gift claiming
-        window.claimGift = async function(giftId) {
-            await awardGift(giftId);
-            updateGiftsUI();
-        };
-        
-        // Update UI with User Info
-        function updateUI(user) {
-            // Update navbar
-            loginBtn.classList.add('hidden');
-            profileBtn.classList.remove('hidden');
-            
-            // Update status messages
-            userStatus.textContent = `Welcome, ${user.displayName || 'User'}! 🎄`;
-            ludvigosStatus.textContent = `Welcome ${user.displayName || 'User'}! Access granted ✅`;
-            
-            // Load profile data
-            loadProfileData();
-        }
-        
-        // Reset UI on logout
-        function resetUI() {
-            loginBtn.classList.remove('hidden');
-            profileBtn.classList.add('hidden');
-            userStatus.textContent = 'Sign in to continue';
-            ludvigosStatus.textContent = 'Sign in to access installation guide';
-            
-            gift1.textContent = 'Sign in to unlock!';
-            gift2.textContent = 'Sign in to unlock!';
-            gift3.textContent = 'Sign in to unlock!';
-            
-            userProfile = null;
-        }
-        
-        // Logout Function
-        async function logout() {
-            try {
-                await auth.signOut();
-                closeProfileModal();
-                resetUI();
-                showSuccessMessage('Logged out successfully! 👋');
-            } catch (error) {
-                console.error('Logout error:', error);
-            }
-        }
-        
-        // Show Success Message
-        function showSuccessMessage(message) {
-            const toast = document.createElement('div');
-            toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center';
-            toast.innerHTML = `
-                <i class="fas fa-check-circle mr-3"></i>
-                <span>${message}</span>
-            `;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(100px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-        
-        // Check Auth State
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                await createUserProfile(user);
-                updateUI(user);
-                updateGiftsUI();
-            } else {
-                resetUI();
-            }
+    /* ================= FIREBASE INIT ================= */
+    const firebaseConfig = {
+      apiKey: "AIzaSyDbLKz2eRtCRySbAqdJtWckSdP5TRD1Ieo",
+      authDomain: "ludvigplatform.firebaseapp.com",
+      projectId: "ludvigplatform",
+      storageBucket: "ludvigplatform.firebasestorage.app",
+      messagingSenderId: "1006980254374",
+      appId: "1:1006980254374:web:20557d678fc1e889668267",
+      measurementId: "G-X5MG726WF2"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    /* OFFLINE SAFE */
+    db.enablePersistence({ synchronizeTabs: true })
+      .catch(e => console.warn("Persistence disabled:", e.code));
+    
+    /* ================= PROVIDERS ================= */
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+    const microsoftProvider = new firebase.auth.OAuthProvider("microsoft.com");
+    
+    /* ================= STATE ================= */
+    let userProfile = null;
+    
+    /* ================= AUTH ================= */
+    auth.onAuthStateChanged(async user => {
+      if (!user) {
+        resetUI();
+        return;
+      }
+    
+      const ref = db.collection("users").doc(user.uid);
+      const snap = await ref.get();
+    
+      if (!snap.exists) {
+        await ref.set({
+          uid: user.uid,
+          name: user.displayName,
+          email: user.email,
+          avatar: user.photoURL,
+          level: 1,
+          xp: 0,
+          gifts: { gift1:false, gift2:false, gift3:false },
+          stats: {
+            giftsClaimed: 0,
+            totalXP: 0,
+            daysRegistered: 1,
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+          },
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        
-        // Event Listeners
-        loginBtn.addEventListener('click', openLoginModal);
-        profileBtn.addEventListener('click', openProfileModal);
-        closeLogin.addEventListener('click', closeLoginModal);
-        closeProfile.addEventListener('click', closeProfileModal);
-        googleLogin.addEventListener('click', loginWithGoogle);
-        microsoftLogin.addEventListener('click', loginWithMicrosoft);
-        yandexLogin.addEventListener('click', loginWithYandex);
-        logoutBtn.addEventListener('click', logout);
-        heroLoginBtn.addEventListener('click', openLoginModal);
-        giftsLoginBtn.addEventListener('click', openLoginModal);
-        superlauncherLoginBtn.addEventListener('click', openLoginModal);
-        ludvigosLoginBtn.addEventListener('click', openLoginModal);
-        
-        // Close modals when clicking outside
-        loginModal.addEventListener('click', (e) => {
-            if (e.target === loginModal) closeLoginModal();
+      }
+    
+      userProfile = (await ref.get()).data();
+      updateUI(user);
+      updateProfileUI();
+      updateGiftsUI();
+    });
+    
+    /* ================= LOGIN ================= */
+    async function loginWithGoogle() {
+      await auth.signInWithPopup(googleProvider);
+      toast("Logged in with Google 🎄");
+    }
+    
+    async function loginWithMicrosoft() {
+      await auth.signInWithPopup(microsoftProvider);
+      toast("Logged in with Microsoft 🎄");
+    }
+    
+    /* ⚠️ DEMO ONLY */
+    async function loginWithYandex() {
+      const fake = {
+        uid: "yandex_demo",
+        displayName: "Yandex Demo User",
+        email: "demo@yandex.ru",
+        photoURL: "https://upload.wikimedia.org/wikipedia/commons/f/f5/Yandex_icon.svg"
+      };
+      await createDemoProfile(fake);
+      updateUI(fake);
+      toast("Yandex DEMO login 🎅");
+    }
+    
+    /* ================= GIFTS ================= */
+    async function claimGift(giftId) {
+      if (!auth.currentUser) return;
+    
+      const ref = db.collection("users").doc(auth.currentUser.uid);
+    
+      await db.runTransaction(async tx => {
+        const snap = await tx.get(ref);
+        const data = snap.data();
+    
+        if (data.gifts[giftId]) throw "Already claimed";
+    
+        const newXP = data.xp + 50;
+        const newLevel = Math.floor(newXP / 100) + 1;
+    
+        tx.update(ref, {
+          [`gifts.${giftId}`]: true,
+          xp: newXP,
+          level: newLevel,
+          "stats.giftsClaimed": firebase.firestore.FieldValue.increment(1),
+          "stats.totalXP": firebase.firestore.FieldValue.increment(50)
         });
-        
-        profileModal.addEventListener('click', (e) => {
-            if (e.target === profileModal) closeProfileModal();
-        });
-        
-        // Mobile Menu
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-            alert('Mobile menu would open here in production! 📱');
-        });
-        
-        // New Year Countdown
-        function updateCountdown() {
-            const newYear2026 = new Date('January 1, 2026 00:00:00').getTime();
-            const now = new Date().getTime();
-            const timeLeft = newYear2026 - now;
-            
-            if (timeLeft > 0) {
-                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                
-                document.getElementById('days').textContent = days.toString().padStart(2, '0');
-                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-            } else {
-                document.getElementById('days').textContent = '00';
-                document.getElementById('hours').textContent = '00';
-                document.getElementById('minutes').textContent = '00';
-                document.getElementById('seconds').textContent = '00';
-            }
-        }
-        
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-        
-        // Create Snowflakes
-        function createSnowflakes() {
-            const container = document.getElementById('snowflakes');
-            const snowflakeCount = 50;
-            
-            for (let i = 0; i < snowflakeCount; i++) {
-                const snowflake = document.createElement('div');
-                snowflake.className = 'snowflake';
-                
-                const size = Math.random() * 5 + 2;
-                const posX = Math.random() * 100;
-                const duration = Math.random() * 10 + 10;
-                const delay = Math.random() * 5;
-                
-                snowflake.style.width = `${size}px`;
-                snowflake.style.height = `${size}px`;
-                snowflake.style.left = `${posX}vw`;
-                snowflake.style.top = '-10px';
-                snowflake.style.animation = `fall ${duration}s linear ${delay}s infinite`;
-                snowflake.style.opacity = Math.random() * 0.5 + 0.3;
-                
-                // Create fall animation
-                const style = document.createElement('style');
-                style.textContent = `
-                    @keyframes fall {
-                        0% {
-                            transform: translateY(-10px) rotate(0deg);
-                            opacity: ${snowflake.style.opacity};
-                        }
-                        100% {
-                            transform: translateY(100vh) rotate(360deg);
-                            opacity: 0;
-                        }
-                    }
-                `;
-                document.head.appendChild(style);
-                
-                container.appendChild(snowflake);
-                
-                // Remove snowflake after animation
-                setTimeout(() => {
-                    snowflake.remove();
-                }, (duration + delay) * 1000);
-            }
-        }
-        
-        // Create fireworks
-        function createFirework(x, y) {
-            const colors = ['#e74c3c', '#f1c40f', '#27ae60', '#3498db', '#9b59b6'];
-            const firework = document.createElement('div');
-            firework.className = 'firework';
-            firework.style.left = `${x}px`;
-            firework.style.top = `${y}px`;
-            firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            document.body.appendChild(firework);
-            
-            // Animate firework
-            let size = 5;
-            const interval = setInterval(() => {
-                size += 10;
-                firework.style.width = `${size}px`;
-                firework.style.height = `${size}px`;
-                firework.style.opacity = 1 - (size / 100);
-                
-                if (size > 100) {
-                    clearInterval(interval);
-                    firework.remove();
-                }
-            }, 20);
-        }
-        
-        // Create periodic snowflakes
-        setInterval(createSnowflakes, 500);
-        createSnowflakes();
-        
-        // Create occasional fireworks
-        setInterval(() => {
-            if (Math.random() > 0.7) {
-                const x = Math.random() * window.innerWidth;
-                const y = Math.random() * window.innerHeight;
-                createFirework(x, y);
-            }
-        }, 1000);
-        
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // Initialize
-        console.log('🎄 Happy New Year 2026 from Ludvig2457! 🎄');
-        console.log('Profile system activated! Users can now track their progress and gifts.');
+      });
+    
+      userProfile = (await ref.get()).data();
+      updateProfileUI();
+      updateGiftsUI();
+      toast(`🎁 ${giftName(giftId)} claimed +50 XP`);
+    }
+    
+    /* ================= UI ================= */
+    function updateUI(user){
+      loginBtn.classList.add("hidden");
+      profileBtn.classList.remove("hidden");
+      userStatus.textContent = `Welcome, ${user.displayName || "User"} 🎄`;
+    }
+    
+    function resetUI(){
+      loginBtn.classList.remove("hidden");
+      profileBtn.classList.add("hidden");
+      userStatus.textContent = "Sign in to continue";
+      userProfile = null;
+    }
+    
+    function updateProfileUI(){
+      if(!userProfile) return;
+    
+      profileName.textContent = userProfile.name;
+      profileEmail.textContent = userProfile.email;
+      profileAvatar.src = userProfile.avatar;
+      profileLevel.textContent = `Level ${userProfile.level}`;
+    
+      const xp = userProfile.xp % 100;
+      xpProgress.style.width = xp + "%";
+      profileXP.textContent = `${xp}/100 XP`;
+    }
+    
+    function updateGiftsUI(){
+      gift1.innerHTML = userProfile?.gifts.gift1
+        ? `<button onclick="claimGift('gift1')">Download Skins</button>`
+        : "🔒 Locked";
+    
+      gift2.innerHTML = userProfile?.gifts.gift2
+        ? `<button onclick="claimGift('gift2')">Apply Theme</button>`
+        : "🔒 Locked";
+    
+      gift3.innerHTML = userProfile?.gifts.gift3
+        ? `<button onclick="claimGift('gift3')">Download Pack</button>`
+        : "🔒 Locked";
+    }
+    
+    /* ================= UTILS ================= */
+    function giftName(id){
+      return {
+        gift1:"Exclusive Skins Pack",
+        gift2:"Premium Theme 2026",
+        gift3:"Christmas Resource Pack"
+      }[id];
+    }
+    
+    function toast(text){
+      const t=document.createElement("div");
+      t.className="fixed top-4 right-4 bg-green-600 text-white px-5 py-3 rounded";
+      t.textContent=text;
+      document.body.appendChild(t);
+      setTimeout(()=>t.remove(),3000);
+    }
+    
+    /* ================= EVENTS ================= */
+    googleLogin.onclick = loginWithGoogle;
+    microsoftLogin.onclick = loginWithMicrosoft;
+    yandexLogin.onclick = loginWithYandex;
+    logoutBtn.onclick = ()=>auth.signOut();
+    
+    console.log("🎄 LudvigPlatform 2026 ready");
     </script>
 </body>
 </html>
