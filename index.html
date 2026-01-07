@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ludvig2457 - Welcome 2026! 🎄</title>
+    <title>Ludvig2457 - Happy New Year 2026! 🎄</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="assets/cube.svg" />
@@ -11,6 +11,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
         
@@ -19,12 +21,14 @@
             --holiday-green: #27ae60;
             --holiday-gold: #f1c40f;
             --holiday-blue: #3498db;
+            --holiday-purple: #9b59b6;
         }
         
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0c4a6e 100%);
             min-height: 100vh;
+            transition: all 0.3s ease;
         }
         
         .holiday-font {
@@ -40,7 +44,7 @@
         }
         
         .new-year-countdown {
-            background: linear-gradient(45deg, #e74c3c, #f1c40f, #27ae60, #3498db);
+            background: linear-gradient(45deg, #e74c3c, #f1c40f, #27ae60, #3498db, #9b59b6);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
         }
@@ -83,29 +87,11 @@
         
         .gift-box {
             perspective: 1000px;
-            transition: transform 0.5s;
+            transition: all 0.5s ease;
         }
         
         .gift-box:hover {
-            transform: translateY(-10px) rotateX(10deg);
-        }
-        
-        .santa-hat {
-            position: relative;
-        }
-        
-        .santa-hat::before {
-            content: "🎅";
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 2rem;
-        }
-        
-        .login-modal {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
+            transform: translateY(-10px) rotateX(10deg) scale(1.05);
         }
         
         .christmas-lights {
@@ -130,7 +116,7 @@
             100% { background-position: 100px 0px; }
         }
         
-        .profile-modal {
+        .modal {
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
         }
@@ -172,6 +158,69 @@
             background: linear-gradient(135deg, rgba(241, 196, 15, 0.2) 0%, rgba(241, 196, 15, 0.1) 100%);
             border-color: #f1c40f;
         }
+        
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #f1c40f }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #e74c3c, #f1c40f, #27ae60);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradientBG 8s ease infinite;
+        }
+        
+        /* reCAPTCHA адаптивность */
+        .g-recaptcha {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        @media (max-width: 480px) {
+            .g-recaptcha {
+                transform: scale(0.85);
+                transform-origin: 0 0;
+            }
+        }
     </style>
 </head>
 <body class="text-white overflow-x-hidden">
@@ -182,28 +231,31 @@
     <div id="snowflakes"></div>
     
     <!-- Navigation -->
-    <nav class="fixed w-full z-40 py-4 px-6 bg-slate-900/80 backdrop-blur-md">
+    <nav class="fixed w-full z-40 py-4 px-6 glass-effect shadow-lg">
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-4">
-                    <div class="santa-hat">
-                        <i class="fas fa-cube text-3xl text-red-500"></i>
+                    <div class="relative">
+                        <i class="fas fa-cube text-3xl text-red-500 animate-pulse"></i>
+                        <div class="absolute -top-2 -right-2 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
                     </div>
                     <h1 class="text-2xl font-bold holiday-font">
                         Ludvig<span class="text-green-500">2457</span>
-                        <span class="text-yellow-400 text-sm">🎄 2026</span>
+                        <span class="text-yellow-400 text-sm ml-2">🎄 2026</span>
                     </h1>
                 </div>
                 
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="hover:text-yellow-400 transition-colors">Home</a>
-                    <a href="#superlauncher" class="hover:text-yellow-400 transition-colors">SuperLauncher</a>
-                    <a href="#ludvigos" class="hover:text-yellow-400 transition-colors">LudvigOS</a>
-                    <a href="#gifts" class="hover:text-yellow-400 transition-colors">New Year Gifts</a>
+                    <a href="#home" class="hover:text-yellow-400 transition-colors font-medium">Home</a>
+                    <a href="#superlauncher" class="hover:text-yellow-400 transition-colors font-medium">SuperLauncher</a>
+                    <a href="#ludvigos" class="hover:text-yellow-400 transition-colors font-medium">LudvigOS</a>
+                    <a href="#gifts" class="hover:text-yellow-400 transition-colors font-medium">New Year Gifts</a>
+                    <a href="#features" class="hover:text-yellow-400 transition-colors font-medium">Features</a>
+                    <a href="#contact" class="hover:text-yellow-400 transition-colors font-medium">Contact</a>
                     <button id="profileBtn" class="hover:text-yellow-400 transition-colors hidden">
                         <i class="fas fa-user-circle text-2xl"></i>
                     </button>
-                    <button id="loginBtn" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-full font-bold transition-all">
+                    <button id="loginBtn" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-full font-bold transition-all transform hover:scale-105">
                         <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                     </button>
                 </div>
@@ -213,28 +265,38 @@
                 </button>
             </div>
         </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden mt-4 pt-4 border-t border-gray-700">
+            <div class="flex flex-col space-y-4">
+                <a href="#home" class="hover:text-yellow-400 transition-colors">Home</a>
+                <a href="#superlauncher" class="hover:text-yellow-400 transition-colors">SuperLauncher</a>
+                <a href="#ludvigos" class="hover:text-yellow-400 transition-colors">LudvigOS</a>
+                <a href="#gifts" class="hover:text-yellow-400 transition-colors">New Year Gifts</a>
+                <a href="#features" class="hover:text-yellow-400 transition-colors">Features</a>
+                <a href="#contact" class="hover:text-yellow-400 transition-colors">Contact</a>
+                <button id="mobileLoginBtn" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-full font-bold transition-all w-full">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                </button>
+            </div>
+        </div>
     </nav>
 
     <!-- Login Modal -->
-    <div id="loginModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 login-modal">
-        <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 max-w-md w-full relative border-2 border-yellow-500">
+    <div id="loginModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal">
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 max-w-md w-full relative border-2 border-yellow-500 shadow-2xl">
             <button id="closeLogin" class="absolute top-4 right-4 text-2xl hover:text-yellow-400">×</button>
             
             <h2 class="text-3xl font-bold mb-2 text-center holiday-font">Welcome to 2026! 🎄</h2>
             <p class="text-center text-gray-300 mb-8">Sign in to unlock special New Year gifts!</p>
             
             <div class="space-y-4">
-                <button id="googleLogin" class="w-full bg-white text-gray-800 py-3 rounded-lg font-bold flex items-center justify-center space-x-3 hover:bg-gray-100 transition">
+                <button id="googleLogin" class="w-full bg-white text-gray-800 py-3 rounded-lg font-bold flex items-center justify-center space-x-3 hover:bg-gray-100 transition transform hover:scale-105">
                     <i class="fab fa-google text-red-500 text-xl"></i>
                     <span>Continue with Google</span>
                 </button>
                 
-                <button id="yandexLogin" class="w-full bg-red-600 text-white py-3 rounded-lg font-bold flex items-center justify-center space-x-3 hover:bg-red-700 transition">
-                    <span class="text-xl">Я</span>
-                    <span>Continue with Yandex</span>
-                </button>
-                
-                <button id="microsoftLogin" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold flex items-center justify-center space-x-3 hover:bg-blue-700 transition">
+                <button id="microsoftLogin" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold flex items-center justify-center space-x-3 hover:bg-blue-700 transition transform hover:scale-105">
                     <i class="fab fa-microsoft text-xl"></i>
                     <span>Continue with Microsoft</span>
                 </button>
@@ -249,8 +311,8 @@
     </div>
 
     <!-- Profile Modal -->
-    <div id="profileModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 profile-modal">
-        <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 max-w-2xl w-full relative border-2 border-blue-500">
+    <div id="profileModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal">
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 max-w-2xl w-full relative border-2 border-blue-500 shadow-2xl">
             <button id="closeProfile" class="absolute top-4 right-4 text-2xl hover:text-yellow-400">×</button>
             
             <div class="flex items-center mb-8">
@@ -278,7 +340,7 @@
             </div>
             
             <div class="grid md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-slate-800/50 p-4 rounded-xl">
+                <div class="glass-effect p-4 rounded-xl">
                     <h3 class="text-xl font-bold mb-4">🎁 Your Gifts</h3>
                     <div class="space-y-2">
                         <div class="flex justify-between">
@@ -296,7 +358,7 @@
                     </div>
                 </div>
                 
-                <div class="bg-slate-800/50 p-4 rounded-xl">
+                <div class="glass-effect p-4 rounded-xl">
                     <h3 class="text-xl font-bold mb-4">📊 Statistics</h3>
                     <div class="space-y-2">
                         <div class="flex justify-between">
@@ -317,25 +379,25 @@
             
             <h3 class="text-xl font-bold mb-4">🏆 Achievements</h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div class="achievement-card bg-slate-800/50 p-4 rounded-xl text-center border border-gray-700">
+                <div class="achievement-card glass-effect p-4 rounded-xl text-center">
                     <div class="badge bg-yellow-500 text-slate-900 mb-2 mx-auto">🎮</div>
                     <span class="text-sm">First Login</span>
                 </div>
-                <div class="achievement-card bg-slate-800/50 p-4 rounded-xl text-center border border-gray-700">
+                <div class="achievement-card glass-effect p-4 rounded-xl text-center">
                     <div class="badge bg-gray-700 text-gray-400 mb-2 mx-auto">🎁</div>
                     <span class="text-sm">Gift Collector</span>
                 </div>
-                <div class="achievement-card bg-slate-800/50 p-4 rounded-xl text-center border border-gray-700">
+                <div class="achievement-card glass-effect p-4 rounded-xl text-center">
                     <div class="badge bg-gray-700 text-gray-400 mb-2 mx-auto">⭐</div>
                     <span class="text-sm">SuperUser</span>
                 </div>
-                <div class="achievement-card bg-slate-800/50 p-4 rounded-xl text-center border border-gray-700">
+                <div class="achievement-card glass-effect p-4 rounded-xl text-center">
                     <div class="badge bg-gray-700 text-gray-400 mb-2 mx-auto">🎄</div>
                     <span class="text-sm">Holiday Spirit</span>
                 </div>
             </div>
             
-            <button id="logoutBtn" class="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 py-3 rounded-lg font-bold transition-all">
+            <button id="logoutBtn" class="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 py-3 rounded-lg font-bold transition-all transform hover:scale-105">
                 <i class="fas fa-sign-out-alt mr-2"></i>Log Out
             </button>
         </div>
@@ -344,22 +406,24 @@
     <!-- Hero Section -->
     <section id="home" class="min-h-screen flex items-center justify-center relative pt-16">
         <div class="max-w-6xl mx-auto px-4 py-20 text-center relative z-10">
-            <div class="inline-block mb-8 px-6 py-3 bg-gradient-to-r from-red-600 to-yellow-500 rounded-full animate-bounce">
+            <div class="inline-block mb-8 px-6 py-3 bg-gradient-to-r from-red-600 to-yellow-500 rounded-full animate-bounce shadow-lg">
                 <span class="font-bold">🎉 Happy New Year 2026! 🎉</span>
             </div>
             
-            <h1 class="text-6xl md:text-8xl font-bold mb-6 holiday-font">
-                <span class="text-red-500">New Year</span>
-                <span class="text-green-500">Update</span>
-                <span class="text-yellow-400">2026</span>
+            <h1 class="text-5xl md:text-8xl font-bold mb-6 holiday-font">
+                <span class="text-red-500">Welcome to</span>
+                <span class="block mt-2">
+                    <span class="text-green-500">New Year</span>
+                    <span class="text-yellow-400">Update</span>
+                </span>
             </h1>
             
-            <p class="text-2xl md:text-3xl mb-12 text-gray-200 max-w-3xl mx-auto">
-                SuperLauncher & LudvigOS bring you special Christmas gifts and amazing new features!
+            <p class="text-2xl md:text-3xl mb-12 text-gray-200 max-w-3xl mx-auto typewriter">
+                SuperLauncher & LudvigOS bring you special Christmas gifts!
             </p>
             
             <!-- New Year Countdown -->
-            <div class="new-year-countdown rounded-2xl p-8 mb-12">
+            <div class="new-year-countdown rounded-2xl p-8 mb-12 shadow-2xl">
                 <h3 class="text-2xl font-bold mb-4">🎄 Countdown to 2026 🎄</h3>
                 <div class="flex justify-center space-x-4 md:space-x-8">
                     <div class="text-center">
@@ -385,10 +449,10 @@
             </div>
             
             <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-8">
-                <button id="heroLoginBtn" class="bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 glow-effect">
+                <button id="heroLoginBtn" class="bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 glow-effect shadow-2xl">
                     <i class="fas fa-gift mr-3"></i>Get Your New Year Gift
                 </button>
-                <a href="#superlauncher" class="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105">
+                <a href="#superlauncher" class="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 shadow-2xl">
                     <i class="fas fa-download mr-3"></i>Download Now
                 </a>
             </div>
@@ -401,6 +465,29 @@
         <div class="ornament bg-blue-500 bottom-40 right-20 shadow-lg" style="animation-delay: 1.5s;"></div>
     </section>
 
+    <!-- Platform Support Banner -->
+    <section class="bg-gradient-to-r from-purple-600 to-blue-600 py-8 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold mb-4">🚀 Now SuperLauncher supports all platforms!</h3>
+                <div class="flex flex-wrap justify-center gap-8 text-lg">
+                    <div class="flex items-center">
+                        <i class="fab fa-windows text-2xl mr-3"></i>
+                        <span>Windows</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fab fa-linux text-2xl mr-3"></i>
+                        <span>Linux</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fab fa-android text-2xl mr-3"></i>
+                        <span>Android</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Special New Year Gifts -->
     <section id="gifts" class="py-20 px-4">
         <div class="max-w-6xl mx-auto">
@@ -411,22 +498,22 @@
             </h2>
             
             <div class="grid md:grid-cols-3 gap-8">
-                <div class="gift-box bg-gradient-to-br from-red-900/30 to-red-600/20 p-8 rounded-2xl border-2 border-red-500 text-center">
-                    <div class="text-6xl mb-6">🎮</div>
+                <div class="gift-box bg-gradient-to-br from-red-900/30 to-red-600/20 p-8 rounded-2xl border-2 border-red-500 text-center shadow-xl">
+                    <div class="text-6xl mb-6 float-animation">🎮</div>
                     <h3 class="text-2xl font-bold mb-4">Exclusive Skins Pack</h3>
                     <p class="text-gray-300 mb-6">Get 10 exclusive Christmas-themed Minecraft skins for free!</p>
                     <div id="gift1" class="text-yellow-400 font-bold text-lg">Sign in to unlock!</div>
                 </div>
                 
-                <div class="gift-box bg-gradient-to-br from-green-900/30 to-green-600/20 p-8 rounded-2xl border-2 border-green-500 text-center">
-                    <div class="text-6xl mb-6">⭐</div>
+                <div class="gift-box bg-gradient-to-br from-green-900/30 to-green-600/20 p-8 rounded-2xl border-2 border-green-500 text-center shadow-xl">
+                    <div class="text-6xl mb-6 float-animation" style="animation-delay: 1s;">⭐</div>
                     <h3 class="text-2xl font-bold mb-4">Premium Theme 2026</h3>
                     <p class="text-gray-300 mb-6">Special New Year theme for SuperLauncher with animations</p>
                     <div id="gift2" class="text-yellow-400 font-bold text-lg">Sign in to unlock!</div>
                 </div>
                 
-                <div class="gift-box bg-gradient-to-br from-blue-900/30 to-blue-600/20 p-8 rounded-2xl border-2 border-blue-500 text-center">
-                    <div class="text-6xl mb-6">🎄</div>
+                <div class="gift-box bg-gradient-to-br from-blue-900/30 to-blue-600/20 p-8 rounded-2xl border-2 border-blue-500 text-center shadow-xl">
+                    <div class="text-6xl mb-6 float-animation" style="animation-delay: 2s;">🎄</div>
                     <h3 class="text-2xl font-bold mb-4">Christmas Resource Pack</h3>
                     <p class="text-gray-300 mb-6">Holiday texture pack with snow, lights and decorations</p>
                     <div id="gift3" class="text-yellow-400 font-bold text-lg">Sign in to unlock!</div>
@@ -435,7 +522,7 @@
             
             <div class="mt-12 text-center">
                 <p class="text-xl text-gray-300 mb-6">🎅 Sign in to claim all your gifts! Available until January 15, 2026</p>
-                <button id="giftsLoginBtn" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105">
+                <button id="giftsLoginBtn" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 shadow-2xl">
                     <i class="fas fa-sign-in-alt mr-3"></i>Sign In & Claim Gifts
                 </button>
             </div>
@@ -444,13 +531,13 @@
 
     <!-- SuperLauncher Section -->
     <section id="superlauncher" class="py-20 px-4">
-        <div class="max-w-6xl mx-auto">
+        <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <div class="inline-flex items-center bg-gradient-to-r from-blue-600 to-cyan-500 px-6 py-3 rounded-full mb-6">
+                <div class="inline-flex items-center bg-gradient-to-r from-blue-600 to-cyan-500 px-6 py-3 rounded-full mb-6 shadow-lg">
                     <i class="fas fa-star mr-3"></i>
                     <span class="font-bold">NEW YEAR UPDATE v2.0.0</span>
                 </div>
-                <h2 class="text-5xl font-bold mb-6">SuperLauncher 2026 Edition</h2>
+                <h2 class="text-5xl font-bold mb-6 gradient-text">SuperLauncher 2026 Edition</h2>
                 <p class="text-2xl text-gray-300">Completely redesigned with holiday magic! ✨</p>
             </div>
             
@@ -458,21 +545,21 @@
                 <div>
                     <h3 class="text-3xl font-bold mb-8">What's New for 2026:</h3>
                     <ul class="space-y-6">
-                        <li class="flex items-start">
+                        <li class="flex items-start card-hover">
                             <i class="fas fa-snowflake text-blue-400 text-2xl mr-4 mt-1"></i>
                             <div>
                                 <h4 class="text-xl font-bold mb-2">Winter UI Theme</h4>
                                 <p class="text-gray-300">Snow animations and holiday decorations</p>
                             </div>
                         </li>
-                        <li class="flex items-start">
+                        <li class="flex items-start card-hover">
                             <i class="fas fa-gift text-red-400 text-2xl mr-4 mt-1"></i>
                             <div>
                                 <h4 class="text-xl font-bold mb-2">Gift System</h4>
                                 <p class="text-gray-300">Daily Christmas gifts for logged in users</p>
                             </div>
                         </li>
-                        <li class="flex items-start">
+                        <li class="flex items-start card-hover">
                             <i class="fas fa-tachometer-alt text-green-400 text-2xl mr-4 mt-1"></i>
                             <div>
                                 <h4 class="text-xl font-bold mb-2">2x Faster Performance</h4>
@@ -483,16 +570,16 @@
                     
                     <div class="mt-12">
                         <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.7/SuperLauncher1.4.0.7.exe" 
-                           class="inline-block bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 mr-4 mb-4">
+                           class="inline-block bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 mr-4 mb-4 shadow-2xl">
                             <i class="fab fa-windows mr-3"></i>Download for Windows
                         </a>
-                        <button id="superlauncherLoginBtn" class="inline-block bg-gradient-to-r from-yellow-600 to-amber-500 hover:from-yellow-700 hover:to-amber-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105">
+                        <button id="superlauncherLoginBtn" class="inline-block bg-gradient-to-r from-yellow-600 to-amber-500 hover:from-yellow-700 hover:to-amber-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 shadow-2xl">
                             <i class="fas fa-user-plus mr-3"></i>Register for Beta
                         </button>
                     </div>
                 </div>
                 
-                <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-3xl border-2 border-cyan-500 shadow-2xl">
+                <div class="glass-effect p-8 rounded-3xl border-2 border-cyan-500 shadow-2xl">
                     <div class="bg-slate-900 rounded-2xl p-6">
                         <div class="flex items-center mb-6">
                             <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
@@ -501,7 +588,7 @@
                             <div class="ml-4 text-gray-400 font-mono">SuperLauncher 2026</div>
                         </div>
                         <div class="text-center py-12">
-                            <div class="text-8xl mb-6">🎄</div>
+                            <div class="text-8xl mb-6 float-animation">🎄</div>
                             <h4 class="text-2xl font-bold mb-4">Merry Christmas & Happy New Year!</h4>
                             <p class="text-gray-400 mb-6">Launching your holiday gaming experience...</p>
                             <div class="inline-block px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full">
@@ -509,6 +596,33 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Download Buttons Grid -->
+            <div class="mt-20 text-center">
+                <h3 class="text-3xl font-bold mb-8">Download SuperLauncher</h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <a href="https://github.com/ludvig2457/SuperLauncher/releases/download/v1.4.0.7/SuperLauncher1.4.0.7.exe" 
+                       class="download-btn bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-6 rounded-xl font-semibold shadow-xl flex flex-col items-center group card-hover">
+                        <i class="fab fa-windows text-4xl mb-4 group-hover:animate-bounce"></i>
+                        <div class="font-bold">Windows 64-bit</div>
+                        <div class="text-sm opacity-90 mt-2">v1.4.0.7 Latest</div>
+                    </a>
+                    
+                    <a href="https://github.com/ludvig2457/SuperLauncherMC/releases/download/v1.4.0.8/SuperLauncher1.4.0.8.deb" 
+                       class="download-btn bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white p-6 rounded-xl font-semibold shadow-xl flex flex-col items-center group card-hover">
+                        <i class="fab fa-linux text-4xl mb-4 group-hover:animate-bounce"></i>
+                        <div class="font-bold">Linux (.deb)</div>
+                        <div class="text-sm opacity-90 mt-2">v1.4.0.8 • Ubuntu/Debian</div>
+                    </a>
+                    
+                    <a href="https://github.com/ludvig2457/SuperLauncherMCandroid/releases/download/v1.2/app-debug.apk" 
+                       class="download-btn bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white p-6 rounded-xl font-semibold shadow-xl flex flex-col items-center group card-hover">
+                        <i class="fab fa-android text-4xl mb-4 group-hover:animate-bounce"></i>
+                        <div class="font-bold">Android APK</div>
+                        <div class="text-sm opacity-90 mt-2">v1.2 - Works on any device!</div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -526,7 +640,7 @@
                 <p class="text-2xl text-gray-300">The future of gaming operating systems has arrived! 🚀</p>
             </div>
             
-            <div class="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 border-2 border-yellow-500 shadow-2xl">
+            <div class="glass-effect rounded-3xl p-8 border-2 border-yellow-500 shadow-2xl">
                 <div class="grid md:grid-cols-2 gap-8 items-center">
                     <div>
                         <h3 class="text-3xl font-bold mb-6">🎁 Special Holiday Release</h3>
@@ -555,7 +669,7 @@
                         </div>
                         
                         <a href="https://github.com/ludvig2457/LudvigOS/releases/download/v1.2/LudvigOS.iso" 
-                           class="inline-block bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105">
+                           class="inline-block bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 px-8 py-4 rounded-xl text-xl font-bold transition-all transform hover:scale-105 shadow-2xl">
                             <i class="fas fa-download mr-3"></i>Download LudvigOS 2026
                         </a>
                     </div>
@@ -565,7 +679,7 @@
                         <div id="ludvigosStatus" class="text-xl font-bold text-yellow-400 mb-4">
                             Sign in to access installation guide
                         </div>
-                        <button id="ludvigosLoginBtn" class="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 px-6 py-3 rounded-lg font-bold">
+                        <button id="ludvigosLoginBtn" class="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 px-6 py-3 rounded-lg font-bold shadow-lg">
                             <i class="fas fa-unlock mr-2"></i>Unlock Features
                         </button>
                     </div>
@@ -573,173 +687,484 @@
             </div>
         </div>
     </section>
-    
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 holiday-font">
+                    Why Choose Our Products?
+                </h2>
+                <p class="text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                    Built with passion, precision, and a commitment to delivering exceptional user experiences.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-12">
+                    <div class="group card-hover">
+                        <h3 class="text-2xl font-bold mb-4 flex items-center">
+                            <i class="fas fa-bolt text-yellow-500 mr-4 text-3xl group-hover:animate-pulse"></i>
+                            Performance Optimized
+                        </h3>
+                        <p class="text-lg text-gray-300 leading-relaxed">
+                            Our products are engineered to use minimal system resources while delivering maximum performance, 
+                            ensuring smooth gaming and productivity experiences even on modest hardware.
+                        </p>
+                    </div>
+                    <div class="group card-hover">
+                        <h3 class="text-2xl font-bold mb-4 flex items-center">
+                            <i class="fas fa-users-cog text-green-500 mr-4 text-3xl group-hover:animate-pulse"></i>
+                            User-Centric Design
+                        </h3>
+                        <p class="text-lg text-gray-300 leading-relaxed">
+                            Every feature is designed with the user in mind. Intuitive interfaces, customizable options, 
+                            and seamless workflows make our products a joy to use every day.
+                        </p>
+                    </div>
+                    <div class="group card-hover">
+                        <h3 class="text-2xl font-bold mb-4 flex items-center">
+                            <i class="fas fa-heart text-red-500 mr-4 text-3xl group-hover:animate-pulse"></i>
+                            Passion-Driven Development
+                        </h3>
+                        <p class="text-lg text-gray-300 leading-relaxed">
+                            Created by gamers and tech enthusiasts for the community. We build what we love to use, 
+                            ensuring quality and innovation in every release.
+                        </p>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="glass-effect rounded-3xl p-8 shadow-2xl">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="text-center p-6 rounded-2xl bg-purple-900/30 group hover:scale-105 transition-transform duration-300 card-hover">
+                                <i class="fas fa-download text-4xl gradient-text mb-4"></i>
+                                <h4 class="font-bold text-white text-lg">10K+ Downloads</h4>
+                            </div>
+                            <div class="text-center p-6 rounded-2xl bg-blue-900/30 group hover:scale-105 transition-transform duration-300 card-hover">
+                                <i class="fas fa-star text-4xl gradient-text mb-4"></i>
+                                <h4 class="font-bold text-white text-lg">4.8/5 Rating</h4>
+                            </div>
+                            <div class="text-center p-6 rounded-2xl bg-green-900/30 group hover:scale-105 transition-transform duration-300 card-hover">
+                                <i class="fas fa-globe text-4xl gradient-text mb-4"></i>
+                                <h4 class="font-bold text-white text-lg">50+ Countries</h4>
+                            </div>
+                            <div class="text-center p-6 rounded-2xl bg-orange-900/30 group hover:scale-105 transition-transform duration-300 card-hover">
+                                <i class="fas fa-code-branch text-4xl gradient-text mb-4"></i>
+                                <h4 class="font-bold text-white text-lg">Active Development</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="lg:flex lg:items-center lg:justify-between">
+                <div class="lg:w-1/2">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 holiday-font">
+                        Get In Touch
+                    </h2>
+                    <p class="text-2xl text-gray-300 mb-8 leading-relaxed">
+                        Have questions, feedback, or want to collaborate? We'd love to hear from you!
+                    </p>
+                    <div class="space-y-6">
+                        <div class="flex items-start group card-hover">
+                            <div class="flex-shrink-0 bg-purple-900 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-envelope gradient-text text-2xl"></i>
+                            </div>
+                            <div class="ml-6">
+                                <h3 class="text-xl font-bold text-white mb-2">Email Us</h3>
+                                <p class="text-lg text-gray-300">artemludvig79@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start group card-hover">
+                            <div class="flex-shrink-0 bg-purple-900 p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-comments gradient-text text-2xl"></i>
+                            </div>
+                            <div class="ml-6">
+                                <h3 class="text-xl font-bold text-white mb-2">Community</h3>
+                                <div class="flex space-x-4 mt-2">
+                                    <a href="https://discord.com/invite/awzHqy2mUn" class="text-gray-300 hover:text-purple-400 transition duration-300 text-2xl">
+                                        <i class="fab fa-discord"></i>
+                                    </a>
+                                    <a href="https://www.reddit.com/user/Beneficial_Gold829/" class="text-gray-300 hover:text-purple-400 transition duration-300 text-2xl">
+                                        <i class="fab fa-reddit"></i>
+                                    </a>
+                                    <a href="https://github.com/ludvig2457" class="text-gray-300 hover:text-purple-400 transition duration-300 text-2xl">
+                                        <i class="fab fa-github"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:w-1/2 mt-12 lg:mt-0">
+                    <form action="https://formspree.io/f/mpwdvlbb" method="POST"
+                          class="glass-effect p-8 rounded-3xl shadow-2xl border border-gray-700">
+                        <div class="mb-6">
+                            <label for="name" class="block text-lg font-medium text-gray-300 mb-3">Name</label>
+                            <input type="text" id="name" name="name" required
+                                class="w-full border border-gray-600 rounded-xl shadow-sm py-4 px-4 
+                                       bg-slate-800 text-white text-lg
+                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                                       transition duration-300">
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="email" class="block text-lg font-medium text-gray-300 mb-3">Email</label>
+                            <input type="email" id="email" name="email" required
+                                class="w-full border border-gray-600 rounded-xl shadow-sm py-4 px-4 
+                                       bg-slate-800 text-white text-lg
+                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                                       transition duration-300">
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="subject" class="block text-lg font-medium text-gray-300 mb-3">Subject</label>
+                            <select id="subject" name="subject" required
+                                class="w-full border border-gray-600 rounded-xl shadow-sm py-4 px-4 
+                                       bg-slate-800 text-white text-lg
+                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                                       transition duration-300">
+                                <option>General Inquiry</option>
+                                <option>SuperLauncher Support</option>
+                                <option>LudvigOS Information</option>
+                                <option>Partnership Opportunity</option>
+                                <option>Bug Report</option>
+                                <option>Feature Request</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="message" class="block text-lg font-medium text-gray-300 mb-3">Message</label>
+                            <textarea id="message" name="message" rows="5" required
+                                class="w-full border border-gray-600 rounded-xl shadow-sm py-4 px-4 
+                                       bg-slate-800 text-white text-lg
+                                       focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+                                       transition duration-300"></textarea>
+                        </div>
+
+                        <!-- reCAPTCHA -->
+                        <div class="mb-6">
+                            <div class="g-recaptcha" data-sitekey="6LdsPgssAAAAAMk4QKZ7hAE4ov79I32LMi4vNw5C"></div>
+                        </div>
+
+                        <div class="mt-8">
+                            <button type="submit"
+                                class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 
+                                       text-white py-4 px-6 rounded-xl shadow-lg text-lg font-semibold 
+                                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500
+                                       transition duration-300 transform hover:scale-105">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-cube text-purple-500 text-3xl mr-3"></i>
+                        <span class="text-2xl font-bold">Ludvig2457</span>
+                    </div>
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        Creating innovative software solutions for gamers and tech enthusiasts worldwide.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-6">Products</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#superlauncher" class="text-gray-400 hover:text-white text-lg transition duration-300">SuperLauncher</a></li>
+                        <li><a href="#ludvigos" class="text-gray-400 hover:text-white text-lg transition duration-300">LudvigOS</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">Future Projects</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-6">Support</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#contact" class="text-gray-400 hover:text-white text-lg transition duration-300">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-6">Connect</h3>
+                    <div class="flex space-x-6">
+                        <a href="https://discord.com/invite/awzHqy2mUn" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="https://github.com/ludvig2457" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.reddit.com/user/Beneficial_Gold829/" class="text-gray-400 hover:text-white transition duration-300 text-2xl">
+                            <i class="fab fa-reddit"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-400 text-lg mb-4 md:mb-0">
+                    &copy; 2025-2026 Ludvig2457. All rights reserved.
+                </div>
+                <div class="flex space-x-8">
+                    <a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-lg transition duration-300">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script>
-    /* ================= FIREBASE INIT ================= */
-    const firebaseConfig = {
-      apiKey: "AIzaSyDbLKz2eRtCRySbAqdJtWckSdP5TRD1Ieo",
-      authDomain: "ludvigplatform.firebaseapp.com",
-      projectId: "ludvigplatform",
-      storageBucket: "ludvigplatform.firebasestorage.app",
-      messagingSenderId: "1006980254374",
-      appId: "1:1006980254374:web:20557d678fc1e889668267"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    
-    db.enablePersistence({ synchronizeTabs: true }).catch(()=>{});
-    
-    /* ================= PROVIDERS ================= */
-    const googleProvider = new firebase.auth.GoogleAuthProvider();
-    const microsoftProvider = new firebase.auth.OAuthProvider("microsoft.com");
-    
-    /* ================= GLOBAL STATE ================= */
-    let userProfile = null;
-    
-    /* ================= AUTH ================= */
-    auth.onAuthStateChanged(async user => {
-      if (!user) return resetUI();
-    
-      const ref = db.collection("users").doc(user.uid);
-      const snap = await ref.get();
-    
-      if (!snap.exists) {
-        await ref.set({
-          uid: user.uid,
-          name: user.displayName || "User",
-          email: user.email,
-          avatar: user.photoURL,
-          xp: 0,
-          level: 1,
-          gifts: { gift1:false, gift2:false, gift3:false },
-          stats: {
-            giftsClaimed: 0,
-            totalXP: 0
-          },
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        /* ================= FIREBASE INIT ================= */
+        const firebaseConfig = {
+          apiKey: "AIzaSyDbLKz2eRtCRySbAqdJtWckSdP5TRD1Ieo",
+          authDomain: "ludvigplatform.firebaseapp.com",
+          projectId: "ludvigplatform",
+          storageBucket: "ludvigplatform.firebasestorage.app",
+          messagingSenderId: "1006980254374",
+          appId: "1:1006980254374:web:20557d678fc1e889668267"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        /* ================= PROVIDERS ================= */
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+        const microsoftProvider = new firebase.auth.OAuthProvider("microsoft.com");
+        
+        /* ================= GLOBAL STATE ================= */
+        let userProfile = null;
+        
+        /* ================= AUTH ================= */
+        auth.onAuthStateChanged(async user => {
+          if (!user) return resetUI();
+        
+          const ref = db.collection("users").doc(user.uid);
+          const snap = await ref.get();
+        
+          if (!snap.exists) {
+            await ref.set({
+              uid: user.uid,
+              name: user.displayName || "User",
+              email: user.email,
+              avatar: user.photoURL || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + user.email,
+              xp: 0,
+              level: 1,
+              gifts: { gift1:false, gift2:false, gift3:false },
+              stats: {
+                giftsClaimed: 0,
+                totalXP: 0
+              },
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          }
+        
+          userProfile = (await ref.get()).data();
+          updateUI(user);
+          updateProfileUI();
+          updateGiftsUI();
         });
-      }
-    
-      userProfile = (await ref.get()).data();
-      updateUI(user);
-      updateProfileUI();
-      updateGiftsUI();
-    });
-    
-    /* ================= LOGIN ================= */
-    googleLogin.onclick = ()=> auth.signInWithPopup(googleProvider);
-    microsoftLogin.onclick = ()=> auth.signInWithPopup(microsoftProvider);
-    logoutBtn.onclick = ()=> auth.signOut();
-    
-    /* ================= GIFTS ================= */
-    async function claimGift(id){
-      const ref = db.collection("users").doc(auth.currentUser.uid);
-    
-      await db.runTransaction(async tx=>{
-        const snap = await tx.get(ref);
-        const d = snap.data();
-        if(d.gifts[id]) throw "claimed";
-    
-        const xp = d.xp + 50;
-        tx.update(ref,{
-          [`gifts.${id}`]:true,
-          xp,
-          level: Math.floor(xp/100)+1,
-          "stats.giftsClaimed":firebase.firestore.FieldValue.increment(1),
-          "stats.totalXP":firebase.firestore.FieldValue.increment(50)
+        
+        /* ================= LOGIN ================= */
+        document.getElementById('googleLogin').onclick = ()=> auth.signInWithPopup(googleProvider);
+        document.getElementById('microsoftLogin').onclick = ()=> auth.signInWithPopup(microsoftProvider);
+        document.getElementById('logoutBtn').onclick = ()=> auth.signOut();
+        
+        /* ================= GIFTS ================= */
+        async function claimGift(id){
+          const ref = db.collection("users").doc(auth.currentUser.uid);
+        
+          await db.runTransaction(async tx=>{
+            const snap = await tx.get(ref);
+            const d = snap.data();
+            if(d.gifts[id]) throw "claimed";
+        
+            const xp = d.xp + 50;
+            tx.update(ref,{
+              [`gifts.${id}`]:true,
+              xp,
+              level: Math.floor(xp/100)+1,
+              "stats.giftsClaimed":firebase.firestore.FieldValue.increment(1),
+              "stats.totalXP":firebase.firestore.FieldValue.increment(50)
+            });
+          });
+        
+          userProfile = (await ref.get()).data();
+          updateProfileUI();
+          updateGiftsUI();
+          toast("🎁 Gift claimed +50 XP");
+        }
+        
+        /* ================= UI ================= */
+        function updateUI(user){
+          document.getElementById('loginBtn').classList.add("hidden");
+          document.getElementById('profileBtn').classList.remove("hidden");
+          document.getElementById('userStatus').textContent = `Welcome, ${user.displayName}`;
+          document.getElementById('ludvigosStatus').textContent = `Welcome ${user.displayName}! Access granted`;
+        }
+        
+        function resetUI(){
+          document.getElementById('loginBtn').classList.remove("hidden");
+          document.getElementById('profileBtn').classList.add("hidden");
+          document.getElementById('userStatus').textContent = "Sign in to continue";
+          document.getElementById('ludvigosStatus').textContent = "Sign in to access installation guide";
+        }
+        
+        function updateProfileUI(){
+          const xp = userProfile.xp % 100;
+          document.getElementById('profileName').textContent = userProfile.name;
+          document.getElementById('profileEmail').textContent = userProfile.email;
+          document.getElementById('profileAvatar').src = userProfile.avatar;
+          document.getElementById('profileLevel').textContent = `Level ${userProfile.level}`;
+          document.getElementById('profileXP').textContent = `${xp}/100 XP`;
+          document.getElementById('xpProgress').style.width = xp + "%";
+          document.getElementById('xpPercentage').textContent = xp + "%";
+        
+          document.getElementById('giftsClaimed').textContent = userProfile.stats.giftsClaimed;
+          document.getElementById('totalXP').textContent = userProfile.stats.totalXP;
+        
+          const days = Math.max(1,
+            Math.floor((Date.now()-userProfile.createdAt.toDate())/86400000)+1
+          );
+          document.getElementById('daysRegistered').textContent = days;
+        }
+        
+        function updateGiftsUI(){
+          renderGift('gift1', 'gift1Status', "gift1", "Download Skins");
+          renderGift('gift2', 'gift2Status', "gift2", "Apply Theme");
+          renderGift('gift3', 'gift3Status', "gift3", "Download Pack");
+        }
+        
+        function renderGift(elId, statusId, giftId, label){
+          const el = document.getElementById(elId);
+          const status = document.getElementById(statusId);
+          if(userProfile.gifts[giftId]){
+            status.textContent="✅";
+            el.innerHTML=`<span class="text-green-400">Claimed</span>`;
+          }else{
+            status.textContent="🔓";
+            el.innerHTML=`<button class="text-yellow-400 hover:text-yellow-300" onclick="claimGift('${giftId}')">${label}</button>`;
+          }
+        }
+        
+        /* ================= MODALS ================= */
+        document.getElementById('loginBtn').onclick = 
+        document.getElementById('heroLoginBtn').onclick = 
+        document.getElementById('giftsLoginBtn').onclick = 
+        document.getElementById('superlauncherLoginBtn').onclick = 
+        document.getElementById('ludvigosLoginBtn').onclick = 
+        document.getElementById('mobileLoginBtn').onclick = () => document.getElementById('loginModal').classList.remove("hidden");
+        
+        document.getElementById('profileBtn').onclick = () => document.getElementById('profileModal').classList.remove("hidden");
+        document.getElementById('closeLogin').onclick = () => document.getElementById('loginModal').classList.add("hidden");
+        document.getElementById('closeProfile').onclick = () => document.getElementById('profileModal').classList.add("hidden");
+        
+        /* ================= MOBILE MENU ================= */
+        document.getElementById('mobileMenuBtn').onclick = () => {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        };
+        
+        /* ================= COUNTDOWN ================= */
+        const target = new Date("2026-01-01T00:00:00");
+        setInterval(()=>{
+          const diff = target - new Date();
+          if(diff<=0) return;
+        
+          document.getElementById('days').textContent = Math.floor(diff/86400000).toString().padStart(2, '0');
+          document.getElementById('hours').textContent = (Math.floor(diff/3600000)%24).toString().padStart(2, '0');
+          document.getElementById('minutes').textContent = (Math.floor(diff/60000)%60).toString().padStart(2, '0');
+          document.getElementById('seconds').textContent = (Math.floor(diff/1000)%60).toString().padStart(2, '0');
+        },1000);
+        
+        /* ================= SNOWFLAKES ================= */
+        function createSnowflakes() {
+            const container = document.getElementById('snowflakes');
+            for (let i = 0; i < 50; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.style.width = Math.random() * 10 + 5 + 'px';
+                snowflake.style.height = snowflake.style.width;
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                snowflake.style.top = '-20px';
+                snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+                snowflake.style.animationDuration = Math.random() * 5 + 5 + 's';
+                snowflake.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(snowflake);
+                
+                // Animate snowflake
+                snowflake.animate([
+                    { transform: 'translateY(0px) rotate(0deg)', opacity: snowflake.style.opacity },
+                    { transform: `translateY(${window.innerHeight + 20}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: parseFloat(snowflake.style.animationDuration) * 1000,
+                    delay: parseFloat(snowflake.style.animationDelay) * 1000,
+                    iterations: Infinity
+                });
+            }
+        }
+        
+        /* ================= TOAST ================= */
+        function toast(text){
+          const t=document.createElement("div");
+          t.className="fixed top-4 right-4 bg-green-600 px-6 py-3 rounded-xl font-bold z-50";
+          t.textContent=text;
+          document.body.appendChild(t);
+          setTimeout(()=>t.remove(),3000);
+        }
+        
+        /* ================= SMOOTH SCROLL ================= */
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const offsetTop = targetElement.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobileMenu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
         });
-      });
-    
-      userProfile = (await ref.get()).data();
-      updateProfileUI();
-      updateGiftsUI();
-      toast("🎁 Gift claimed +50 XP");
-    }
-    
-    /* ================= UI ================= */
-    function updateUI(user){
-      loginBtn.classList.add("hidden");
-      profileBtn.classList.remove("hidden");
-      userStatus.textContent = `Welcome, ${user.displayName}`;
-    }
-    
-    function resetUI(){
-      loginBtn.classList.remove("hidden");
-      profileBtn.classList.add("hidden");
-      userStatus.textContent = "Sign in to continue";
-    }
-    
-    function updateProfileUI(){
-      const xp = userProfile.xp % 100;
-      profileName.textContent = userProfile.name;
-      profileEmail.textContent = userProfile.email;
-      profileAvatar.src = userProfile.avatar;
-      profileLevel.textContent = `Level ${userProfile.level}`;
-      profileXP.textContent = `${xp}/100 XP`;
-      xpProgress.style.width = xp + "%";
-      xpPercentage.textContent = xp + "%";
-    
-      giftsClaimed.textContent = userProfile.stats.giftsClaimed;
-      totalXP.textContent = userProfile.stats.totalXP;
-    
-      const days = Math.max(1,
-        Math.floor((Date.now()-userProfile.createdAt.toDate())/86400000)+1
-      );
-      daysRegistered.textContent = days;
-    }
-    
-    function updateGiftsUI(){
-      renderGift(gift1, gift1Status, "gift1", "Download Skins");
-      renderGift(gift2, gift2Status, "gift2", "Apply Theme");
-      renderGift(gift3, gift3Status, "gift3", "Download Pack");
-    }
-    
-    function renderGift(el,status,id,label){
-      if(userProfile.gifts[id]){
-        status.textContent="✅";
-        el.innerHTML=`<span class="text-green-400">Claimed</span>`;
-      }else{
-        status.textContent="🔓";
-        el.innerHTML=`<button class="text-yellow-400" onclick="claimGift('${id}')">${label}</button>`;
-      }
-    }
-    
-    /* ================= MODALS ================= */
-    loginBtn.onclick =
-    heroLoginBtn.onclick =
-    giftsLoginBtn.onclick =
-    superlauncherLoginBtn.onclick =
-    ludvigosLoginBtn.onclick = ()=> loginModal.classList.remove("hidden");
-    
-    profileBtn.onclick = ()=> profileModal.classList.remove("hidden");
-    closeLogin.onclick = ()=> loginModal.classList.add("hidden");
-    closeProfile.onclick = ()=> profileModal.classList.add("hidden");
-    
-    /* ================= COUNTDOWN ================= */
-    const target = new Date("2026-01-01T00:00:00");
-    setInterval(()=>{
-      const diff = target - new Date();
-      if(diff<=0) return;
-    
-      days.textContent = Math.floor(diff/86400000);
-      hours.textContent = Math.floor(diff/3600000)%24;
-      minutes.textContent = Math.floor(diff/60000)%60;
-      seconds.textContent = Math.floor(diff/1000)%60;
-    },1000);
-    
-    /* ================= TOAST ================= */
-    function toast(text){
-      const t=document.createElement("div");
-      t.className="fixed top-4 right-4 bg-green-600 px-6 py-3 rounded-xl font-bold";
-      t.textContent=text;
-      document.body.appendChild(t);
-      setTimeout(()=>t.remove(),3000);
-    }
-    
-    console.log("🎄 LudvigPlatform 2026 • PRO READY");
+        
+        /* ================= FORM VALIDATION ================= */
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (typeof grecaptcha !== 'undefined') {
+                const recaptchaResponse = grecaptcha.getResponse();
+                if (!recaptchaResponse) {
+                    e.preventDefault();
+                    alert('Please confirm you are not a robot');
+                    return false;
+                }
+            }
+        });
+        
+        /* ================= INITIALIZE ================= */
+        window.addEventListener('load', () => {
+            createSnowflakes();
+            console.log("🎄 LudvigPlatform 2026 • Happy New Year!");
+        });
     </script>
 </body>
 </html>
