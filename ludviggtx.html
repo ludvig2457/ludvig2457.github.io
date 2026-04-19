@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>LudvigGTX 1000 — Power without limits</title>
-    <!-- Google Fonts для современного вида -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 (бесплатные иконки) -->
+    <title>LudvigGTX 1000 — Революция в мире графики</title>
+    <!-- Google Fonts + Orbitron для футуризма -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -17,412 +16,287 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #050b14;
+            background-color: #010101;
             color: #eef2ff;
-            line-height: 1.5;
-            scroll-behavior: smooth;
+            overflow-x: hidden;
         }
 
-        /* Атмосферный градиентный фон */
-        .gradient-bg {
+        /* Матричный фон */
+        .matrix-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2;
-            background: radial-gradient(circle at 20% 30%, #0a1120, #010101);
+            z-index: -1;
+            background: radial-gradient(circle at 20% 30%, #0a0f1a, #000000);
+            overflow: hidden;
         }
 
-        .gradient-bg::after {
-            content: '';
+        .matrix-bg::before {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image: repeating-linear-gradient(0deg, rgba(0, 255, 255, 0.03) 0px, rgba(0, 255, 255, 0.03) 1px, transparent 1px, transparent 12px),
+                              repeating-linear-gradient(90deg, rgba(0, 255, 255, 0.02) 0px, rgba(0, 255, 255, 0.02) 1px, transparent 1px, transparent 12px);
+            animation: matrixMove 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes matrixMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Глитч-эффект для заголовков */
+        .glitch {
+            font-family: 'Orbitron', monospace;
+            font-size: 4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75), -0.05em -0.025em 0 rgba(0, 255, 255, 0.75);
+            animation: glitchShake 0.3s infinite;
+        }
+
+        @keyframes glitchShake {
+            0% { transform: translate(0); }
+            20% { transform: translate(-1px, 1px); }
+            40% { transform: translate(-1px, -1px); }
+            60% { transform: translate(1px, 1px); }
+            80% { transform: translate(1px, -1px); }
+            100% { transform: translate(0); }
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(45deg, rgba(0, 255, 255, 0.02) 0px, rgba(0, 255, 255, 0.02) 2px, transparent 2px, transparent 8px);
-            pointer-events: none;
+            background: #010101;
+        }
+
+        .glitch::before {
+            animation: glitch-1 0.4s linear infinite reverse;
+            color: #ff00c1;
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-2 0.3s linear infinite;
+            color: #00fff9;
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0% { clip-path: inset(20% 0 30% 0); transform: translate(-2px, -2px); }
+            100% { clip-path: inset(80% 0 5% 0); transform: translate(2px, 2px); }
+        }
+
+        @keyframes glitch-2 {
+            0% { clip-path: inset(60% 0 10% 0); transform: translate(2px, 2px); }
+            100% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, -2px); }
         }
 
         .container {
-            max-width: 1280px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem 1.5rem;
+            padding: 2rem;
             position: relative;
             z-index: 2;
         }
 
-        /* Хедер с логотипом */
-        .logo {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #fff, #4af0ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: inline-block;
+        /* 3D-карточка для GPU */
+        .gpu-3d {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+            cursor: pointer;
         }
 
-        .logo span {
-            color: #4af0ff;
-            background: none;
-            -webkit-background-clip: unset;
-            background-clip: unset;
+        .gpu-3d:hover {
+            transform: rotateY(10deg) rotateX(5deg);
         }
 
-        .badge {
-            background: rgba(74, 240, 255, 0.12);
-            border: 1px solid rgba(74, 240, 255, 0.3);
-            border-radius: 100px;
-            padding: 0.3rem 1rem;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #4af0ff;
-            display: inline-block;
-            backdrop-filter: blur(4px);
-        }
-
-        /* Герой-секция */
-        .hero {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 3rem;
-            margin: 3rem 0 5rem 0;
-        }
-
-        .hero-content {
-            flex: 1;
-        }
-
-        .hero-visual {
-            flex: 1;
-            text-align: center;
-        }
-
-        .gpu-mockup {
+        .gpu-card {
             background: linear-gradient(145deg, #111a28, #03070f);
             border-radius: 32px;
-            padding: 2rem 1rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(74, 240, 255, 0.2);
-            position: relative;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(74, 240, 255, 0.2);
+            transition: 0.3s;
         }
 
-        .gpu-mockup i {
-            font-size: 7rem;
+        .gpu-card i {
+            font-size: 6rem;
             color: #4af0ff;
-            filter: drop-shadow(0 0 12px rgba(74,240,255,0.5));
+            filter: drop-shadow(0 0 12px #4af0ff);
         }
 
-        .gpu-mockup h3 {
-            margin-top: 1rem;
-            font-weight: 700;
-            font-size: 1.5rem;
+        /* Сравнение с ползунком */
+        .slider-compare {
+            background: #0b1018;
+            border-radius: 32px;
+            padding: 1.5rem;
+            margin: 2rem 0;
         }
 
-        /* Кнопки */
+        .range-slider {
+            width: 100%;
+            margin: 1rem 0;
+            accent-color: #4af0ff;
+        }
+
+        /* Кнопки и формы */
         .btn-primary {
-            display: inline-block;
             background: linear-gradient(95deg, #4af0ff, #1a6eff);
-            border: none;
-            padding: 1rem 2.5rem;
+            padding: 1rem 2rem;
             border-radius: 60px;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #050b14;
+            border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(74,240,255,0.3);
+            transition: all 0.3s;
+            display: inline-block;
             text-decoration: none;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 24px rgba(74,240,255,0.4);
-            background: linear-gradient(95deg, #6af5ff, #2f7aff);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #4af0ff;
-            padding: 0.8rem 2rem;
-            border-radius: 60px;
-            color: #4af0ff;
-            font-weight: 600;
-            transition: 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-outline:hover {
-            background: rgba(74, 240, 255, 0.1);
-            border-color: #fff;
-            color: #fff;
-        }
-
-        /* Сетка характеристик */
-        .specs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin: 4rem 0;
-        }
-
-        .spec-card {
-            background: rgba(10, 20, 35, 0.65);
-            backdrop-filter: blur(8px);
-            border-radius: 32px;
-            padding: 1.8rem;
-            border: 1px solid rgba(74, 240, 255, 0.2);
-            transition: all 0.2s;
-        }
-
-        .spec-card i {
-            font-size: 2.2rem;
-            color: #4af0ff;
-            margin-bottom: 1rem;
-        }
-
-        .spec-card h3 {
-            font-size: 1.7rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-
-        .spec-card p {
-            color: #b9c7d9;
-            font-size: 0.95rem;
-        }
-
-        /* Таблица сравнения */
-        .compare-section {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 48px;
-            padding: 2rem;
-            margin: 4rem 0;
-            border: 1px solid rgba(74, 240, 255, 0.2);
-        }
-
-        .compare-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .feature {
-            font-weight: 600;
-            width: 35%;
-        }
-
-        .ludvig {
-            width: 30%;
-            color: #4af0ff;
-            font-weight: 700;
-        }
-
-        .competitor {
-            width: 30%;
-            color: #ff8866;
-        }
-
-        /* Форма */
-        .form-card {
-            background: linear-gradient(145deg, #0e1727, #03070f);
-            border-radius: 48px;
-            padding: 2rem;
-            text-align: center;
-            margin: 3rem 0;
-            border: 1px solid rgba(74,240,255,0.3);
-        }
-
-        .input-group {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            transform: scale(1.02);
+            box-shadow: 0 0 15px #4af0ff;
         }
 
         .input-group input {
-            flex: 1;
-            min-width: 240px;
-            padding: 1rem 1.5rem;
+            padding: 1rem;
             border-radius: 60px;
             border: none;
             background: #1e2a3a;
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-            transition: 0.2s;
-        }
-
-        .input-group input:focus {
-            background: #2a3a4e;
-            box-shadow: 0 0 0 2px #4af0ff;
-        }
-
-        .toast-msg {
-            margin-top: 1rem;
-            font-size: 0.85rem;
-            color: #4af0ff;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            font-size: 0.8rem;
-            color: #6c86a3;
-            border-top: 1px solid rgba(74,240,255,0.1);
+            color: white;
+            width: 250px;
         }
 
         @media (max-width: 768px) {
-            .hero {
-                flex-direction: column;
-                text-align: center;
-            }
-            .compare-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-            .feature, .ludvig, .competitor {
-                width: 100%;
-            }
+            .glitch { font-size: 2.2rem; }
+            .container { padding: 1rem; }
         }
     </style>
 </head>
 <body>
-<div class="gradient-bg"></div>
+<div class="matrix-bg"></div>
 
 <div class="container">
     <!-- Шапка -->
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <div class="logo">LUDVIG<span>GTX</span> 1000</div>
-        <div class="badge"><i class="fas fa-microchip"></i>  Революция начинается</div>
+    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 3rem;">
+        <div style="font-family: 'Orbitron'; font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #fff, #4af0ff); -webkit-background-clip: text; background-clip: text; color: transparent;">LUDVIG<span style="color:#4af0ff;">GTX</span> 1000</div>
+        <div style="background: rgba(74,240,255,0.1); border-radius: 40px; padding: 0.5rem 1rem; border: 1px solid #4af0ff;">⚡ INNOVATION 2026</div>
     </div>
 
-    <!-- Hero -->
-    <div class="hero">
-        <div class="hero-content">
-            <div class="badge" style="margin-bottom: 1rem;"><i class="fas fa-bolt"></i>  Народная карта 2026</div>
-            <h1 style="font-size: 3.3rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem;">Power without limits.<br>Works anywhere.</h1>
-            <p style="font-size: 1.2rem; color: #b9c7d9; max-width: 550px; margin-bottom: 2rem;">8 ГБ GDDR6X, технология HBCC (расширение памяти за счёт ОЗУ) и интеллектуальный драйвер LudvigBoost 1.0. Не меняй процессор — меняй будущее.</p>
-            <a href="#notify" class="btn-primary"><i class="fas fa-bell"></i>  Узнать первым о старте</a>
-            <a href="#specs" class="btn-outline" style="margin-left: 1rem;"><i class="fas fa-chart-line"></i>  Характеристики</a>
+    <!-- Hero с 3D -->
+    <div style="display: flex; flex-wrap: wrap; gap: 3rem; justify-content: space-between; align-items: center; margin: 3rem 0;">
+        <div style="flex: 1;">
+            <div class="glitch" data-text="POWER WITHOUT LIMITS">POWER WITHOUT LIMITS</div>
+            <p style="font-size: 1.2rem; margin: 1rem 0;">8GB GDDR6X | HBCC | LudvigAI Boost | AnyCore | SSD Cache</p>
+            <p style="color: #b0c4de;">Работает на любом ПК. Не требует апгрейда процессора. Уничтожает миф о дорогих сборках.</p>
+            <div style="margin-top: 2rem;">
+                <a href="#notify" class="btn-primary"><i class="fas fa-bell"></i> ЗАХВАТИТЬ ПЕРВЫМ</a>
+                <a href="#specs" style="margin-left: 1rem; color: #4af0ff;">Характеристики →</a>
+            </div>
         </div>
-        <div class="hero-visual">
-            <div class="gpu-mockup">
+        <div style="flex: 1; text-align: center;" class="gpu-3d">
+            <div class="gpu-card">
                 <i class="fas fa-microchip"></i>
-                <h3>LUDVIGGTX 1000</h3>
-                <p style="margin-top: 0.5rem; font-size: 0.8rem;">PCIe 4.0 | 8GB GDDR6X</p>
-                <div style="margin-top: 1rem;"><span class="badge">HBCC Ready</span>  <span class="badge">LudvigBoost 1.0</span></div>
+                <h3 style="margin-top: 1rem;">LUDVIGGTX 1000</h3>
+                <p style="font-size: 0.8rem;">PCIe 4.0 | 8GB GDDR6X | 150W</p>
+                <div style="margin-top: 1rem;"><span style="background: #4af0ff20; padding: 0.2rem 0.8rem; border-radius: 20px;">HBCC</span> <span style="background: #4af0ff20; padding: 0.2rem 0.8rem; border-radius: 20px;">LudvigBoost</span></div>
             </div>
         </div>
     </div>
 
-    <!-- Характеристики -->
-    <div id="specs">
-        <h2 style="font-size: 2rem; text-align: center; margin-bottom: 1rem;">Технический паспорт</h2>
-        <p style="text-align: center; max-width: 700px; margin: 0 auto 2rem auto; color: #b9c7d9;">Создана для геймеров, инженеров и тех, кто устал переплачивать.</p>
-        <div class="specs-grid">
-            <div class="spec-card"><i class="fas fa-memory"></i><h3>8 ГБ GDDR6X</h3><p>Оптимальный объём для 1080p и 1440p. Никакой переплаты за лишние гигабайты.</p></div>
-            <div class="spec-card"><i class="fas fa-expand-arrows-alt"></i><h3>HBCC</h3><p>High Bandwidth Cache Controller. Использует оперативную память ПК как дополнительную видеопамять. Игра не вылетит при нехватке VRAM.</p></div>
-            <div class="spec-card"><i class="fas fa-tachometer-alt"></i><h3>LudvigBoost 1.0</h3><p>Интеллектуальный драйвер, который балансирует нагрузку между GPU и CPU. Работает на любом процессоре.</p></div>
-            <div class="spec-card"><i class="fas fa-plug"></i><h3>Универсальный интерфейс</h3><p>PCIe 4.0 (совместим с 3.0). Работает в любой материнской плате последних 7–10 лет.</p></div>
-            <div class="spec-card"><i class="fas fa-charging-station"></i><h3>Энергопотребление</h3><p>Всего 150 Вт. Не требует мощного блока питания.</p></div>
-            <div class="spec-card"><i class="fas fa-gamepad"></i><h3>Полная совместимость</h3><p>DirectX 12 Ultimate, Vulkan, OpenGL 4.6. Готово к GTA VI и другим блокбастерам.</p></div>
+    <!-- Убийственное сравнение с ползунком -->
+    <div class="slider-compare" id="specs">
+        <h2 style="text-align: center; margin-bottom: 1rem;">LUDVIGGTX 1000 vs RTX 5060</h2>
+        <div style="display: flex; justify-content: space-between;">
+            <span>Ludvig мощнее на <span id="powerValue">0</span>%</span>
+            <span>RTX 5060</span>
+        </div>
+        <input type="range" min="0" max="200" value="187" class="range-slider" id="powerSlider">
+        <div style="display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; margin-top: 2rem;">
+            <div><i class="fas fa-check-circle" style="color:#4af0ff;"></i> Цена: $249</div>
+            <div><i class="fas fa-times-circle" style="color:#ff8866;"></i> Цена: $329</div>
+            <div><i class="fas fa-check-circle" style="color:#4af0ff;"></i> HBCC (ОЗУ как VRAM)</div>
+            <div><i class="fas fa-times-circle" style="color:#ff8866;"></i> Нет HBCC</div>
+            <div><i class="fas fa-check-circle" style="color:#4af0ff;"></i> Любой процессор</div>
+            <div><i class="fas fa-times-circle" style="color:#ff8866;"></i> Требует новый CPU</div>
         </div>
     </div>
 
-    <!-- Сравнение с RTX 5060 -->
-    <div class="compare-section">
-        <h2 style="font-size: 1.8rem; margin-bottom: 1rem;"><i class="fas fa-balance-scale"></i>  LudvigGTX 1000 vs RTX 5060</h2>
-        <div class="compare-row"><div class="feature">Цена</div><div class="ludvig">~249$</div><div class="competitor">~329$</div></div>
-        <div class="compare-row"><div class="feature">Видеопамять</div><div class="ludvig">8 ГБ GDDR6X + HBCC</div><div class="competitor">8 ГБ GDDR6</div></div>
-        <div class="compare-row"><div class="feature">Расширение памяти за счёт ОЗУ</div><div class="ludvig"><i class="fas fa-check-circle"></i>  Да (HBCC)</div><div class="competitor"><i class="fas fa-times-circle"></i>  Нет</div></div>
-        <div class="compare-row"><div class="feature">Адаптивный драйвер для старых CPU</div><div class="ludvig"><i class="fas fa-check-circle"></i>  LudvigBoost 1.0</div><div class="competitor"><i class="fas fa-times-circle"></i>  Нет</div></div>
-        <div class="compare-row"><div class="feature">Работа на старых материнских платах</div><div class="ludvig"><i class="fas fa-check-circle"></i>  Полная</div><div class="competitor">Ограничена</div></div>
-        <div class="compare-row"><div class="feature">Гарантия и поддержка</div><div class="ludvig">3 года</div><div class="competitor">2 года</div></div>
-        <p style="margin-top: 1.5rem; font-size: 0.9rem; text-align: center;">*Сравнение с текущим рыночным флагманом. Данные могут отличаться, но LudvigGTX 1000 создана, чтобы побеждать.</p>
+    <!-- Технологии будущего -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 2rem; margin: 4rem 0;">
+        <div style="background: #0b1018; border-radius: 28px; padding: 1.5rem;"><i class="fas fa-microchip" style="font-size: 2rem; color: #4af0ff;"></i><h3>HBCC</h3><p>Использует оперативную память как дополнительную видеопамять. Игры не вылетают при нехватке VRAM.</p></div>
+        <div style="background: #0b1018; border-radius: 28px; padding: 1.5rem;"><i class="fas fa-brain" style="font-size: 2rem; color: #4af0ff;"></i><h3>Ludvig AI Boost</h3><p>Нейросеть в драйвере предсказывает кадры и удваивает FPS на старых процессорах.</p></div>
+        <div style="background: #0b1018; border-radius: 28px; padding: 1.5rem;"><i class="fas fa-database" style="font-size: 2rem; color: #4af0ff;"></i><h3>SSD Cache</h3><p>Используй быстрый NVMe как видеопамять. Объём — до 256 ГБ.</p></div>
+        <div style="background: #0b1018; border-radius: 28px; padding: 1.5rem;"><i class="fas fa-charging-station" style="font-size: 2rem; color: #4af0ff;"></i><h3>Любая материнская плата</h3><p>PCIe 3.0/4.0. Старые ПК получают новую жизнь.</p></div>
     </div>
 
-    <!-- Форма Notify Me -->
-    <div id="notify" class="form-card">
-        <i class="fas fa-envelope" style="font-size: 2rem; color: #4af0ff;"></i>
-        <h2 style="font-size: 1.8rem; margin: 0.5rem 0;">Будь в курсе</h2>
-        <p style="max-width: 500px; margin: 0 auto;">Оставь email, и мы сообщим первым, когда LudvigGTX 1000 появится в продаже. Никакого спама, только новости о старте.</p>
-        <div class="input-group">
-            <input type="email" id="emailInput" placeholder="Твой email" autocomplete="email">
-            <button class="btn-primary" id="notifyBtn"><i class="fas fa-paper-plane"></i>  Notify me</button>
+    <!-- Форма Notify -->
+    <div id="notify" style="background: linear-gradient(145deg, #0e1727, #03070f); border-radius: 48px; padding: 2rem; text-align: center; margin: 2rem 0;">
+        <i class="fas fa-envelope" style="font-size: 2rem; color:#4af0ff;"></i>
+        <h2>Не дай NVIDIA обмануть себя</h2>
+        <p>Оставь email — получи ранний доступ к LudvigGTX 1000 и скидку 15% при старте продаж.</p>
+        <div class="input-group" style="margin-top: 1rem;">
+            <input type="email" id="emailInput" placeholder="Твой email">
+            <button class="btn-primary" id="notifyBtn"><i class="fas fa-paper-plane"></i> Уведомить меня</button>
         </div>
-        <div class="toast-msg" id="formMessage"></div>
-        <p style="font-size: 0.7rem; margin-top: 1.5rem;"><i class="fas fa-lock"></i>  Мы никому не передадим твои данные. Только Ludvig.</p>
+        <div id="formMessage" style="margin-top: 1rem; color:#4af0ff;"></div>
     </div>
 
-    <footer>
+    <footer style="text-align: center; padding: 2rem; font-size: 0.8rem; border-top: 1px solid rgba(74,240,255,0.2);">
         <p>© 2026 Ludvig Technologies. Сделано для геймеров, инженеров и победителей.</p>
-        <p style="margin-top: 0.5rem;"><i class="fas fa-microchip"></i>  LudvigGTX 1000 — «Мощность без границ. Работает везде».</p>
+        <p>LudvigGTX 1000 — «Мощность без границ. Работает везде».</p>
     </footer>
 </div>
 
 <script>
-    (function() {
-        const notifyBtn = document.getElementById('notifyBtn');
-        const emailInput = document.getElementById('emailInput');
-        const msgDiv = document.getElementById('formMessage');
+    // Ползунок "насколько Ludvig мощнее"
+    const slider = document.getElementById('powerSlider');
+    const powerSpan = document.getElementById('powerValue');
+    slider.addEventListener('input', () => {
+        powerSpan.innerText = slider.value;
+    });
+    powerSpan.innerText = slider.value;
 
-        function showMessage(text, isError = false) {
-            msgDiv.innerHTML = text;
-            msgDiv.style.color = isError ? '#ff8866' : '#4af0ff';
-            setTimeout(() => {
-                if (msgDiv.innerHTML === text) msgDiv.innerHTML = '';
-            }, 4000);
+    // Форма подписки
+    const notifyBtn = document.getElementById('notifyBtn');
+    const emailInput = document.getElementById('emailInput');
+    const formMsg = document.getElementById('formMessage');
+
+    notifyBtn.addEventListener('click', () => {
+        const email = emailInput.value.trim();
+        if (!email || !email.includes('@')) {
+            formMsg.innerText = '❌ Введи нормальную почту, капитан.';
+            formMsg.style.color = '#ff8866';
+            setTimeout(() => formMsg.innerText = '', 3000);
+            return;
         }
-
-        function isValidEmail(email) {
-            return /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/.test(email);
-        }
-
-        function saveToLocalStorage(email) {
-            try {
-                let subscribers = JSON.parse(localStorage.getItem('ludvig_subscribers') || '[]');
-                if (!subscribers.includes(email)) {
-                    subscribers.push(email);
-                    localStorage.setItem('ludvig_subscribers', JSON.stringify(subscribers));
-                }
-                return true;
-            } catch(e) { return false; }
-        }
-
-        notifyBtn.addEventListener('click', () => {
-            const email = emailInput.value.trim();
-            if (!email) {
-                showMessage('❄️ Введи email, чтобы не пропустить старт!', true);
-                return;
-            }
-            if (!isValidEmail(email)) {
-                showMessage('⚠️ Почта выглядит странно. Проверь формат (example@domain.com).', true);
-                return;
-            }
-
-            // Имитация отправки на сервер / сохранение в localStorage.
-            const saved = saveToLocalStorage(email);
-            if (saved) {
-                showMessage(`✅ ${email} — ты в списке! Первым узнаешь о релизе LudvigGTX 1000.`, false);
-                emailInput.value = '';
-                // Здесь в будущем можно добавить реальный AJAX-запрос к бэкенду
-                console.log('[Ludvig] New subscriber:', email);
-            } else {
-                showMessage('❌ Ошибка при подписке. Попробуй ещё раз или зайди позже.', true);
-            }
-        });
-    })();
+        // сохраняем в localStorage
+        let subs = JSON.parse(localStorage.getItem('ludvig_subs') || '[]');
+        if (!subs.includes(email)) subs.push(email);
+        localStorage.setItem('ludvig_subs', JSON.stringify(subs));
+        formMsg.innerText = `✅ ${email}, ты в элитном списке. Жди новостей.`;
+        formMsg.style.color = '#4af0ff';
+        emailInput.value = '';
+        setTimeout(() => formMsg.innerText = '', 5000);
+        console.log('Ludvig subscriber:', email);
+    });
 </script>
 </body>
 </html>
