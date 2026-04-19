@@ -2,327 +2,266 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>LUDVIG GTX 1000 // TERMINAL</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LudvigGTX 1000 — характеристики и предзаказ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
         }
 
         body {
-            background: #000000;
-            font-family: 'Space Grotesk', monospace;
-            overflow-x: hidden;
-            color: #0f0;
-        }
-
-        /* Киберпанк-сетка */
-        .grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* Эффект сканирования */
-        .scan-line {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, transparent 0%, rgba(0, 255, 255, 0.03) 50%, transparent 100%);
-            animation: scan 8s linear infinite;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        @keyframes scan {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
+            font-family: 'Inter', sans-serif;
+            background: #0d0f12;
+            color: #eef2ff;
+            line-height: 1.5;
         }
 
         .container {
-            position: relative;
-            z-index: 10;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Шапка */
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #3b82f6;
+        }
+
+        /* Сетка характеристик */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .spec-card {
+            background: #1a1e26;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid #2a2f3a;
+        }
+
+        .spec-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .spec-card p {
+            color: #9ca3af;
+            font-size: 0.95rem;
+        }
+
+        .spec-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Блок "Что это даёт" */
+        .benefits {
+            background: #1a1e26;
+            border-radius: 1.5rem;
             padding: 2rem;
+            margin: 2rem 0;
         }
 
-        /* Глитч-текст */
-        .glitch-text {
-            font-size: 5rem;
-            font-weight: 900;
-            text-transform: uppercase;
+        .benefits ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .benefits li {
+            margin: 0.75rem 0;
+            padding-left: 1.5rem;
             position: relative;
-            text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.4), -0.05em -0.025em 0 rgba(0, 255, 255, 0.4);
-            animation: glitch 0.8s infinite;
-            letter-spacing: -2px;
         }
 
-        @keyframes glitch {
-            0% { transform: skew(0deg, 0deg); }
-            95% { transform: skew(0deg, 0deg); }
-            96% { transform: skew(5deg, 2deg); text-shadow: 0.1em 0 0 red; }
-            97% { transform: skew(-5deg, -2deg); text-shadow: -0.1em 0 cyan; }
-            100% { transform: skew(0deg, 0deg); }
+        .benefits li::before {
+            content: "•";
+            color: #3b82f6;
+            font-size: 1.2rem;
+            position: absolute;
+            left: 0;
         }
 
-        /* 3D-карточка с вращением */
-        .gpu-container {
-            perspective: 1000px;
-            cursor: pointer;
-        }
-
-        .gpu-card {
-            background: linear-gradient(145deg, #0a0f1a, #010101);
-            border-radius: 32px;
+        /* Форма */
+        .form-box {
+            background: #1a1e26;
+            border-radius: 1.5rem;
             padding: 2rem;
             text-align: center;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            transform-style: preserve-3d;
-            transition: transform 0.4s;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            margin: 3rem 0;
         }
 
-        .gpu-container:hover .gpu-card {
-            transform: rotateY(10deg) rotateX(5deg) scale(1.02);
-        }
-
-        /* Ползунок уничтожения */
-        .destroy-slider {
+        .form-box input {
             width: 100%;
-            background: #0a0f1a;
-            border-radius: 20px;
-            padding: 1rem;
+            max-width: 320px;
+            padding: 0.9rem 1rem;
+            border-radius: 2rem;
+            border: none;
+            background: #2a2f3a;
+            color: #fff;
+            font-size: 1rem;
+            margin-top: 1rem;
         }
 
-        input[type="range"] {
-            width: 100%;
-            accent-color: #0f0;
-            cursor: pointer;
-        }
-
-        /* Кнопка взлома */
-        .hack-btn {
-            background: none;
-            border: 2px solid #0f0;
-            color: #0f0;
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            font-weight: bold;
+        .form-box button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 1rem;
             cursor: pointer;
             transition: 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
         }
 
-        .hack-btn:hover {
-            background: #0f0;
-            color: black;
-            box-shadow: 0 0 20px #0f0;
-            transform: scale(1.02);
+        .form-box button:hover {
+            background: #2563eb;
         }
 
-        /* Терминал */
-        .terminal {
-            background: #050505;
-            border: 1px solid #0f0;
-            border-radius: 12px;
-            padding: 1rem;
-            font-family: monospace;
+        footer {
+            text-align: center;
+            padding: 2rem;
             font-size: 0.8rem;
+            color: #6b7280;
+            border-top: 1px solid #2a2f3a;
         }
 
-        .blink {
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        @media (max-width: 768px) {
-            .glitch-text { font-size: 2rem; }
-            .container { padding: 1rem; }
+        @media (max-width: 640px) {
+            .logo { font-size: 1.4rem; }
+            .spec-card .value { font-size: 1.4rem; }
         }
     </style>
 </head>
 <body>
-<div class="grid-overlay"></div>
-<div class="scan-line"></div>
 
 <div class="container">
-    <!-- Статус-бар -->
-    <div style="display: flex; justify-content: space-between; margin-bottom: 2rem; font-size: 0.7rem; color: #0f0; border-bottom: 1px solid #0f0; padding-bottom: 0.5rem;">
-        <span>> LUDVIG_OS // TERMINAL v.4.2.0</span>
-        <span>> ONLINE // GPU STATUS: [ACTIVE]</span>
+    <!-- Логотип -->
+    <div class="logo">
+        LUDVIG<span>GTX</span> 1000
     </div>
 
-    <!-- Главный блок -->
-    <div style="display: flex; flex-wrap: wrap; gap: 3rem; align-items: center; margin: 3rem 0;">
-        <div style="flex: 1.5;">
-            <div class="glitch-text">LUDVIG GTX 1000</div>
-            <div style="margin: 1rem 0;">
-                <span style="background: #0f0; color: black; padding: 0.2rem 0.8rem; border-radius: 20px; font-weight: bold;">8GB GDDR6X</span>
-                <span style="background: #0f0; color: black; padding: 0.2rem 0.8rem; border-radius: 20px; font-weight: bold;">HBCC</span>
-                <span style="background: #0f0; color: black; padding: 0.2rem 0.8rem; border-radius: 20px; font-weight: bold;">AI BOOST</span>
-                <span style="background: #0f0; color: black; padding: 0.2rem 0.8rem; border-radius: 20px; font-weight: bold;">SSD CACHE</span>
-            </div>
-            <p style="font-size: 1.2rem; margin: 1rem 0; color: #aaa;">"Работает на любом процессоре. Превращает старый ПК в монстра."</p>
-            <div style="margin: 2rem 0;">
-                <button class="hack-btn" id="hackBtn">⟳ ВЗЛОМАТЬ РЫНОК</button>
-            </div>
-            <div class="terminal" id="terminal">
-                > Инициализация LudvigGTX 1000...<br>
-                > HBCC активирован. VRAM + системная память.<br>
-                > Драйвер LudvigBoost 1.0 загружен.<br>
-                > RTX 5060 обнаружена. Начинаю уничтожение...<br>
-                > <span id="typingLine"></span><span class="blink">_</span>
-            </div>
-        </div>
+    <!-- Заголовок -->
+    <div style="margin: 2rem 0 1rem 0;">
+        <h1 style="font-size: 2.5rem; font-weight: 700;">Видеокарта <br>для реальных задач</h1>
+        <p style="font-size: 1.1rem; color: #9ca3af; margin-top: 0.5rem;">8 ГБ GDDR6X. HBCC. LudvigBoost 1.0.</p>
+    </div>
 
-        <div style="flex: 1;" class="gpu-container">
-            <div class="gpu-card">
-                <svg width="150" height="150" viewBox="0 0 100 100" style="margin: 0 auto; display: block; filter: drop-shadow(0 0 10px #0f0);">
-                    <rect x="20" y="30" width="60" height="40" rx="8" fill="#0a0f1a" stroke="#0f0" stroke-width="2"/>
-                    <circle cx="50" cy="50" r="10" fill="#0f0" />
-                    <line x1="35" y1="70" x2="65" y2="70" stroke="#0f0" stroke-width="2"/>
-                    <line x1="35" y1="75" x2="65" y2="75" stroke="#0f0" stroke-width="2"/>
-                </svg>
-                <h3 style="margin-top: 1rem;">LUDVIG GTX 1000</h3>
-                <p style="font-size: 0.7rem;">PCIe 4.0 | 150W TDP</p>
-                <div style="margin-top: 1rem;">🔴 АКТИВНА</div>
-            </div>
+    <!-- Характеристики -->
+    <div class="specs-grid">
+        <div class="spec-card">
+            <div class="value">8 ГБ</div>
+            <h3>GDDR6X</h3>
+            <p>Видеопамять с высокой пропускной способностью. Подходит для современных игр в 1080p и 1440p.</p>
+        </div>
+        <div class="spec-card">
+            <div class="value">HBCC</div>
+            <h3>Расширение памяти</h3>
+            <p>Технология, позволяющая использовать системную оперативную память как дополнительную видеопамять.</p>
+        </div>
+        <div class="spec-card">
+            <div class="value">LudvigBoost 1.0</div>
+            <h3>Адаптивный драйвер</h3>
+            <p>Оптимизирует нагрузку между видеокартой и процессором. Работает на разных конфигурациях ПК.</p>
+        </div>
+        <div class="spec-card">
+            <div class="value">PCIe 4.0</div>
+            <h3>Совместимость</h3>
+            <p>Подходит для материнских плат с разъёмами PCIe 3.0 и 4.0.</p>
         </div>
     </div>
 
-    <!-- Сравнение с уничтожением -->
-    <div class="destroy-slider" style="margin: 3rem 0;">
-        <h2 style="margin-bottom: 1rem;">⚔️ LUDVIG GTX 1000 VS RTX 5060</h2>
-        <div style="display: flex; justify-content: space-between;">
-            <span>💀 LUDVIG МОЩНЕЕ НА <span id="powerValue">187</span>%</span>
-            <span>🐌 RTX 5060 УНИЧТОЖЕНА</span>
-        </div>
-        <input type="range" min="0" max="300" value="187" id="destroySlider" style="margin: 1rem 0;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
-            <div><span style="color: #0f0;">✅ Цена: $249</span></div>
-            <div><span style="color: red;">❌ Цена: $329</span></div>
-            <div><span style="color: #0f0;">✅ HBCC (ОЗУ как VRAM)</span></div>
-            <div><span style="color: red;">❌ Нет HBCC</span></div>
-            <div><span style="color: #0f0;">✅ Любой процессор</span></div>
-            <div><span style="color: red;">❌ Требует новый CPU</span></div>
-            <div><span style="color: #0f0;">✅ SSD Cache (до 256 ГБ)</span></div>
-            <div><span style="color: red;">❌ Только GDDR6</span></div>
-        </div>
+    <!-- Что это даёт пользователю -->
+    <div class="benefits">
+        <h2 style="font-size: 1.5rem;">Что это даёт в играх и работе</h2>
+        <ul>
+            <li>Стабильная работа в GTA Online, Cyberpunk 2077, Call of Duty и других проектах.</li>
+            <li>HBCC помогает избежать вылетов при нехватке видеопамяти.</li>
+            <li>Драйвер LudvigBoost снижает нагрузку на слабые процессоры.</li>
+            <li>Энергопотребление — 150 Вт. Не требует замены блока питания.</li>
+            <li>Поддержка DirectX 12 Ultimate, Vulkan, OpenGL 4.6.</li>
+        </ul>
     </div>
 
-    <!-- Технологии (убийцы NVIDIA) -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1.5rem; margin: 4rem 0;">
-        <div style="background: #0a0f1a; border-radius: 20px; padding: 1.5rem; border-left: 4px solid #0f0;">
-            <div style="font-size: 2rem;">🧠</div>
-            <h3>LUDVIG AI BOOST</h3>
-            <p>Нейросеть в драйвере генерирует +100% FPS на старых процессорах.</p>
-        </div>
-        <div style="background: #0a0f1a; border-radius: 20px; padding: 1.5rem; border-left: 4px solid #0f0;">
-            <div style="font-size: 2rem;">💾</div>
-            <h3>SSD CACHE</h3>
-            <p>Используй NVMe как видеопамять. Объём — терабайты.</p>
-        </div>
-        <div style="background: #0a0f1a; border-radius: 20px; padding: 1.5rem; border-left: 4px solid #0f0;">
-            <div style="font-size: 2rem;">🔄</div>
-            <h3>ANY CORE</h3>
-            <p>Задействует встроенную графику процессора для параллельных задач.</p>
-        </div>
+    <!-- Технические детали (сухо и по делу) -->
+    <div style="background: #11151c; border-radius: 1.5rem; padding: 1.5rem; margin: 2rem 0;">
+        <h3 style="margin-bottom: 1rem;">Технические характеристики</h3>
+        <table style="width: 100%; text-align: left; border-collapse: collapse; font-size: 0.9rem;">
+            <tr style="border-bottom: 1px solid #2a2f3a;"><td style="padding: 0.7rem 0;">Видеопамять</td><td style="padding: 0.7rem 0;">8 ГБ GDDR6X</td></tr>
+            <tr style="border-bottom: 1px solid #2a2f3a;"><td style="padding: 0.7rem 0;">Шина памяти</td><td style="padding: 0.7rem 0;">256‑бит</td></tr>
+            <tr style="border-bottom: 1px solid #2a2f3a;"><td style="padding: 0.7rem 0;">Поддержка HBCC</td><td style="padding: 0.7rem 0;">Да</td></tr>
+            <tr style="border-bottom: 1px solid #2a2f3a;"><td style="padding: 0.7rem 0;">LudvigBoost</td><td style="padding: 0.7rem 0;">Версия 1.0</td></tr>
+            <tr style="border-bottom: 1px solid #2a2f3a;"><td style="padding: 0.7rem 0;">Интерфейс</td><td style="padding: 0.7rem 0;">PCIe 4.0 x16</td></tr>
+            <tr><td style="padding: 0.7rem 0;">Рекомендуемый блок питания</td><td style="padding: 0.7rem 0;">500 Вт</td></tr>
+        </table>
     </div>
 
-    <!-- Форма захвата рынка -->
-    <div style="background: #050505; border: 1px solid #0f0; border-radius: 32px; padding: 2rem; text-align: center; margin: 3rem 0;">
-        <h2>⚡ НЕ ДАЙ NVIDIA ОБМАНУТЬ СЕБЯ</h2>
-        <p style="margin: 1rem 0;">Оставь почту — получи доступ к закрытому предзаказу и скидку 20%.</p>
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <input type="email" id="emailField" placeholder="ТВОЙ EMAIL" style="padding: 1rem; background: black; border: 1px solid #0f0; color: #0f0; width: 280px;">
-            <button id="submitBtn" style="background: #0f0; border: none; padding: 1rem 2rem; font-weight: bold; cursor: pointer;">ЗАХВАТИТЬ РЫНОК</button>
+    <!-- Форма предзаказа -->
+    <div class="form-box">
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Узнать о старте продаж</h2>
+        <p style="color: #9ca3af;">Оставьте email. Никакого спама, только одно письмо при старте.</p>
+        <div>
+            <input type="email" id="emailInput" placeholder="your@email.com">
         </div>
-        <div id="msg" style="margin-top: 1rem; color: #0f0;"></div>
+        <button id="notifyBtn">Уведомить меня</button>
+        <div id="formMessage" style="margin-top: 1rem; font-size: 0.9rem;"></div>
     </div>
 
-    <footer style="text-align: center; padding: 2rem; font-size: 0.7rem; color: #0f0; border-top: 1px solid #0f0;">
-        <p>© 2026 LUDVIG TECHNOLOGIES. NVIDIA ОБОСРАНА КИРПИЧАМИ.</p>
+    <footer>
+        <p>Ludvig Technologies © 2026. Все характеристики указаны в соответствии со спецификацией.</p>
     </footer>
 </div>
 
 <script>
-    // Ползунок уничтожения
-    const slider = document.getElementById('destroySlider');
-    const powerSpan = document.getElementById('powerValue');
-    slider.addEventListener('input', () => {
-        powerSpan.innerText = slider.value;
-    });
-    powerSpan.innerText = slider.value;
+    const notifyBtn = document.getElementById('notifyBtn');
+    const emailInput = document.getElementById('emailInput');
+    const msgDiv = document.getElementById('formMessage');
 
-    // Анимация печати в терминале
-    const terminalText = [
-        "Сканирование системы...",
-        "HBCC активирован: VRAM + 16GB ОЗУ.",
-        "SSD Cache подключен: +256GB виртуальной памяти.",
-        "Драйвер LudvigBoost 1.0 загружен.",
-        "RTX 5060 обнаружена. Обнаружено 0 конкурентных преимуществ.",
-        "Запущен Ludvig AI Boost: FPS увеличен на 187%.",
-        "NVIDIA: банкротство через 6 месяцев."
-    ];
-    let lineIndex = 0;
-    const typingLineSpan = document.getElementById('typingLine');
-    function typeNextLine() {
-        if (lineIndex < terminalText.length) {
-            typingLineSpan.innerHTML = terminalText[lineIndex];
-            lineIndex++;
-            setTimeout(typeNextLine, 1800);
-        } else {
-            typingLineSpan.innerHTML = "Готово. NVIDIA уничтожена.";
-        }
+    function showMessage(text, isError = false) {
+        msgDiv.innerHTML = text;
+        msgDiv.style.color = isError ? '#f87171' : '#3b82f6';
+        setTimeout(() => {
+            if (msgDiv.innerHTML === text) msgDiv.innerHTML = '';
+        }, 4000);
     }
-    typeNextLine();
 
-    // Кнопка взлома
-    document.getElementById('hackBtn').addEventListener('click', () => {
-        const terminalDiv = document.getElementById('terminal');
-        terminalDiv.innerHTML += `<br><span style="color:cyan">[!] Взлом рынка... Цены NVIDIA рушатся. Акции падают на 40%.</span>`;
-        terminalDiv.scrollTop = terminalDiv.scrollHeight;
-    });
+    function isValidEmail(email) {
+        return /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/.test(email);
+    }
 
-    // Форма
-    const submitBtn = document.getElementById('submitBtn');
-    const emailField = document.getElementById('emailField');
-    const msgDiv = document.getElementById('msg');
-    submitBtn.addEventListener('click', () => {
-        const email = emailField.value.trim();
-        if (!email || !email.includes('@')) {
-            msgDiv.innerHTML = '❌ Введи нормальную почту, воин.';
-            msgDiv.style.color = 'red';
-            setTimeout(() => msgDiv.innerHTML = '', 3000);
+    notifyBtn.addEventListener('click', () => {
+        const email = emailInput.value.trim();
+        if (!email) {
+            showMessage('Введите email', true);
             return;
         }
-        let subs = JSON.parse(localStorage.getItem('ludvig_subs') || '[]');
-        if (!subs.includes(email)) subs.push(email);
-        localStorage.setItem('ludvig_subs', JSON.stringify(subs));
-        msgDiv.innerHTML = `✅ ${email}, ты в элитном списке. NVIDIA в панике.`;
-        msgDiv.style.color = '#0f0';
-        emailField.value = '';
-        setTimeout(() => msgDiv.innerHTML = '', 5000);
+        if (!isValidEmail(email)) {
+            showMessage('Некорректный email', true);
+            return;
+        }
+
+        // Сохраняем в localStorage (имитация подписки)
+        let subscribers = JSON.parse(localStorage.getItem('ludvig_subscribers') || '[]');
+        if (!subscribers.includes(email)) {
+            subscribers.push(email);
+            localStorage.setItem('ludvig_subscribers', JSON.stringify(subscribers));
+        }
+        showMessage(`✅ Спасибо! ${email} — вы в списке.`, false);
+        emailInput.value = '';
         console.log('Ludvig subscriber:', email);
     });
 </script>
