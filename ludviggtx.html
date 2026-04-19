@@ -2,299 +2,327 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>LudvigGTX 1000 — Революция в мире графики</title>
-    <!-- Google Fonts + Orbitron для футуризма -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>LUDVIG GTX 1000 // TERMINAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #010101;
-            color: #eef2ff;
+            background: #000000;
+            font-family: 'Space Grotesk', monospace;
             overflow-x: hidden;
+            color: #0f0;
         }
 
-        /* Матричный фон */
-        .matrix-bg {
+        /* Киберпанк-сетка */
+        .grid-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at 20% 30%, #0a0f1a, #000000);
-            overflow: hidden;
-        }
-
-        .matrix-bg::before {
-            content: "";
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            top: -50%;
-            left: -50%;
-            background-image: repeating-linear-gradient(0deg, rgba(0, 255, 255, 0.03) 0px, rgba(0, 255, 255, 0.03) 1px, transparent 1px, transparent 12px),
-                              repeating-linear-gradient(90deg, rgba(0, 255, 255, 0.02) 0px, rgba(0, 255, 255, 0.02) 1px, transparent 1px, transparent 12px);
-            animation: matrixMove 20s linear infinite;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
             pointer-events: none;
+            z-index: 1;
         }
 
-        @keyframes matrixMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        /* Глитч-эффект для заголовков */
-        .glitch {
-            font-family: 'Orbitron', monospace;
-            font-size: 4rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            position: relative;
-            text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75), -0.05em -0.025em 0 rgba(0, 255, 255, 0.75);
-            animation: glitchShake 0.3s infinite;
-        }
-
-        @keyframes glitchShake {
-            0% { transform: translate(0); }
-            20% { transform: translate(-1px, 1px); }
-            40% { transform: translate(-1px, -1px); }
-            60% { transform: translate(1px, 1px); }
-            80% { transform: translate(1px, -1px); }
-            100% { transform: translate(0); }
-        }
-
-        .glitch::before,
-        .glitch::after {
-            content: attr(data-text);
-            position: absolute;
+        /* Эффект сканирования */
+        .scan-line {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #010101;
-        }
-
-        .glitch::before {
-            animation: glitch-1 0.4s linear infinite reverse;
-            color: #ff00c1;
-            z-index: -1;
-        }
-
-        .glitch::after {
-            animation: glitch-2 0.3s linear infinite;
-            color: #00fff9;
-            z-index: -2;
-        }
-
-        @keyframes glitch-1 {
-            0% { clip-path: inset(20% 0 30% 0); transform: translate(-2px, -2px); }
-            100% { clip-path: inset(80% 0 5% 0); transform: translate(2px, 2px); }
-        }
-
-        @keyframes glitch-2 {
-            0% { clip-path: inset(60% 0 10% 0); transform: translate(2px, 2px); }
-            100% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, -2px); }
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-            position: relative;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0, 255, 255, 0.03) 50%, transparent 100%);
+            animation: scan 8s linear infinite;
+            pointer-events: none;
             z-index: 2;
         }
 
-        /* 3D-карточка для GPU */
-        .gpu-3d {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            transition: transform 0.5s;
-            transform-style: preserve-3d;
-            cursor: pointer;
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
         }
 
-        .gpu-3d:hover {
-            transform: rotateY(10deg) rotateX(5deg);
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Глитч-текст */
+        .glitch-text {
+            font-size: 5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.4), -0.05em -0.025em 0 rgba(0, 255, 255, 0.4);
+            animation: glitch 0.8s infinite;
+            letter-spacing: -2px;
+        }
+
+        @keyframes glitch {
+            0% { transform: skew(0deg, 0deg); }
+            95% { transform: skew(0deg, 0deg); }
+            96% { transform: skew(5deg, 2deg); text-shadow: 0.1em 0 0 red; }
+            97% { transform: skew(-5deg, -2deg); text-shadow: -0.1em 0 cyan; }
+            100% { transform: skew(0deg, 0deg); }
+        }
+
+        /* 3D-карточка с вращением */
+        .gpu-container {
+            perspective: 1000px;
+            cursor: pointer;
         }
 
         .gpu-card {
-            background: linear-gradient(145deg, #111a28, #03070f);
+            background: linear-gradient(145deg, #0a0f1a, #010101);
             border-radius: 32px;
             padding: 2rem;
             text-align: center;
-            box-shadow: 0 20px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(74, 240, 255, 0.2);
-            transition: 0.3s;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            transform-style: preserve-3d;
+            transition: transform 0.4s;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
         }
 
-        .gpu-card i {
-            font-size: 6rem;
-            color: #4af0ff;
-            filter: drop-shadow(0 0 12px #4af0ff);
+        .gpu-container:hover .gpu-card {
+            transform: rotateY(10deg) rotateX(5deg) scale(1.02);
         }
 
-        /* Сравнение с ползунком */
-        .slider-compare {
-            background: #0b1018;
-            border-radius: 32px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .range-slider {
+        /* Ползунок уничтожения */
+        .destroy-slider {
             width: 100%;
-            margin: 1rem 0;
-            accent-color: #4af0ff;
-        }
-
-        /* Кнопки и формы */
-        .btn-primary {
-            background: linear-gradient(95deg, #4af0ff, #1a6eff);
-            padding: 1rem 2rem;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1rem;
-            color: #050b14;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-block;
-            text-decoration: none;
-        }
-
-        .btn-primary:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 15px #4af0ff;
-        }
-
-        .input-group input {
+            background: #0a0f1a;
+            border-radius: 20px;
             padding: 1rem;
-            border-radius: 60px;
-            border: none;
-            background: #1e2a3a;
-            color: white;
-            width: 250px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: #0f0;
+            cursor: pointer;
+        }
+
+        /* Кнопка взлома */
+        .hack-btn {
+            background: none;
+            border: 2px solid #0f0;
+            color: #0f0;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hack-btn:hover {
+            background: #0f0;
+            color: black;
+            box-shadow: 0 0 20px #0f0;
+            transform: scale(1.02);
+        }
+
+        /* Терминал */
+        .terminal {
+            background: #050505;
+            border: 1px solid #0f0;
+            border-radius: 12px;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         @media (max-width: 768px) {
-            .glitch { font-size: 2.2rem; }
+            .glitch-text { font-size: 2rem; }
             .container { padding: 1rem; }
         }
     </style>
 </head>
 <body>
-<div class="matrix-bg"></div>
+<div class="grid-overlay"></div>
+<div class="scan-line"></div>
 
 <div class="container">
-    <!-- Шапка -->
-    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 3rem;">
-        <div style="font-family: 'Orbitron'; font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #fff, #4af0ff); -webkit-background-clip: text; background-clip: text; color: transparent;">LUDVIG<span style="color:#4af0ff;">GTX</span> 1000</div>
-        <div style="background: rgba(74,240,255,0.1); border-radius: 40px; padding: 0.5rem 1rem; border: 1px solid #4af0ff;">⚡ INNOVATION 2026</div>
+    <!-- Статус-бар -->
+    <div style="display: flex; justify-content: space-between; margin-bottom: 2rem; font-size: 0.7rem; color: #0f0; border-bottom: 1px solid #0f0; padding-bottom: 0.5rem;">
+        <span>> LUDVIG_OS // TERMINAL v.4.2.0</span>
+        <span>> ONLINE // GPU STATUS: [ACTIVE]</span>
     </div>
 
-    <!-- Hero с 3D -->
-    <div style="display: flex; flex-wrap: wrap; gap: 3rem; justify-content: space-between; align-items: center; margin: 3rem 0;">
-        <div style="flex: 1;">
-            <div class="glitch" data-text="POWER WITHOUT LIMITS">POWER WITHOUT LIMITS</div>
-            <p style="font-size: 1.2rem; margin: 1rem 0;">8GB GDDR6X | HBCC | LudvigAI Boost | AnyCore | SSD Cache</p>
-            <p style="color: #b0c4de;">Работает на любом ПК. Не требует апгрейда процессора. Уничтожает миф о дорогих сборках.</p>
-            <div style="margin-top: 2rem;">
-                <a href="#notify" class="btn-primary"><i class="fas fa-bell"></i> ЗАХВАТИТЬ ПЕРВЫМ</a>
-                <a href="#specs" style="margin-left: 1rem; color: #4af0ff;">Характеристики →</a>
+    <!-- Главный блок -->
+    <div style="display: flex; flex-wrap: wrap; gap: 3rem; align-items: center; margin: 3rem 0;">
+        <div style="flex: 1.5;">
+            <div class="glitch-text">LUDVIG GTX 1000</div>
+            <div style="margin: 1rem 0;">
+                <span style="background: #0f0; color: black; padding: 0.2rem 0.8rem; border-radius: 20px; font-weight: bold;">8GB GDDR6X</span>
+                <span style="background: #0f0; color: black; padding: 0.2rem 0.8rem; border-radius: 20px; font-weight: bold;">HBCC</span>
+                <span style="background: #0f0; color: black; padding: 0.2rem 0.8rem; border-radius: 20px; font-weight: bold;">AI BOOST</span>
+                <span style="background: #0f0; color: black; padding: 0.2rem 0.8rem; border-radius: 20px; font-weight: bold;">SSD CACHE</span>
+            </div>
+            <p style="font-size: 1.2rem; margin: 1rem 0; color: #aaa;">"Работает на любом процессоре. Превращает старый ПК в монстра."</p>
+            <div style="margin: 2rem 0;">
+                <button class="hack-btn" id="hackBtn">⟳ ВЗЛОМАТЬ РЫНОК</button>
+            </div>
+            <div class="terminal" id="terminal">
+                > Инициализация LudvigGTX 1000...<br>
+                > HBCC активирован. VRAM + системная память.<br>
+                > Драйвер LudvigBoost 1.0 загружен.<br>
+                > RTX 5060 обнаружена. Начинаю уничтожение...<br>
+                > <span id="typingLine"></span><span class="blink">_</span>
             </div>
         </div>
-        <div style="flex: 1; text-align: center;" class="gpu-3d">
+
+        <div style="flex: 1;" class="gpu-container">
             <div class="gpu-card">
-                <i class="fas fa-microchip"></i>
-                <h3 style="margin-top: 1rem;">LUDVIGGTX 1000</h3>
-                <p style="font-size: 0.8rem;">PCIe 4.0 | 8GB GDDR6X | 150W</p>
-                <div style="margin-top: 1rem;"><span style="background: #4af0ff20; padding: 0.2rem 0.8rem; border-radius: 20px;">HBCC</span> <span style="background: #4af0ff20; padding: 0.2rem 0.8rem; border-radius: 20px;">LudvigBoost</span></div>
+                <svg width="150" height="150" viewBox="0 0 100 100" style="margin: 0 auto; display: block; filter: drop-shadow(0 0 10px #0f0);">
+                    <rect x="20" y="30" width="60" height="40" rx="8" fill="#0a0f1a" stroke="#0f0" stroke-width="2"/>
+                    <circle cx="50" cy="50" r="10" fill="#0f0" />
+                    <line x1="35" y1="70" x2="65" y2="70" stroke="#0f0" stroke-width="2"/>
+                    <line x1="35" y1="75" x2="65" y2="75" stroke="#0f0" stroke-width="2"/>
+                </svg>
+                <h3 style="margin-top: 1rem;">LUDVIG GTX 1000</h3>
+                <p style="font-size: 0.7rem;">PCIe 4.0 | 150W TDP</p>
+                <div style="margin-top: 1rem;">🔴 АКТИВНА</div>
             </div>
         </div>
     </div>
 
-    <!-- Убийственное сравнение с ползунком -->
-    <div class="slider-compare" id="specs">
-        <h2 style="text-align: center; margin-bottom: 1rem;">LUDVIGGTX 1000 vs RTX 5060</h2>
+    <!-- Сравнение с уничтожением -->
+    <div class="destroy-slider" style="margin: 3rem 0;">
+        <h2 style="margin-bottom: 1rem;">⚔️ LUDVIG GTX 1000 VS RTX 5060</h2>
         <div style="display: flex; justify-content: space-between;">
-            <span>Ludvig мощнее на <span id="powerValue">0</span>%</span>
-            <span>RTX 5060</span>
+            <span>💀 LUDVIG МОЩНЕЕ НА <span id="powerValue">187</span>%</span>
+            <span>🐌 RTX 5060 УНИЧТОЖЕНА</span>
         </div>
-        <input type="range" min="0" max="200" value="187" class="range-slider" id="powerSlider">
-        <div style="display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; margin-top: 2rem;">
-            <div><i class="fas fa-check-circle" style="color:#4af0ff;"></i> Цена: $249</div>
-            <div><i class="fas fa-times-circle" style="color:#ff8866;"></i> Цена: $329</div>
-            <div><i class="fas fa-check-circle" style="color:#4af0ff;"></i> HBCC (ОЗУ как VRAM)</div>
-            <div><i class="fas fa-times-circle" style="color:#ff8866;"></i> Нет HBCC</div>
-            <div><i class="fas fa-check-circle" style="color:#4af0ff;"></i> Любой процессор</div>
-            <div><i class="fas fa-times-circle" style="color:#ff8866;"></i> Требует новый CPU</div>
+        <input type="range" min="0" max="300" value="187" id="destroySlider" style="margin: 1rem 0;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+            <div><span style="color: #0f0;">✅ Цена: $249</span></div>
+            <div><span style="color: red;">❌ Цена: $329</span></div>
+            <div><span style="color: #0f0;">✅ HBCC (ОЗУ как VRAM)</span></div>
+            <div><span style="color: red;">❌ Нет HBCC</span></div>
+            <div><span style="color: #0f0;">✅ Любой процессор</span></div>
+            <div><span style="color: red;">❌ Требует новый CPU</span></div>
+            <div><span style="color: #0f0;">✅ SSD Cache (до 256 ГБ)</span></div>
+            <div><span style="color: red;">❌ Только GDDR6</span></div>
         </div>
     </div>
 
-    <!-- Технологии будущего -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 2rem; margin: 4rem 0;">
-        <div style="background: #0b1018; border-radius: 28px; padding: 1.5rem;"><i class="fas fa-microchip" style="font-size: 2rem; color: #4af0ff;"></i><h3>HBCC</h3><p>Использует оперативную память как дополнительную видеопамять. Игры не вылетают при нехватке VRAM.</p></div>
-        <div style="background: #0b1018; border-radius: 28px; padding: 1.5rem;"><i class="fas fa-brain" style="font-size: 2rem; color: #4af0ff;"></i><h3>Ludvig AI Boost</h3><p>Нейросеть в драйвере предсказывает кадры и удваивает FPS на старых процессорах.</p></div>
-        <div style="background: #0b1018; border-radius: 28px; padding: 1.5rem;"><i class="fas fa-database" style="font-size: 2rem; color: #4af0ff;"></i><h3>SSD Cache</h3><p>Используй быстрый NVMe как видеопамять. Объём — до 256 ГБ.</p></div>
-        <div style="background: #0b1018; border-radius: 28px; padding: 1.5rem;"><i class="fas fa-charging-station" style="font-size: 2rem; color: #4af0ff;"></i><h3>Любая материнская плата</h3><p>PCIe 3.0/4.0. Старые ПК получают новую жизнь.</p></div>
-    </div>
-
-    <!-- Форма Notify -->
-    <div id="notify" style="background: linear-gradient(145deg, #0e1727, #03070f); border-radius: 48px; padding: 2rem; text-align: center; margin: 2rem 0;">
-        <i class="fas fa-envelope" style="font-size: 2rem; color:#4af0ff;"></i>
-        <h2>Не дай NVIDIA обмануть себя</h2>
-        <p>Оставь email — получи ранний доступ к LudvigGTX 1000 и скидку 15% при старте продаж.</p>
-        <div class="input-group" style="margin-top: 1rem;">
-            <input type="email" id="emailInput" placeholder="Твой email">
-            <button class="btn-primary" id="notifyBtn"><i class="fas fa-paper-plane"></i> Уведомить меня</button>
+    <!-- Технологии (убийцы NVIDIA) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1.5rem; margin: 4rem 0;">
+        <div style="background: #0a0f1a; border-radius: 20px; padding: 1.5rem; border-left: 4px solid #0f0;">
+            <div style="font-size: 2rem;">🧠</div>
+            <h3>LUDVIG AI BOOST</h3>
+            <p>Нейросеть в драйвере генерирует +100% FPS на старых процессорах.</p>
         </div>
-        <div id="formMessage" style="margin-top: 1rem; color:#4af0ff;"></div>
+        <div style="background: #0a0f1a; border-radius: 20px; padding: 1.5rem; border-left: 4px solid #0f0;">
+            <div style="font-size: 2rem;">💾</div>
+            <h3>SSD CACHE</h3>
+            <p>Используй NVMe как видеопамять. Объём — терабайты.</p>
+        </div>
+        <div style="background: #0a0f1a; border-radius: 20px; padding: 1.5rem; border-left: 4px solid #0f0;">
+            <div style="font-size: 2rem;">🔄</div>
+            <h3>ANY CORE</h3>
+            <p>Задействует встроенную графику процессора для параллельных задач.</p>
+        </div>
     </div>
 
-    <footer style="text-align: center; padding: 2rem; font-size: 0.8rem; border-top: 1px solid rgba(74,240,255,0.2);">
-        <p>© 2026 Ludvig Technologies. Сделано для геймеров, инженеров и победителей.</p>
-        <p>LudvigGTX 1000 — «Мощность без границ. Работает везде».</p>
+    <!-- Форма захвата рынка -->
+    <div style="background: #050505; border: 1px solid #0f0; border-radius: 32px; padding: 2rem; text-align: center; margin: 3rem 0;">
+        <h2>⚡ НЕ ДАЙ NVIDIA ОБМАНУТЬ СЕБЯ</h2>
+        <p style="margin: 1rem 0;">Оставь почту — получи доступ к закрытому предзаказу и скидку 20%.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <input type="email" id="emailField" placeholder="ТВОЙ EMAIL" style="padding: 1rem; background: black; border: 1px solid #0f0; color: #0f0; width: 280px;">
+            <button id="submitBtn" style="background: #0f0; border: none; padding: 1rem 2rem; font-weight: bold; cursor: pointer;">ЗАХВАТИТЬ РЫНОК</button>
+        </div>
+        <div id="msg" style="margin-top: 1rem; color: #0f0;"></div>
+    </div>
+
+    <footer style="text-align: center; padding: 2rem; font-size: 0.7rem; color: #0f0; border-top: 1px solid #0f0;">
+        <p>© 2026 LUDVIG TECHNOLOGIES. NVIDIA ОБОСРАНА КИРПИЧАМИ.</p>
     </footer>
 </div>
 
 <script>
-    // Ползунок "насколько Ludvig мощнее"
-    const slider = document.getElementById('powerSlider');
+    // Ползунок уничтожения
+    const slider = document.getElementById('destroySlider');
     const powerSpan = document.getElementById('powerValue');
     slider.addEventListener('input', () => {
         powerSpan.innerText = slider.value;
     });
     powerSpan.innerText = slider.value;
 
-    // Форма подписки
-    const notifyBtn = document.getElementById('notifyBtn');
-    const emailInput = document.getElementById('emailInput');
-    const formMsg = document.getElementById('formMessage');
+    // Анимация печати в терминале
+    const terminalText = [
+        "Сканирование системы...",
+        "HBCC активирован: VRAM + 16GB ОЗУ.",
+        "SSD Cache подключен: +256GB виртуальной памяти.",
+        "Драйвер LudvigBoost 1.0 загружен.",
+        "RTX 5060 обнаружена. Обнаружено 0 конкурентных преимуществ.",
+        "Запущен Ludvig AI Boost: FPS увеличен на 187%.",
+        "NVIDIA: банкротство через 6 месяцев."
+    ];
+    let lineIndex = 0;
+    const typingLineSpan = document.getElementById('typingLine');
+    function typeNextLine() {
+        if (lineIndex < terminalText.length) {
+            typingLineSpan.innerHTML = terminalText[lineIndex];
+            lineIndex++;
+            setTimeout(typeNextLine, 1800);
+        } else {
+            typingLineSpan.innerHTML = "Готово. NVIDIA уничтожена.";
+        }
+    }
+    typeNextLine();
 
-    notifyBtn.addEventListener('click', () => {
-        const email = emailInput.value.trim();
+    // Кнопка взлома
+    document.getElementById('hackBtn').addEventListener('click', () => {
+        const terminalDiv = document.getElementById('terminal');
+        terminalDiv.innerHTML += `<br><span style="color:cyan">[!] Взлом рынка... Цены NVIDIA рушатся. Акции падают на 40%.</span>`;
+        terminalDiv.scrollTop = terminalDiv.scrollHeight;
+    });
+
+    // Форма
+    const submitBtn = document.getElementById('submitBtn');
+    const emailField = document.getElementById('emailField');
+    const msgDiv = document.getElementById('msg');
+    submitBtn.addEventListener('click', () => {
+        const email = emailField.value.trim();
         if (!email || !email.includes('@')) {
-            formMsg.innerText = '❌ Введи нормальную почту, капитан.';
-            formMsg.style.color = '#ff8866';
-            setTimeout(() => formMsg.innerText = '', 3000);
+            msgDiv.innerHTML = '❌ Введи нормальную почту, воин.';
+            msgDiv.style.color = 'red';
+            setTimeout(() => msgDiv.innerHTML = '', 3000);
             return;
         }
-        // сохраняем в localStorage
         let subs = JSON.parse(localStorage.getItem('ludvig_subs') || '[]');
         if (!subs.includes(email)) subs.push(email);
         localStorage.setItem('ludvig_subs', JSON.stringify(subs));
-        formMsg.innerText = `✅ ${email}, ты в элитном списке. Жди новостей.`;
-        formMsg.style.color = '#4af0ff';
-        emailInput.value = '';
-        setTimeout(() => formMsg.innerText = '', 5000);
+        msgDiv.innerHTML = `✅ ${email}, ты в элитном списке. NVIDIA в панике.`;
+        msgDiv.style.color = '#0f0';
+        emailField.value = '';
+        setTimeout(() => msgDiv.innerHTML = '', 5000);
         console.log('Ludvig subscriber:', email);
     });
 </script>
