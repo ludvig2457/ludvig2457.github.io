@@ -1,458 +1,212 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LudvigSim — Everything Engine</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Three.js для 3D-фона -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <!-- reCAPTCHA -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: none; /* убираем стандартный курсор */
-        }
-        
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #0a0f1f;
-            color: white;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        /* Кастомный курсор */
-        .cursor {
-            width: 30px;
-            height: 30px;
-            border: 2px solid rgba(100, 200, 255, 0.8);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.1s ease;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px #00f3ff;
-            backdrop-filter: blur(2px);
-        }
-        
-        .cursor-dot {
-            width: 6px;
-            height: 6px;
-            background: #00f3ff;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 10000;
-            transition: transform 0.05s ease;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 15px #00f3ff;
-        }
-        
-        /* 3D canvas на заднем плане */
-        #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-        
-        /* Параллакс элементы */
-        .parallax-layer {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .parallax-layer img {
-            position: absolute;
-            opacity: 0.2;
-            filter: blur(3px);
-        }
-        
-        /* Контент над фоном */
-        .content {
-            position: relative;
-            z-index: 10;
-        }
-        
-        /* Стили для секций */
-        .section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 800;
-            text-transform: uppercase;
-            background: linear-gradient(135deg, #00f3ff, #9d00ff, #ff00aa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% 200%;
-            animation: gradientShift 8s ease infinite;
-        }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        .glass-card {
-            background: rgba(20, 30, 50, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 30px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
-        .glass-card:hover {
-            transform: scale(1.03);
-            border-color: #00f3ff;
-            box-shadow: 0 0 40px rgba(0, 243, 255, 0.3);
-        }
-        
-        .neon-text {
-            text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 30px #9d00ff;
-        }
-        
-        .countdown-number {
-            background: rgba(0,0,0,0.5);
-            border-radius: 20px;
-            padding: 20px;
-            font-size: 5rem;
-            font-weight: 800;
-            font-family: 'Orbitron', sans-serif;
-            color: #00f3ff;
-            text-shadow: 0 0 20px #00f3ff;
-            box-shadow: 0 0 30px rgba(0,243,255,0.2);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(0,243,255,0.5);
-        }
-        
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        @media (max-width: 768px) {
-            .countdown-number {
-                font-size: 2.5rem;
-                padding: 10px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ludvig2457 — SuperLauncher & LudvigOS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Кастомный курсор -->
-    <div class="cursor" id="cursor"></div>
-    <div class="cursor-dot" id="cursor-dot"></div>
-    
-    <!-- 3D Canvas Container -->
-    <div id="canvas-container"></div>
-    
-    <!-- Параллакс слои (дополнительно) -->
-    <div class="parallax-layer" id="parallax-layer">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='40' fill='none' stroke='%234299e1' stroke-width='2'/%3E%3C/svg%3E" 
-             style="top: 10%; left: 5%; width: 150px; opacity: 0.1;">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='60' fill='none' stroke='%239d00ff' stroke-width='2'/%3E%3C/svg%3E" 
-             style="bottom: 20%; right: 10%; width: 200px; opacity: 0.1;">
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <span class="nav-logo">⚡ Ludvig2457</span>
+    <div class="nav-links">
+      <a href="#superlauncher">SuperLauncher</a>
+      <a href="#ludvig-os">LudvigOS</a>
+      <a href="#about">О проекте</a>
     </div>
-    
-    <!-- Контент -->
-    <div class="content">
-        <!-- Огни (как было) -->
-        <div class="christmas-lights w-full fixed top-0 left-0 z-50" style="height: 10px; background: linear-gradient(90deg, #e74c3c 0%, #f1c40f 10%, #27ae60 20%, #3498db 30%, #9b59b6 40%, #e74c3c 50%, #f1c40f 60%, #27ae60 70%, #3498db 80%, #9b59b6 90%); background-size: 200% 100%; animation: lightsMove 10s linear infinite;"></div>
-        
-        <!-- Снежинки -->
-        <div id="snowflakes"></div>
-        
-        <!-- Навигация (такая же, как в оригинале, только прозрачнее) -->
-        <nav class="fixed w-full z-40 py-4 px-6" style="background: rgba(10,15,31,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1);">
-            <!-- ... содержимое навигации полностью сохранено (для краткости оставлю ссылку) -->
-            <!-- В реальном коде нужно скопировать весь nav из исходника -->
-            <div class="max-w-7xl mx-auto flex justify-between items-center">
-                <!-- logo -->
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <i class="fas fa-cube text-3xl text-blue-500 animate-pulse"></i>
-                        <div class="absolute -top-2 -right-2 w-3 h-3 bg-blue-500 rounded-full animate-ping"></div>
-                    </div>
-                    <h1 class="text-2xl font-bold cosmic-font">LUDVIG<span class="text-blue-500">SIM</span></h1>
-                </div>
-                <!-- меню -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="hover:text-blue-400">LudvigSim</a>
-                    <a href="#superlauncher" class="hover:text-yellow-400">SuperLauncher</a>
-                    <a href="#ludvigos" class="hover:text-green-400">LudvigOS</a>
-                    <a href="#gifts" class="hover:text-red-400">Gifts</a>
-                    <a href="#features" class="hover:text-purple-400">Features</a>
-                    <a href="#contact" class="hover:text-pink-400">Contact</a>
-                    <button id="profileBtn" class="hidden"><i class="fas fa-user-astronaut text-2xl"></i></button>
-                    <button id="loginBtn" class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2 rounded-full font-bold hover:scale-105 transition">Launch</button>
-                </div>
-                <button class="md:hidden text-2xl"><i class="fas fa-bars"></i></button>
-            </div>
-        </nav>
-        
-        <!-- Герой (LudvigSim) -->
-        <section id="home" class="min-h-screen flex items-center justify-center pt-16">
-            <div class="max-w-6xl mx-auto px-4 text-center fade-in">
-                <div class="inline-block mb-8 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full animate-bounce">
-                    <span class="font-bold text-lg">🌌 EVERYTHING ENGINE</span>
-                </div>
-                <h1 class="text-5xl md:text-8xl font-bold mb-6 cosmic-font neon-text">
-                    LUDVIG<span class="text-blue-500">SIM</span>
-                </h1>
-                <p class="text-2xl md:text-3xl mb-12 text-gray-300 max-w-3xl mx-auto typewriter">
-                    Вся Земля. Все планеты. Весь космос. Одна система.
-                </p>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-                    <div class="glass-card p-4"><div class="text-3xl">🌍</div><div class="font-bold text-blue-400">Вся Земля</div></div>
-                    <div class="glass-card p-4"><div class="text-3xl">🪐</div><div class="font-bold text-purple-400">Все планеты</div></div>
-                    <div class="glass-card p-4"><div class="text-3xl">🚀</div><div class="font-bold text-green-400">Космос</div></div>
-                    <div class="glass-card p-4"><div class="text-3xl">👶</div><div class="font-bold text-pink-400">Рождаемость</div></div>
-                </div>
-                <div class="countdown-glow rounded-2xl p-8 mb-12 bg-gradient-to-r from-blue-900/50 to-purple-900/50 border-2 border-blue-500">
-                    <h3 class="text-2xl font-bold mb-4 cosmic-font">🚀 Countdown to Ludvig Simulator 🚀</h3>
-                    <div class="flex justify-center space-x-4 md:space-x-8">
-                        <div class="text-center"><div class="countdown-number" id="lsDays">00</div><div>Days</div></div>
-                        <div class="text-4xl font-bold text-purple-400">:</div>
-                        <div class="text-center"><div class="countdown-number" id="lsHours">00</div><div>Hours</div></div>
-                        <div class="text-4xl font-bold text-purple-400">:</div>
-                        <div class="text-center"><div class="countdown-number" id="lsMinutes">00</div><div>Minutes</div></div>
-                        <div class="text-4xl font-bold text-purple-400">:</div>
-                        <div class="text-center"><div class="countdown-number" id="lsSeconds">00</div><div>Seconds</div></div>
-                    </div>
-                    <p class="text-xl mt-4">Релиз: 21 марта 2026</p>
-                </div>
-                <div class="flex flex-col md:flex-row justify-center gap-8">
-                    <button class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-4 rounded-xl text-xl font-bold hover:scale-105 glow-effect">Предзаказ</button>
-                    <a href="#superlauncher" class="bg-gradient-to-r from-green-600 to-emerald-500 px-8 py-4 rounded-xl text-xl font-bold hover:scale-105">SuperLauncher</a>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Platform Support Banner -->
-        <section class="bg-gradient-to-r from-purple-600 to-blue-600 py-8 text-white">
-            <div class="max-w-7xl mx-auto text-center">
-                <h3 class="text-2xl font-bold mb-4">🚀 SuperLauncher supports all platforms!</h3>
-                <div class="flex flex-wrap justify-center gap-8 text-lg">
-                    <div class="flex items-center"><i class="fab fa-windows text-2xl mr-3"></i>Windows</div>
-                    <div class="flex items-center"><i class="fab fa-linux text-2xl mr-3"></i>Linux</div>
-                    <div class="flex items-center"><i class="fab fa-android text-2xl mr-3"></i>Android</div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Ludvig Simulator Section (детали) -->
-        <section id="simulator" class="py-20 px-4">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-16">
-                    <h2 class="text-5xl font-bold mb-6 section-title">EVERYTHING ENGINE</h2>
-                    <p class="text-2xl text-gray-300">Не игра против GTA — это движок реальности</p>
-                </div>
-                <div class="grid lg:grid-cols-2 gap-12">
-                    <div class="glass-card p-8">
-                        <h3 class="text-3xl font-bold mb-6">🌍 РЕАЛЬНОСТЬ</h3>
-                        <ul class="space-y-6">
-                            <li class="flex"><i class="fas fa-check-circle text-blue-400 text-2xl mr-4"></i><div><h4 class="font-bold">Вся Земля</h4><p class="text-gray-300">Реальные города, аэропорты, дороги.</p></div></li>
-                            <li class="flex"><i class="fas fa-check-circle text-purple-400 text-2xl mr-4"></i><div><h4 class="font-bold">Все планеты</h4><p class="text-gray-300">Орбиты, гравитация, атмосфера.</p></div></li>
-                            <li class="flex"><i class="fas fa-check-circle text-pink-400 text-2xl mr-4"></i><div><h4 class="font-bold">Космос без загрузок</h4><p class="text-gray-300">Город → орбита → планета.</p></div></li>
-                        </ul>
-                        <div class="mt-12 p-6 bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-xl border border-blue-500">
-                            <p class="text-xl font-bold">🚀 P2P + EE2E</p>
-                            <p>1 ГБ игра, остальное в облаке. РКН не страшен.</p>
-                            <div class="text-2xl font-bold cosmic-font"><span class="text-blue-400">1,000,000,000,000+</span> миссий</div>
-                        </div>
-                    </div>
-                    <div class="space-y-6">
-                        <div class="glass-card p-6"><div class="flex items-center mb-4"><span class="text-4xl mr-4">👶</span><h4 class="text-2xl font-bold">Система рождаемости</h4></div><p>Ты рождаешься, растёшь, живёшь реальную жизнь.</p></div>
-                        <div class="glass-card p-6"><div class="flex items-center mb-4"><span class="text-4xl mr-4">🎮</span><h4 class="text-2xl font-bold">Свобода</h4></div><p>Миссии по желанию, абсолютная свобода.</p></div>
-                        <div class="glass-card p-6"><div class="flex items-center mb-4"><span class="text-4xl mr-4">💥</span><h4 class="text-2xl font-bold">Один движок</h4></div><p>Автосим + авиасим + космосим + sandbox.</p></div>
-                    </div>
-                </div>
-                <div class="text-center mt-16">
-                    <a href="#" class="bg-gradient-to-r from-blue-600 to-purple-600 px-12 py-6 rounded-xl text-2xl font-bold hover:scale-105 inline-block">Предзаказ 2026</a>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Остальные секции (Gifts, SuperLauncher, LudvigOS, Features, Contact) можно скопировать из исходника -->
-        <!-- Я их пропущу для краткости, но в реальном коде они должны быть здесь с теми же классами для стилей -->
-        
-        <!-- Футер (аналогично) -->
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Экосистема Ludvig2457</div>
+    <h1>Играй. Создавай. <span class="gradient-text">Управляй.</span></h1>
+    <p>SuperLauncher — быстрый Minecraft лаунчер с поддержкой модов. LudvigOS — минималистичная ОС с собственным ядром.</p>
+    <div class="hero-buttons">
+      <a href="#superlauncher" class="btn btn-primary">
+        <i class="fas fa-download"></i> Скачать SuperLauncher
+      </a>
+      <a href="#ludvig-os" class="btn btn-secondary">
+        <i class="fas fa-download"></i> Скачать LudvigOS
+      </a>
     </div>
-    
-    <script>
-        // ==================== 3D ФОН ====================
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000, 0); // прозрачный фон
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
-        
-        // Звёзды
-        const starsGeometry = new THREE.BufferGeometry();
-        const starsCount = 2000;
-        const starsPositions = new Float32Array(starsCount * 3);
-        for (let i = 0; i < starsCount; i++) {
-            starsPositions[i*3] = (Math.random() - 0.5) * 1000;
-            starsPositions[i*3+1] = (Math.random() - 0.5) * 1000;
-            starsPositions[i*3+2] = (Math.random() - 0.5) * 1000;
-        }
-        starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
-        const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.5 });
-        const stars = new THREE.Points(starsGeometry, starsMaterial);
-        scene.add(stars);
-        
-        // Несколько планет
-        const planets = [];
-        const colors = [0x00f3ff, 0x9d00ff, 0xff00aa, 0x00ff9d];
-        for (let i = 0; i < 4; i++) {
-            const geometry = new THREE.SphereGeometry(2 + i * 0.5, 32, 32);
-            const material = new THREE.MeshStandardMaterial({ color: colors[i], emissive: colors[i], emissiveIntensity: 0.3 });
-            const planet = new THREE.Mesh(geometry, material);
-            planet.position.x = (i - 2) * 15;
-            planet.position.y = (i % 2) * 10 - 5;
-            planet.position.z = -30 + i * 5;
-            scene.add(planet);
-            planets.push(planet);
-        }
-        
-        // Свет
-        const light = new THREE.PointLight(0xffffff, 1, 0, 0);
-        light.position.set(10, 10, 10);
-        scene.add(light);
-        
-        camera.position.z = 50;
-        
-        // Анимация
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            // Вращаем звёзды
-            stars.rotation.y += 0.0002;
-            stars.rotation.x += 0.0001;
-            
-            // Вращаем планеты
-            planets.forEach(p => {
-                p.rotation.y += 0.01;
-                p.rotation.x += 0.005;
-            });
-            
-            renderer.render(scene, camera);
-        }
-        animate();
-        
-        // Адаптация при ресайзе
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-        
-        // ==================== КАСТОМНЫЙ КУРСОР ====================
-        const cursor = document.getElementById('cursor');
-        const cursorDot = document.getElementById('cursor-dot');
-        
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            cursorDot.style.left = e.clientX + 'px';
-            cursorDot.style.top = e.clientY + 'px';
-        });
-        
-        document.addEventListener('mouseleave', () => {
-            cursor.style.display = 'none';
-            cursorDot.style.display = 'none';
-        });
-        
-        document.addEventListener('mouseenter', () => {
-            cursor.style.display = 'block';
-            cursorDot.style.display = 'block';
-        });
-        
-        // ==================== ПАРАЛЛАКС ПРИ СКРОЛЛЕ ====================
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.getElementById('parallax-layer');
-            if (parallax) {
-                parallax.style.transform = `translateY(${scrolled * 0.2}px)`;
-            }
-        });
-        
-        // ==================== АНИМАЦИЯ ПОЯВЛЕНИЯ (FADE-IN) ====================
-        const faders = document.querySelectorAll('.fade-in');
-        const appearOptions = { threshold: 0.2, rootMargin: '0px 0px -50px 0px' };
-        const appearOnScroll = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, appearOptions);
-        faders.forEach(f => appearOnScroll.observe(f));
-        
-        // ==================== СЧЁТЧИКИ ====================
-        // (код countdown из исходника можно скопировать сюда)
-        // Я оставлю заглушки для краткости
-        
-        // ==================== SNOWFLAKES ====================
-        function createSnowflakes() {
-            const container = document.getElementById('snowflakes');
-            for (let i = 0; i < 50; i++) {
-                const flake = document.createElement('div');
-                flake.classList.add('snowflake');
-                flake.style.width = Math.random() * 10 + 5 + 'px';
-                flake.style.height = flake.style.width;
-                flake.style.left = Math.random() * 100 + 'vw';
-                flake.style.top = '-20px';
-                flake.style.opacity = Math.random() * 0.5 + 0.3;
-                flake.style.animationDuration = Math.random() * 5 + 5 + 's';
-                flake.style.animationDelay = Math.random() * 5 + 's';
-                container.appendChild(flake);
-            }
-        }
-        window.addEventListener('load', createSnowflakes);
-        
-        // ==================== FIREBASE (скопировать из исходника) ====================
-        // ... (весь блок с Firebase, модалками и т.д.)
-    </script>
-    
-    <style>
-        /* Дополнительные стили для снежинок */
-        .snowflake {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: fall linear infinite;
-        }
-        @keyframes fall {
-            to { transform: translateY(100vh); }
-        }
-    </style>
+  </div>
+</section>
+
+<section id="superlauncher" class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">🚀</div>
+      <h2>SuperLauncher</h2>
+      <p class="section-sub">Minecraft лаунчер с автоматической установкой модов и управлением серверами</p>
+    </div>
+
+    <div class="features">
+      <div class="feature-card">
+        <i class="fas fa-cubes"></i>
+        <h3>Моды и сборки</h3>
+        <p>Modrinth API — установка модпаков в один клик. Поддержка Forge, Fabric и OptiFine с авто-установкой</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-server"></i>
+        <h3>Управление серверами</h3>
+        <p>Создание локальных серверов, плагины из Modrinth, поддержка Bukkit/Spigot/Paper, авто-обновления</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-palette"></i>
+        <h3>Современный интерфейс</h3>
+        <p>Светлая и тёмная темы, анимированные переходы, Discord Rich Presence</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-bolt"></i>
+        <h3>Без Java</h3>
+        <p>Не требует установки Java — запуск через minecraft-launcher-lib. Поддержка Arch Linux через AUR</p>
+      </div>
+    </div>
+
+    <div class="download-block">
+      <div class="download-info">
+        <div class="download-version">
+          <span class="version-badge">v2.0.0</span>
+          <span class="version-date">29 мая 2026 — 2026 Edition</span>
+        </div>
+        <div class="download-meta">
+          <span><i class="fas fa-windows"></i> Windows 10/11 (.exe)</span>
+          <span><i class="fab fa-linux"></i> Arch Linux (AUR)</span>
+          <span><i class="fas fa-code"></i> Python / PyInstaller</span>
+        </div>
+      </div>
+      <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMC/releases/download/v2.0.0/superlauncher.exe" target="_blank" class="btn btn-primary btn-large">
+        <i class="fas fa-download"></i> Скачать SuperLauncher v2.0.0
+      </a>
+      <p style="margin-top:12px;font-size:13px;color:var(--text3);">
+        Arch Linux: <code style="background:var(--bg3);padding:2px 8px;border-radius:4px;">yay -S superlauncher-mc</code>
+      </p>
+    </div>
+
+    <div class="sys-reqs">
+      <h3>Системные требования</h3>
+      <div class="reqs-grid">
+        <div><strong>ОС:</strong> Windows 10/11, Linux (Arch)</div>
+        <div><strong>CPU:</strong> любой x86_64</div>
+        <div><strong>RAM:</strong> от 2 ГБ</div>
+        <div><strong>Java:</strong> не требуется (встроенный лаунчер)</div>
+        <div><strong>Место:</strong> от 200 МБ</div>
+        <div><strong>GPU:</strong> любая с OpenGL 3.2+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ludvig-os" class="section section-dark">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">💻</div>
+      <h2>LudvigOS</h2>
+      <p class="section-sub">Собственная операционная система на C++ с графическим интерфейсом</p>
+    </div>
+
+    <div class="features">
+      <div class="feature-card">
+        <i class="fas fa-microchip"></i>
+        <h3>Собственное ядро</h3>
+        <p>Полноценное ядро на C++ с поддержкой Multiboot, VGA-драйвером и управлением памятью</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-desktop"></i>
+        <h3>Графический интерфейс</h3>
+        <p>Рабочий десктоп с поддержкой мыши и клавиатуры через порты 0x60/0x64</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-terminal"></i>
+        <h3>Командная оболочка</h3>
+        <p>Терминал с neofetch, LUR/LURE пакетными менеджерами и игровыми командами</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-tachometer-alt"></i>
+        <h3>Всего 2MB ОЗУ</h3>
+        <p>Экстремально лёгкая ОС — работает даже на самых старых машинах</p>
+      </div>
+    </div>
+
+    <div class="specs">
+      <div class="spec">
+        <span class="spec-label">Ядро</span>
+        <span class="spec-value">C++ (Multiboot)</span>
+      </div>
+      <div class="spec">
+        <span class="spec-label">Видеорежим</span>
+        <span class="spec-value">VGA 80x25</span>
+      </div>
+      <div class="spec">
+        <span class="spec-label">Загрузчик</span>
+        <span class="spec-value">GRUB2</span>
+      </div>
+      <div class="spec">
+        <span class="spec-label">Формат</span>
+        <span class="spec-value">ISO (QEMU)</span>
+      </div>
+    </div>
+
+    <div class="download-block">
+      <div class="download-info">
+        <div class="download-version">
+          <span class="version-badge">v1.2</span>
+          <span class="version-date">13 октября 2025 — Revolution Update</span>
+        </div>
+        <div class="download-meta">
+          <span><i class="fas fa-compact-disc"></i> ISO образ</span>
+          <span><i class="fas fa-terminal"></i> Shell + GUI</span>
+          <span><i class="fas fa-laptop"></i> Запуск в QEMU</span>
+        </div>
+      </div>
+      <a href="https://github.com/Ludvig2457Ultra/LudvigOS/releases/download/v1.2/LudvigOS.iso" target="_blank" class="btn btn-secondary btn-large">
+        <i class="fas fa-download"></i> Скачать LudvigOS v1.2 ISO
+      </a>
+      <p style="margin-top:12px;font-size:13px;color:var(--text3);">
+        Запуск: <code style="background:var(--bg3);padding:2px 8px;border-radius:4px;">qemu-system-i386 -cdrom LudvigOS.iso -m 512M</code>
+      </p>
+    </div>
+
+    <div class="sys-reqs">
+      <h3>Системные требования</h3>
+      <div class="reqs-grid">
+        <div><strong>CPU:</strong> i686 (Pentium Pro и выше)</div>
+        <div><strong>RAM:</strong> от 2 МБ!</div>
+        <div><strong>Видео:</strong> VGA-совместимая</div>
+        <div><strong>Запуск:</strong> QEMU / реальное железо</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="section">
+  <div class="section-inner">
+    <div class="about-content">
+      <h2>О проекте Ludvig2457</h2>
+      <p>Ludvig2457 — разработчик с открытым исходным кодом. Создаёт инструменты для геймеров и энтузиастов: Minecraft лаунчер с полной поддержкой модов и собственную операционную систему.</p>
+      <p>SuperLauncher написан на Python и собран через PyInstaller. LudvigOS написана на C++ и Assembly, загружается через GRUB2.</p>
+      <div class="about-links">
+        <a href="https://github.com/Ludvig2457Ultra" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMC" target="_blank"><i class="fas fa-rocket"></i> SuperLauncher repo</a>
+        <a href="https://github.com/Ludvig2457Ultra/LudvigOS" target="_blank"><i class="fas fa-microchip"></i> LudvigOS repo</a>
+        <a href="https://ludvig2457.github.io/" target="_blank"><i class="fas fa-globe"></i> Сайт</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">⚡ Ludvig2457</div>
+    <p class="footer-copy">© 2026 Ludvig2457. Open source.</p>
+  </div>
+</footer>
 </body>
 </html>
