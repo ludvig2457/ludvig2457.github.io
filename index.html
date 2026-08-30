@@ -11,6 +11,10 @@
 </head>
 <body>
 
+<div class="ticker" style="background:#ffffcc;color:#cc0000;font-family:'Comic Sans MS',cursive;font-size:13px;font-weight:bold;padding:3px 0;border-bottom:1px solid #999;">
+  <marquee scrollamount="5">&nbsp;ВНИМАНИЕ!!! САЙТ ПЕРЕДЕЛАН В СТИЛЕ 2011 ГОДА!&nbsp;&nbsp;&nbsp;ЛУЧШАЯ РАЗРЕШАЮЩАЯ СПОСОБНОСТЬ: 1024x768!&nbsp;&nbsp;&nbsp;ЗДЕСЬ СКАЧИВАЕТСЯ ВСЁ БЫСТРО, ДАЖЕ НА 1 Мбит!!!&nbsp;&nbsp;&nbsp;</marquee>
+</div>
+
 <nav class="navbar">
   <div class="nav-inner">
     <span class="nav-logo">⚡ Ludvig2457</span>
@@ -205,8 +209,19 @@
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">⚡ Ludvig2457</div>
-    <p class="footer-copy">© 2026 Ludvig2457. Open source.</p>
+    <p class="footer-copy">© 2026 Ludvig2457. Open source.
+      <span style="background:#111;color:#3f3;font-family:'Courier New',monospace;padding:1px 6px;letter-spacing:2px;display:inline-block;vertical-align:middle;"><span id="hitcnt">0000000</span></span></p>
   </div>
 </footer>
+<script>
+/* счётчик посещений в духе 2011 (шутка, живёт в браузере) */
+(function(){
+  var k='ludvig2011_hits';
+  var n=(parseInt(localStorage.getItem(k),10)||1048576)+Math.floor(Math.random()*3)+1;
+  localStorage.setItem(k,String(n));
+  var el=document.getElementById('hitcnt');
+  var s=String(n); while(s.length<7) s='0'+s; el.textContent=s;
+})();
+</script>
 </body>
 </html>
