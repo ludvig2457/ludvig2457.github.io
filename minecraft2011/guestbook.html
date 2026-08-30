@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Гостевая книга — MineCraft: Альфа и Бета</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="guestbook">
+
+<div id="page">
+
+    <div id="header">
+        <span class="cloud c1"></span>
+        <span class="cloud c2"></span>
+        <h1>Гостевая книга</h1>
+        <div class="subtitle">работает на локалсторадже, поэтому переживёт перезапуск браузера!</div>
+        <span class="ver-tag">движок: HTML+JS, БД: твой браузер</span>
+    </div>
+
+    <div class="marquee-box">
+        <marquee scrollamount="6">
+            &nbsp;УЖЕ <b data-subs>1520</b> ПОДПИСЧИКОВ И ДИКАЯ ТОЛПА В ГОСТЕВОЙ! ПОБЕЙ РЕКОРД САМОЙ ДЛИННОЙ ЗАПИСИ (112 СЛОВ ПРО ПОРШНИ)!!!&nbsp;&nbsp;&nbsp;
+            АДМИН ЧИТАЕТ ВСЁ. ОСОБЕННО ПРО «БАГ С ПОРШНЯМИ». ОСОБЕННО!!!&nbsp;&nbsp;&nbsp;
+        </marquee>
+    </div>
+
+    <div id="menu">
+        <a href="index.html">Главная</a>
+        <a href="versions.html">Все версии</a>
+        <a href="gallery.html">Скриншоты</a>
+        <a href="guestbook.html">Гостевая книга</a>
+        <a href="links.html">Ссылки</a>
+    </div>
+
+    <table id="cols" cellpadding="0" cellspacing="0">
+        <tr>
+            <td id="side">
+                <div class="sidebox">
+                    <div class="title">Правила гостевой</div>
+                    <div class="body">
+                        1) Не флудить.<br>
+                        2) Не писать МАТОМ (админ читает всё).<br>
+                        3) Криперов не кормить.<br>
+                        4) Постарайся упомянуть поршни хотя бы раз.
+                    </div>
+                </div>
+                <div class="sidebox">
+                    <div class="title">Сейчас в гостевой</div>
+                    <div class="body">
+                        Админ: <b>Steve_2011</b> <span class="online-dot"></span> онлайн<br>
+                        Модератор: <b>Alx</b> (спит)<br>
+                        Гостей: <span data-online data-min="20" data-max="120">0</span><br>
+                        Записей хранится: до 60 (потом древние умирают)
+                    </div>
+                </div>
+                <div class="sidebox">
+                    <div class="title">P2P сеть гильдии</div>
+                    <div class="body">
+                        <form data-p2p-form onsubmit="return false;">
+                            Комната: <input type="text" data-room> <button class="mini" data-join>войти</button>
+                        </form>
+                        <div class="st">Статус: <b data-p2p-status class="off">выкл</b></div>
+                        <div class="st">Пиров в сети: <b data-p2p-online>1</b></div>
+                        <div style="font-size:9px;color:#777;margin-top:5px;">
+                            Все браузеры с этой страницей в одной комнате общаются напрямую
+                            через WebRTC — без сервера! Гостевая, голоса и чат синхронизируются
+                            между живыми игроками.
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebox">
+                    <div class="title">Статистика багов</div>
+                    <div class="body" style="text-align:center;">
+                        <div data-art="tnt" data-ps="5" style="margin:0 auto 4px;"></div>
+                        Взорвано домов: <b>14 813</b><br>
+                        Из них в пятницу: <b>9 000</b>
+                    </div>
+                </div>
+            </td>
+
+            <td id="content">
+
+                <h2><span class="art-inline" data-art="wolf" data-ps="5"></span>Последние записи</h2>
+
+                <div data-guestbook></div>
+
+                <h3>Сетевой чат 2011 (P2P)</h3>
+                <p style="font-size:11px;color:#555;">Чат работает напрямую между браузерами посетителей
+                   в вашей комнате (WebRTC, без серверов). Все равные, все в одном чате!
+                   Напиши <b>/скин</b> — и все получат скин крипера прямо в чат.</p>
+                <div class="chatbox" data-chat></div>
+                <div class="chat-input-row">
+                    <input class="nick" type="text" data-chat-nick placeholder="Ник">
+                    <input type="text" data-chat-input placeholder="напиши что-нибудь...">
+                </div>
+
+                <h3>Оставить запись</h3>
+                <form class="gb-form" data-gb-form>
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width:140px;"><label>Твоё имя:</label></td>
+                            <td><input type="text" name="name" placeholder="например: Steve_2011"></td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:top;"><label>Текст:</label></td>
+                            <td><textarea name="text" rows="4">привет, просто пишу мимо, отличный сайт про альфу и бету!!! (поршни)</textarea></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style="text-align:right; padding-top:4px;">
+                                <input type="submit" value="   ОТПРАВИТЬ ЗАПИСЬ   ">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+                <p style="color:#777; font-size:10px;">
+                    * Работает без сервера: записи хранятся в твоём браузере.
+                    Очистишь куки — гостевую заселят заново, стандартные герои вернутся!
+                </p>
+
+                <p style="text-align:center;">
+                    <a class="btn" href="index.html">&lt;&lt; На главную</a>
+                </p>
+
+            </td>
+        </tr>
+    </table>
+
+    <div id="footer">
+        © 2011 Фансайт «MineCraft: Альфа и Бета». Гостевая книга — собственность админа, мысли — авторов записей.<br>
+        <span data-browser></span>
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="p2p.js"></script>
+</body>
+</html>

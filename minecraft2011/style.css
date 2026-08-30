@@ -1,0 +1,301 @@
+/* ============================================================
+   САЙТ "MineCraft: Альфа и Бета" — премиальный ретро 2011
+   ============================================================ */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --grn: #58a83a; --grn2: #2e7d32; --grn3: #9ccc65;
+  --dirt: #8a5a2b; --dirt2: #6e441d;
+  --blue: #1a4d9e; --sky: #7ec8f2; --sky2: #d5eeff;
+  --lava: #ff6f00; --red: #c62828; --gold: #ffd54f;
+  --panel: #eeeeee; --line: #999999;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: #b9b9b9;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0 1px, transparent 1px 2px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0 1px, transparent 1px 2px),
+    linear-gradient(180deg, #d2d2d2, #b4b4b4);
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 12px;
+  color: #111;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* серый "шум" старого монитора */
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 9999; pointer-events: none; opacity: .06;
+  background-image: repeating-linear-gradient(0deg, #000 0 1px, transparent 1px 3px),
+                    repeating-linear-gradient(90deg, #000 0 1px, transparent 1px 3px);
+}
+
+a { color: #0000cc; }
+a:visited { color: #660099; }
+a:hover { color: #ff3300; }
+
+/* ============ страница ============ */
+#page {
+  width: 960px;
+  margin: 12px auto;
+  background: var(--panel);
+  border: 3px outset #fff;
+  box-shadow: 5px 5px 0 #7a7a7a;
+}
+
+/* ============ шапка (пиксельная) ============ */
+#header {
+  position: relative;
+  background: linear-gradient(180deg, #3f7fd8 0%, #1a4d9e 60%, #0d3575 100%);
+  border-bottom: 4px solid #0d3575;
+  padding: 16px 20px 12px;
+  text-align: center;
+  overflow: hidden;
+}
+/* облака в шапке */
+#header .cloud { position: absolute; background: rgba(255,255,255,.25); border-radius: 40px; }
+#header .cloud.c1 { width: 130px; height: 26px; top: 6px; left: -140px; animation: drift 26s linear infinite; }
+#header .cloud.c1::before, #header .cloud.c1::after { content:""; position:absolute; background:inherit; border-radius:50%; }
+#header .cloud.c1::before { width:40px; height:40px; top:-16px; left:18px; }
+#header .cloud.c1::after  { width:30px; height:30px; top:-8px; right:20px; }
+#header .cloud.c2 { width: 90px; height: 20px; top: 34px; left: -120px; animation: drift 34s linear infinite; animation-delay: 6s; }
+@keyframes drift { to { transform: translateX(1150px); } }
+
+#header h1 {
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  font-size: 42px;
+  color: #fff;
+  letter-spacing: 2px;
+  text-shadow: 3px 3px 0 #0d3575, 6px 6px 0 rgba(0,0,0,.25);
+  animation: shine 5s linear infinite;
+  background-image: linear-gradient(90deg, #fff 25%, #ffe97a 50%, #fff 75%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+@keyframes shine { to { background-position: -200% 0; } }
+
+#header .subtitle {
+  color: #ffe97a; font-family: "Comic Sans MS", cursive; font-size: 15px;
+  text-shadow: 1px 1px 0 #06214e; margin-top: 2px;
+}
+#header .ver-tag {
+  display: inline-block; margin-top: 6px; padding: 2px 10px;
+  background: #ffe97a; color: #7a2d00; font-weight: bold; font-size: 11px;
+  border: 2px outset #ffed9c; font-family: "Comic Sans MS", cursive;
+}
+#header .hdr-art { margin-top: 8px; }
+
+/* ============ бегущая строка ============ */
+.marquee-box {
+  background: #ffffcc; border-bottom: 1px solid #999;
+  font-family: "Comic Sans MS", cursive; font-size: 13px; color: #cc0000; font-weight: bold;
+  padding: 3px 0;
+}
+.marquee-box .tag { color: #006600; }
+
+/* ============ меню ============ */
+#menu { background: #3a3a3a; border-bottom: 2px solid #181818; padding: 7px 8px; text-align: center; }
+#menu a {
+  display: inline-block; background: linear-gradient(#85c4f5, #3570c8);
+  border: 2px outset #9ad2ff; color: #fff; font-family: "Comic Sans MS", cursive;
+  font-weight: bold; font-size: 13px; padding: 4px 15px; margin: 0 3px 3px;
+  text-decoration: none; text-shadow: 1px 1px 0 #1a4d9e;
+  transition: transform .1s;
+}
+#menu a:hover { border-style: inset; background: linear-gradient(#3570c8,#85c4f5); transform: translateY(1px); }
+#menu a.new::after { content:" NEW"; color:#ffe97a; font-size:9px; vertical-align:top; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ============ колонки ============ */
+#cols { width: 100%; border-collapse: collapse; }
+#side { width: 200px; background: #dedede; border-right: 1px solid #999; vertical-align: top; }
+#content { vertical-align: top; padding: 14px 18px 18px; min-height: 500px; }
+
+/* ============ сайдбары ============ */
+.sidebox { border: 2px outset #e8e8e8; background: #f0f0f0; margin: 10px 8px; }
+.sidebox .title {
+  background: linear-gradient(#949494,#656565); color: #fff;
+  font-family: "Comic Sans MS", cursive; font-weight: bold; font-size: 12px;
+  padding: 3px 7px; border-bottom: 1px solid #444; letter-spacing: .5px;
+}
+.sidebox .body { padding: 7px; font-size: 11px; line-height: 1.5; }
+.sidebox .body b { color: #1a4d9e; }
+.sidebox .new-tag { color: #d00; font-weight: bold; animation: blink 1s steps(1) infinite; }
+
+/* ============ контент ============ */
+h2 { font-family: "Comic Sans MS", cursive; font-size: 22px; color: var(--blue);
+     border-bottom: 3px double var(--blue); padding-bottom: 3px; margin: 0 0 10px; }
+h2 .art-inline { display:inline-block; vertical-align:middle; margin-right:6px; }
+h3 { font-family: "Comic Sans MS", cursive; font-size: 16px; color: #cc3300; margin: 14px 0 5px; }
+p { margin: 7px 0; line-height: 1.55; }
+.lead { font-size: 13px; color: #333; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 780px){ .grid2{ grid-template-columns:1fr; } }
+
+/* ============ пиксель-арт ============ */
+.art { position: relative; display: inline-block; vertical-align: middle; }
+.art .pix {
+  position: absolute; left: 0; top: 0; width: 1px; height: 1px; image-rendering: pixelated;
+}
+
+/* ============ таблицы ============ */
+table.verlist { width:100%; border-collapse: collapse; margin: 8px 0; }
+table.verlist th {
+  background: linear-gradient(#666,#444); color:#fff; font-family:"Comic Sans MS",cursive;
+  font-size: 12px; padding: 5px 7px; border:1px solid #222; text-align:left;
+}
+table.verlist td { border:1px solid #aaa; padding: 5px 7px; font-size: 11px; background:#fafafa; }
+table.verlist tr.alpha td { background:#ffe6cc; }
+table.verlist tr.beta td  { background:#dbeaff; }
+table.verlist tr:hover td { background:#ffffcc; }
+table.verlist .vname { font-family:"Comic Sans MS",cursive; font-weight:bold; color:#003366; white-space:nowrap; }
+
+/* ============ кнопки ============ */
+.btn, .mini {
+  display:inline-block; background: linear-gradient(#bff0a8,#50b335);
+  border:2px outset #96e276; color:#033; cursor:pointer;
+  font-family:"Comic Sans MS",cursive; font-weight:bold; font-size:12px;
+  padding: 4px 12px; text-decoration:none; vertical-align:middle;
+}
+.btn:hover, .mini:hover { border-style:inset; background:linear-gradient(#50b335,#bff0a8); }
+.mini { font-size: 10px; padding: 1px 8px; }
+
+/* ============ счётчик ============ */
+.counter { text-align:center; padding:4px 0; }
+.odometer { display:inline-block; background:#111; border:3px inset #666; padding:3px 6px;
+  font-family:"Courier New",monospace; font-size:22px; color:#3f3; letter-spacing:4px; font-weight:bold; }
+.counter .lbl { font-size:9px; color:#666; }
+
+/* ============ онлайн ============ */
+.online-dot { display:inline-block; width:8px; height:8px; background:#58d835;
+  border-radius:50%; box-shadow:0 0 6px #58d835; animation: blink 1.2s steps(1) infinite; vertical-align:middle; }
+
+/* ============ часы ============ */
+.clock { text-align:center; font-family:"Courier New",monospace; font-size:18px; color:#fff;
+  background:#222; border:3px inset #555; padding:2px 6px; letter-spacing:2px; }
+
+/* ============ голосование ============ */
+.poll .opt { margin:6px 0; cursor:pointer; }
+.poll .bar { height:14px; background:linear-gradient(#7aaf2e,#4f8310); border:1px solid #0a1a00; }
+.poll .bar.win { background:linear-gradient(#ffd54f,#c98a00); border-color:#6a4700; }
+.poll .row { display:flex; gap:6px; align-items:center; font-size:11px; }
+.poll .row .nm { width:140px; font-family:"Comic Sans MS",cursive; font-weight:bold; }
+.poll .row .w { flex:1; }
+.poll .row .pct { width:44px; text-align:right; font-family:"Courier New",monospace; }
+
+/* ============ гостевая ============ */
+.post { border:2px outset #eee; background:#fff; margin:10px 0; padding:7px 9px; }
+.post .head { font-size:11px; color:#555; border-bottom:1px dotted #999; padding-bottom:3px; margin-bottom:5px; }
+.post .head b { color:#003366; }
+.post .head .date { float:right; }
+.post .del { float:right; margin-left:8px; font-size:9px; color:#900; cursor:pointer; text-decoration:underline; }
+.post.gb-new { animation: appear .4s; }
+@keyframes appear { from { transform: scale(.7); opacity:0; } }
+.gb-form { background:#fff; border:2px outset #eee; padding:10px; margin-top:12px; }
+.gb-form input, .gb-form textarea { font-family:Verdana,Arial,sans-serif; font-size:12px;
+  border:2px inset #ccc; padding:3px; width:100%; background:#fffff0; }
+.gb-form label { font-size:11px; color:#444; }
+.toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:9990;
+  background:#222; color:#9c6; border:2px outset #555; padding:9px 18px;
+  font-family:"Comic Sans MS",cursive; font-size:13px; box-shadow:3px 3px 0 rgba(0,0,0,.4);
+  animation: appear .25s; }
+
+/* ============ дождь (бета 1.5) ============ */
+.rainbox { position:relative; height:110px; overflow:hidden; border:2px solid #444;
+  background: linear-gradient(#5a6d7a,#8fa6b5); margin:10px 0; }
+.rainbox .rain { pointer-events:none; }
+.rain { position:absolute; inset:0;
+  background-image: repeating-linear-gradient(180deg, rgba(255,255,255,.7) 0 2px, transparent 2px 7px),
+                    repeating-linear-gradient(180deg, rgba(255,255,255,.5) 0 1px, transparent 1px 9px);
+  background-size: 60px 100%, 90px 100%;
+  animation: rainMove .5s linear infinite; opacity:0; transition:opacity .5s; }
+body.weather .rain { opacity: 1; }
+@keyframes rainMove { from { background-position: 0 0, 30px 0; } to { background-position: 0 80px, 30px 70px; } }
+.rainbox .lb { position:absolute; bottom:0; font-size:10px; color:#eef; background:rgba(0,0,0,.45); padding:1px 6px; }
+
+/* ============ секции-блоки ============ */
+.block3d { background: linear-gradient(135deg, #fff 0%, #ddd 40%, #bbb 100%);
+  border: 2px outset #eee; padding: 10px 12px; margin: 10px 0; }
+.block3d h3 { margin-top: 0; }
+
+/* "строительство" */
+.construction { background: repeating-linear-gradient(45deg,#ffcc00,#ffcc00 10px,#222 10px,#222 20px);
+  color:#fff; font-family:"Comic Sans MS",cursive; font-weight:bold; text-align:center;
+  padding:6px; border:2px solid #222; text-shadow:1px 1px 0 #000; margin:10px 0; }
+
+/* блик "New!" */
+.glitter { display:inline-block; color:#a25d00;
+  background-image: linear-gradient(90deg,#a25d00 30%,#fff 45%,#a25d00 60%);
+  background-size:250% 100%; -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; animation: shine 3s linear infinite; }
+
+/* ============ фильтры версий ============ */
+.filters { margin:8px 0; }
+.filters .mini.active { background:linear-gradient(#ffd54f,#e0a000); border-color:#8a5a00; }
+
+.card { border:2px outset #eee; background:#fff; margin:12px 0; }
+.card .c-head { background:linear-gradient(#7cbdf0,#3570c8); color:#fff; padding:6px 10px;
+  font-family:"Comic Sans MC","Comic Sans",cursive; font-weight:bold; font-size:14px;
+  text-shadow:1px 1px 0 #1a4d9e; display:flex; justify-content:space-between; align-items:center; }
+.card .c-head .phase { font-size:10px; background:#fff; color:#1a4d9e; padding:1px 8px; border:2px outset #ddd; }
+.card .c-body { padding:10px; font-size:12px; }
+.card .c-body ul { margin: 6px 0 6px 18px; }
+.card .c-feats { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.card .chip { font-size:10px; background:#efefef; border:1px solid #bbb; padding:1px 7px; font-family:"Comic Sans MS",cursive; }
+.card.alphaHide { display:none; }
+.rating { color:#b77d00; letter-spacing:2px; font-size:12px; }
+
+/* ============ скриншоты-галерея ============ */
+.scene-frame { display:inline-block; border:6px outset #ddd; background:#f6f6f6; margin:4px; padding:10px 10px 6px; }
+.scene { position:relative; width:340px; height:200px; overflow:hidden; border:2px inset #666;
+  background: linear-gradient(#74b6e8 0%,#a8d6f2 55%,#cfe9f8 100%); }
+.scene .row { display:flex; position:absolute; left:0; right:0; height:24px; }
+.scene .row .cell { width:24px; height:24px; position:relative; }
+.scene .sun { position:absolute; right:16px; top:14px; width:34px; height:34px; border-radius:50%;
+  background:radial-gradient(#fff5c2,#ffd54f 60%,#ff9800); box-shadow:0 0 22px 6px rgba(255,213,79,.6); }
+.scene .cloudx { position:absolute; width:64px; height:16px; background:rgba(255,255,255,.9); border-radius:40px; }
+.scene .cloudx::before,.scene .cloudx::after{content:"";position:absolute;background:inherit;border-radius:50%;}
+.scene .cloudx::before{width:26px;height:26px;top:-12px;left:10px;}
+.scene .cloudx::after{width:20px;height:20px;top:-6px;right:14px;}
+.shot-cap { font-size:10px; color:#444; text-align:center; margin-top:4px; font-family:"Comic Sans MS",cursive; }
+.shot-com { font-size:10px; color:#660099; padding:2px 4px; border:1px dotted #999; background:#fafafa; margin:4px 0 0;}
+.scene .mob { position:absolute; }
+
+/* ============ подвал ============ */
+#footer { background:#3a3a3a; border-top:2px solid #181818; color:#ccc; text-align:center;
+  font-size:10px; padding:8px; font-family:"Comic Sans MS",cursive; }
+#footer a { color:#99ccff; }
+#footer .nb { color:#8f8; }
+
+/* ============ секретка ============ */
+.rev { unicode-bidi:bidi-override; direction:rtl; color:#333; }
+.secret-glow { color:#fff; text-shadow:0 0 8px #0f0, 0 0 20px #0f0; font-family:"Comic Sans MS",cursive; }
+
+/* ============ P2P (WebRTC) ============ */
+.p2p-panel { background:#eefcf0; border:2px outset #b6e6bb; padding:8px; margin:8px 0; font-size:11px; }
+.p2p-panel input { width:90px; border:2px inset #ccc; padding:2px; font-size:11px; }
+.p2p-panel .st { margin-top:6px; color:#226; }
+.p2p-panel b.synced { color:#28a745; }
+.p2p-panel b.off { color:#c33; }
+
+.chatbox {
+  width:100%; height:230px; overflow-y:auto; border:3px inset #555; background:#000;
+  color:#8f8; font-family:"Courier New",monospace; font-size:12px; padding:6px;
+  box-sizing:border-box; line-height:1.5;
+}
+.chatbox .chatline .cts { color:#787878; }
+.chatbox .chatline b { color:#7f7; }
+.chatline .ctt { color:#bfe; }
+.chat-input-row { display:flex; gap:6px; align-items:center; margin-top:6px; }
+.chat-input-row input { flex:1; border:2px inset #ccc; padding:3px; font-size:12px; }
+.chat-input-row .nick { width:120px; }
+
+/* мерцающая лава в скриншотах */
+.scene .art.lava .pix { animation: lavaF .7s steps(2) infinite; }
+@keyframes lavaF { 50% { filter: brightness(1.7) saturate(1.3); } }
