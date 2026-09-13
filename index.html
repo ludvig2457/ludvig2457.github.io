@@ -3,24 +3,520 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ludvig2457 — SuperLauncher & LudvigOS</title>
+  <title>Ludvig2457 — SuperLauncher, LudvigOS, моды</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #12121a;
+      --bg3: #1a1a26;
+      --border: #252536;
+      --text: #e8e8f0;
+      --text2: #a0a0b8;
+      --text3: #6b6b85;
+      --accent: #7c3aed;
+      --accent2: #a855f7;
+      --accent3: #06b6d4;
+      --gradient: linear-gradient(135deg, #7c3aed, #06b6d4);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent2);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      color: #fff;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      background: var(--bg3);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.9em;
+      color: var(--accent3);
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-logo img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+    }
+
+    .nav-links a {
+      color: var(--text2);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124, 58, 237, 0.15), transparent),
+        radial-gradient(ellipse 60% 50% at 80% 100%, rgba(6, 182, 212, 0.1), transparent);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 800px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 24px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+
+    .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text2);
+      max-width: 600px;
+      margin: 0 auto 36px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(124, 58, 237, 0.5);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: var(--bg2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-large {
+      padding: 16px 36px;
+      font-size: 1rem;
+    }
+
+    /* SECTIONS */
+    .section {
+      padding: 100px 24px;
+    }
+
+    .section-dark {
+      background: var(--bg2);
+    }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 20px;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    .section-sub {
+      font-size: 1.1rem;
+      color: var(--text2);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* FEATURES */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 50px;
+    }
+
+    .feature-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(124, 58, 237, 0.15);
+    }
+
+    .feature-card i {
+      font-size: 1.8rem;
+      color: var(--accent2);
+      margin-bottom: 16px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* DOWNLOAD BLOCK */
+    .download-block {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-align: center;
+    }
+
+    .download-info {
+      margin-bottom: 24px;
+    }
+
+    .download-version {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .version-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 100px;
+      background: var(--gradient);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .version-date {
+      font-size: 0.85rem;
+      color: var(--text3);
+    }
+
+    .download-meta {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+
+    .download-meta i {
+      margin-right: 6px;
+      color: var(--accent3);
+    }
+
+    /* SYS REQS */
+    .sys-reqs {
+      margin-top: 40px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .sys-reqs h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .reqs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      font-size: 0.9rem;
+      color: var(--text2);
+    }
+
+    /* SPECS */
+    .specs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .spec {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .spec-label {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text3);
+      margin-bottom: 6px;
+    }
+
+    .spec-value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent3);
+    }
+
+    /* ABOUT */
+    .about-content {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .about-content h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .about-content p {
+      color: var(--text2);
+      margin-bottom: 16px;
+    }
+
+    .about-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .about-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+
+    .about-links a:hover {
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* FOOTER */
+    .footer {
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .footer-brand {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: var(--text3);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .section {
+        padding: 60px 16px;
+      }
+
+      .section-header h2 {
+        font-size: 1.8rem;
+      }
+
+      .download-meta {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<div class="ticker" style="background:#ffffcc;color:#cc0000;font-family:'Comic Sans MS',cursive;font-size:13px;font-weight:bold;padding:3px 0;border-bottom:1px solid #999;">
-  <marquee scrollamount="5">&nbsp;ВНИМАНИЕ!!! САЙТ ПЕРЕДЕЛАН В СТИЛЕ 2011 ГОДА!&nbsp;&nbsp;&nbsp;ЛУЧШАЯ РАЗРЕШАЮЩАЯ СПОСОБНОСТЬ: 1024x768!&nbsp;&nbsp;&nbsp;ЗДЕСЬ СКАЧИВАЕТСЯ ВСЁ БЫСТРО, ДАЖЕ НА 1 Мбит!!!&nbsp;&nbsp;&nbsp;</marquee>
-</div>
-
 <nav class="navbar">
   <div class="nav-inner">
-    <span class="nav-logo">⚡ Ludvig2457</span>
+    <a href="#" class="nav-logo">
+      <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/ludvig2457.png" alt="Ludvig2457">
+      Ludvig2457
+    </a>
     <div class="nav-links">
       <a href="#superlauncher">SuperLauncher</a>
       <a href="#ludvig-os">LudvigOS</a>
+      <a href="#mods">Моды</a>
       <a href="#about">О проекте</a>
     </div>
   </div>
@@ -31,7 +527,7 @@
   <div class="hero-content">
     <div class="hero-badge">Экосистема Ludvig2457</div>
     <h1>Играй. Создавай. <span class="gradient-text">Управляй.</span></h1>
-    <p>SuperLauncher — быстрый Minecraft лаунчер с поддержкой модов. LudvigOS — минималистичная ОС с собственным ядром.</p>
+    <p>SuperLauncher — быстрый Minecraft лаунчер с поддержкой модов. LudvigOS — минималистичная ОС с собственным ядром. Scale Of Tools — мод, который спасает твои инструменты.</p>
     <div class="hero-buttons">
       <a href="#superlauncher" class="btn btn-primary">
         <i class="fas fa-download"></i> Скачать SuperLauncher
@@ -55,22 +551,22 @@
       <div class="feature-card">
         <i class="fas fa-cubes"></i>
         <h3>Моды и сборки</h3>
-        <p>Modrinth API — установка модпаков в один клик. Поддержка Forge, Fabric и OptiFine с авто-установкой</p>
+        <p>Modrinth API — установка модпаков в один клик. Поддержка Forge, Fabric, NeoForge и OptiFine с авто-установкой.</p>
       </div>
       <div class="feature-card">
         <i class="fas fa-server"></i>
         <h3>Управление серверами</h3>
-        <p>Создание локальных серверов, плагины из Modrinth, поддержка Bukkit/Spigot/Paper, авто-обновления</p>
+        <p>Создание локальных серверов, плагины из Modrinth, поддержка Bukkit/Spigot/Paper, авто-обновления.</p>
       </div>
       <div class="feature-card">
         <i class="fas fa-palette"></i>
         <h3>Современный интерфейс</h3>
-        <p>Светлая и тёмная темы, анимированные переходы, Discord Rich Presence</p>
+        <p>Светлая и тёмная темы, анимированные переходы, Discord Rich Presence.</p>
       </div>
       <div class="feature-card">
         <i class="fas fa-bolt"></i>
         <h3>Нативный бинарник</h3>
-        <p>SuperLauncher 3.0 Beta написана на C++ и Assembler — не требует Java и внешних рантаймов, весит всего ~260 КБ</p>
+        <p>SuperLauncher 3.0 Beta написана на C++ и Assembler — не требует Java и внешних рантаймов, весит всего ~260 КБ.</p>
       </div>
     </div>
 
@@ -83,7 +579,7 @@
         <div class="download-meta">
           <span><i class="fas fa-windows"></i> Windows 10/11 (.exe)</span>
           <span><i class="fas fa-code"></i> C++ / Assembler</span>
-          <span><i class="fas fa-file-archive"></i> всего ~260 КБ</span>
+          <span><i class="fas fa-file-archive"></i> ~260 КБ</span>
         </div>
       </div>
       <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative/releases/download/3.0/SuperLauncherNative.exe" target="_blank" class="btn btn-primary btn-large">
@@ -93,24 +589,8 @@
         Для старых систем (Windows XP): <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative/releases/download/3.0/SuperLauncherNative_xp.exe" target="_blank" style="color:var(--accent);text-decoration:underline;"><i class="fas fa-floppy-disk"></i> SuperLauncherNative_xp.exe</a>
       </p>
       <p style="margin-top:12px;font-size:13px;color:var(--text3);">
-        Open source: <code style="background:var(--bg3);padding:2px 8px;border-radius:4px;">github.com/Ludvig2457Ultra/SuperLauncherMCNative</code>
+        Open source: <code>github.com/Ludvig2457Ultra/SuperLauncherMCNative</code>
       </p>
-    </div>
-
-    <div class="download-block" style="margin-top:18px;">
-      <div class="download-info">
-        <div class="download-version">
-          <span class="version-badge" style="background:var(--accent)">v2.0 Stable</span>
-          <span class="version-date">Стабильная версия — передана своим же Java-рантаймом</span>
-        </div>
-        <div class="download-meta">
-          <span><i class="fas fa-windows"></i> Windows 10/11 (.exe)</span>
-          <span><i class="fas fa-clock"></i> проверенная и стабильная</span>
-        </div>
-      </div>
-      <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMC/releases/download/v2.0.0/superlauncher.exe" target="_blank" class="btn btn-large" style="background:#4a4f79;color:#fff;">
-        <i class="fas fa-download"></i> Скачать SuperLauncher 2.0 Stable
-      </a>
     </div>
 
     <div class="sys-reqs">
@@ -119,7 +599,7 @@
         <div><strong>ОС:</strong> Windows 10/11, Linux (Arch)</div>
         <div><strong>CPU:</strong> любой x86_64</div>
         <div><strong>RAM:</strong> от 2 ГБ</div>
-        <div><strong>Java:</strong> не требуется (встроенный лаунчер)</div>
+        <div><strong>Java:</strong> не требуется</div>
         <div><strong>Место:</strong> от 200 МБ</div>
         <div><strong>GPU:</strong> любая с OpenGL 3.2+</div>
       </div>
@@ -139,22 +619,22 @@
       <div class="feature-card">
         <i class="fas fa-microchip"></i>
         <h3>Собственное ядро</h3>
-        <p>Полноценное ядро на C++ с поддержкой Multiboot, VGA-драйвером и управлением памятью</p>
+        <p>Полноценное ядро на C++ с поддержкой Multiboot, VGA-драйвером и управлением памятью.</p>
       </div>
       <div class="feature-card">
         <i class="fas fa-desktop"></i>
         <h3>Графический интерфейс</h3>
-        <p>Рабочий десктоп с поддержкой мыши и клавиатуры через порты 0x60/0x64</p>
+        <p>Рабочий десктоп с поддержкой мыши и клавиатуры через порты 0x60/0x64.</p>
       </div>
       <div class="feature-card">
         <i class="fas fa-terminal"></i>
         <h3>Командная оболочка</h3>
-        <p>Терминал с neofetch, LUR/LURE пакетными менеджерами и игровыми командами</p>
+        <p>Терминал с neofetch, LUR/LURE пакетными менеджерами и игровыми командами.</p>
       </div>
       <div class="feature-card">
         <i class="fas fa-tachometer-alt"></i>
         <h3>Всего 2MB ОЗУ</h3>
-        <p>Экстремально лёгкая ОС — работает даже на самых старых машинах</p>
+        <p>Экстремально лёгкая ОС — работает даже на самых старых машинах.</p>
       </div>
     </div>
 
@@ -193,32 +673,77 @@
         <i class="fas fa-download"></i> Скачать LudvigOS v1.2 ISO
       </a>
       <p style="margin-top:12px;font-size:13px;color:var(--text3);">
-        Запуск: <code style="background:var(--bg3);padding:2px 8px;border-radius:4px;">qemu-system-i386 -cdrom LudvigOS.iso -m 512M</code>
+        Запуск: <code>qemu-system-i386 -cdrom LudvigOS.iso -m 512M</code>
       </p>
     </div>
+  </div>
+</section>
 
-    <div class="sys-reqs">
-      <h3>Системные требования</h3>
-      <div class="reqs-grid">
-        <div><strong>CPU:</strong> i686 (Pentium Pro и выше)</div>
-        <div><strong>RAM:</strong> от 2 МБ!</div>
-        <div><strong>Видео:</strong> VGA-совместимая</div>
-        <div><strong>Запуск:</strong> QEMU / реальное железо</div>
+<section id="mods" class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,#f7c948,#ff6b35)">🎮</div>
+      <h2>Моды для Minecraft</h2>
+      <p class="section-sub">Scale Of Tools — мод, который спасает твои инструменты от неожиданной поломки</p>
+    </div>
+
+    <div class="features">
+      <div class="feature-card">
+        <i class="fas fa-wrench"></i>
+        <h3>Scale Of Tools</h3>
+        <p>Предупреждает, когда инструмент вот-вот сломается. Инструмент сжимается при износе, палки остаются на земле.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-layer-group"></i>
+        <h3>Все загрузчики</h3>
+        <p>Fabric, Forge, NeoForge, Quilt. Поддержка 1.20.1, 1.20.4, 1.21.1, 1.21.4.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-download"></i>
+        <h3>80+ скачиваний</h3>
+        <p>Мод уже скачали 80+ раз на CurseForge. Присоединяйся!</p>
+      </div>
+      <div class="feature-card">
+        <i class="fab fa-github"></i>
+        <h3>Open Source</h3>
+        <p>Исходный код доступен на GitHub. Лицензия MIT.</p>
+      </div>
+    </div>
+
+    <div class="download-block">
+      <div class="download-info">
+        <div class="download-version">
+          <span class="version-badge">v1.1</span>
+          <span class="version-date">12 сентября 2026 — мульти-загрузчик</span>
+        </div>
+        <div class="download-meta">
+          <span><i class="fas fa-cubes"></i> 16 файлов</span>
+          <span><i class="fas fa-code-branch"></i> 4 загрузчика</span>
+          <span><i class="fas fa-gamepad"></i> 4 версии</span>
+        </div>
+      </div>
+      <div class="hero-buttons">
+        <a href="https://www.curseforge.com/minecraft/mc-mods/scale-of-tools" target="_blank" class="btn btn-primary">
+          <i class="fas fa-download"></i> Скачать с CurseForge
+        </a>
+        <a href="https://modrinth.com/mod/scale-of-tools" target="_blank" class="btn btn-secondary">
+          <i class="fas fa-download"></i> Скачать с Modrinth
+        </a>
       </div>
     </div>
   </div>
 </section>
 
-<section id="about" class="section">
+<section id="about" class="section section-dark">
   <div class="section-inner">
     <div class="about-content">
       <h2>О проекте Ludvig2457</h2>
       <p>Ludvig2457 — разработчик с открытым исходным кодом. Создаёт инструменты для геймеров и энтузиастов: Minecraft лаунчер с полной поддержкой модов и собственную операционную систему.</p>
-      <p>SuperLauncher написан на Python и собран через PyInstaller. LudvigOS написана на C++ и Assembly, загружается через GRUB2.</p>
+      <p>SuperLauncher написан на C++ и Assembler. LudvigOS написана на C++ и Assembly, загружается через GRUB2.</p>
       <div class="about-links">
         <a href="https://github.com/Ludvig2457Ultra" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMC" target="_blank"><i class="fas fa-rocket"></i> SuperLauncher repo</a>
-        <a href="https://github.com/Ludvig2457Ultra/LudvigOS" target="_blank"><i class="fas fa-microchip"></i> LudvigOS repo</a>
+        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMC" target="_blank"><i class="fas fa-rocket"></i> SuperLauncher</a>
+        <a href="https://github.com/Ludvig2457Ultra/LudvigOS" target="_blank"><i class="fas fa-microchip"></i> LudvigOS</a>
         <a href="https://ludvig2457.github.io/" target="_blank"><i class="fas fa-globe"></i> Сайт</a>
       </div>
     </div>
@@ -228,19 +753,9 @@
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">⚡ Ludvig2457</div>
-    <p class="footer-copy">© 2026 Ludvig2457. Open source.
-      <span style="background:#111;color:#3f3;font-family:'Courier New',monospace;padding:1px 6px;letter-spacing:2px;display:inline-block;vertical-align:middle;"><span id="hitcnt">0000000</span></span></p>
+    <p class="footer-copy">© 2026 Ludvig2457. Open source.</p>
   </div>
 </footer>
-<script>
-/* счётчик посещений в духе 2011 (шутка, живёт в браузере) */
-(function(){
-  var k='ludvig2011_hits';
-  var n=(parseInt(localStorage.getItem(k),10)||1048576)+Math.floor(Math.random()*3)+1;
-  localStorage.setItem(k,String(n));
-  var el=document.getElementById('hitcnt');
-  var s=String(n); while(s.length<7) s='0'+s; el.textContent=s;
-})();
-</script>
+
 </body>
 </html>
