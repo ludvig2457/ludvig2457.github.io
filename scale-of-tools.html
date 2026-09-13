@@ -4,13 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Scale Of Tools — мод, который спасает твои инструменты</title>
-<meta name="description" content="Клиентский мод для Minecraft. Предупреждает, когда инструмент вот-таки сломается. Fabric, Forge, NeoForge, Quilt. 80+ скачиваний.">
+<meta name="description" content="Клиентский мод для Minecraft. Предупреждает, когда инструмент вот-вот сломается. Fabric, Forge, NeoForge, Quilt. 80+ скачиваний.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-  /* ========== RESET & TOKENS ========== */
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
   :root{
@@ -60,7 +59,6 @@
 
   ::selection{background:var(--purple);color:#fff}
 
-  /* ========== BG ========== */
   .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
   .bg::before{
     content:'';position:absolute;inset:0;
@@ -86,10 +84,10 @@
   /* ========== NAV ========== */
   .nav{
     position:fixed;top:0;left:0;right:0;z-index:1000;
-    padding:20px 0;transition:all .5s var(--ease);
+    padding:16px 0;transition:all .5s var(--ease);
   }
   .nav.scrolled{
-    padding:12px 0;
+    padding:10px 0;
     background:rgba(5,5,16,.75);
     backdrop-filter:blur(28px) saturate(180%);
     -webkit-backdrop-filter:blur(28px) saturate(180%);
@@ -100,15 +98,20 @@
     display:flex;align-items:center;justify-content:space-between;gap:24px;
   }
   .nav-brand{
-    display:flex;align-items:center;gap:12px;
-    text-decoration:none;color:#fff;font-weight:800;
-    font-family:'Space Grotesk',sans-serif;font-size:1.1rem;
-    letter-spacing:-.02em;
+    display:flex;align-items:center;
+    text-decoration:none;
+    transition:transform .4s var(--ease-spring);
   }
-  .nav-brand .dot{
-    width:8px;height:8px;border-radius:50%;
-    background:var(--purple-2);
-    box-shadow:0 0 12px var(--purple-2);
+  .nav-brand:hover{transform:scale(1.04)}
+  .nav-brand img{
+    height:48px;
+    width:auto;
+    object-fit:contain;
+    filter:drop-shadow(0 0 24px rgba(139,92,246,.4));
+    transition:filter .3s ease;
+  }
+  .nav-brand:hover img{
+    filter:drop-shadow(0 0 40px rgba(139,92,246,.7));
   }
   .nav-cta{
     display:inline-flex;align-items:center;gap:10px;
@@ -121,10 +124,7 @@
   .nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(139,92,246,.6)}
 
   /* ========== SHARED ========== */
-  .section{
-    position:relative;z-index:2;
-    padding:120px 32px;
-  }
+  .section{position:relative;z-index:2;padding:120px 32px}
   .wrap{max-width:1200px;margin:0 auto}
 
   .tag{
@@ -278,12 +278,8 @@
     content:'';position:absolute;top:0;left:0;right:0;height:2px;
     background:var(--grad-danger);
   }
-  .chat{
-    display:flex;flex-direction:column;gap:20px;
-  }
-  .chat-line{
-    display:flex;align-items:flex-start;gap:14px;
-  }
+  .chat{display:flex;flex-direction:column;gap:20px}
+  .chat-line{display:flex;align-items:flex-start;gap:14px}
   .chat-icon{
     flex-shrink:0;
     width:44px;height:44px;border-radius:12px;
@@ -350,9 +346,7 @@
     font-size:1.3rem;font-weight:600;
     margin-bottom:12px;letter-spacing:-.02em;
   }
-  .sol-card p{
-    font-size:.95rem;color:var(--text-2);line-height:1.7;
-  }
+  .sol-card p{font-size:.95rem;color:var(--text-2);line-height:1.7}
 
   /* ========== HOW ========== */
   .how{background:rgba(10,10,24,.3)}
@@ -531,10 +525,7 @@
   }
 
   /* ========== CTA ========== */
-  .cta{
-    position:relative;z-index:2;
-    padding:120px 32px;
-  }
+  .cta{position:relative;z-index:2;padding:120px 32px}
   .cta-card{
     max-width:1000px;margin:0 auto;
     padding:80px 48px;text-align:center;
@@ -579,17 +570,18 @@
     flex-wrap:wrap;gap:24px;
   }
   .footer-brand{
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:700;color:#fff;font-size:1rem;
-    display:flex;align-items:center;gap:10px;
+    display:flex;align-items:center;
+    text-decoration:none;
   }
-  .footer-brand .dot{
-    width:8px;height:8px;border-radius:50%;
-    background:var(--purple-2);box-shadow:0 0 12px var(--purple-2);
+  .footer-brand img{
+    height:40px;
+    width:auto;
+    object-fit:contain;
+    filter:drop-shadow(0 0 20px rgba(139,92,246,.35));
+    transition:opacity .3s ease;
   }
-  .footer-links{
-    display:flex;gap:24px;flex-wrap:wrap;
-  }
+  .footer-brand img:hover{opacity:.75}
+  .footer-links{display:flex;gap:24px;flex-wrap:wrap}
   .footer-links a{
     font-size:.85rem;color:var(--text-3);
     text-decoration:none;transition:color .2s ease;
@@ -623,7 +615,7 @@
     .faq-a{padding:0 24px 20px}
     .cta-card{padding:56px 24px}
     .footer-in{flex-direction:column;text-align:center}
-    .nav-brand span{display:none}
+    .nav-brand img{height:36px}
   }
 </style>
 </head>
@@ -636,8 +628,7 @@
 <nav class="nav" id="nav">
   <div class="nav-in">
     <a href="#" class="nav-brand">
-      <span class="dot"></span>
-      <span>Scale Of Tools</span>
+      <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/minecraft_title1.png" alt="Scale Of Tools">
     </a>
     <a href="#download" class="nav-cta">
       <i class="fas fa-download"></i>
@@ -922,10 +913,9 @@
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-in">
-    <div class="footer-brand">
-      <span class="dot"></span>
-      <span>Scale Of Tools</span>
-    </div>
+    <a href="#" class="footer-brand">
+      <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/minecraft_title1.png" alt="Scale Of Tools">
+    </a>
     <div class="footer-links">
       <a href="https://github.com/Ludvig2457Ultra/Scale-Of-Tools" target="_blank">GitHub</a>
       <a href="https://discord.gg/5QyUmRZZd2" target="_blank">Discord</a>
