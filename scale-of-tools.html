@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scale Of Tools — мод, который спасает твои инструменты</title>
+<meta name="description" content="Клиентский мод для Minecraft. Предупреждает, когда инструмент вот-таки сломается. Fabric, Forge, NeoForge, Quilt. 80+ скачиваний.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  /* ========== RESET & TOKENS ========== */
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+  :root{
+    --bg:#050510;
+    --bg-1:#0a0a18;
+    --bg-2:#10101f;
+    --bg-3:#16162a;
+    --bg-4:#1e1e35;
+    --border:#1c1c32;
+    --border-2:#2a2a48;
+    --text:#ffffff;
+    --text-2:#a5a5c2;
+    --text-3:#5e5e7e;
+    --purple:#8b5cf6;
+    --purple-2:#a78bfa;
+    --purple-3:#c4b5fd;
+    --cyan:#22d3ee;
+    --pink:#ec4899;
+    --gold:#fbbf24;
+    --green:#10b981;
+    --red:#ef4444;
+    --grad-hero:linear-gradient(120deg,#a78bfa,#22d3ee 50%,#ec4899);
+    --grad-main:linear-gradient(135deg,#8b5cf6,#22d3ee);
+    --grad-warm:linear-gradient(135deg,#fbbf24,#ec4899);
+    --grad-green:linear-gradient(135deg,#10b981,#22d3ee);
+    --grad-danger:linear-gradient(135deg,#ef4444,#f59e0b);
+    --radius:28px;
+    --radius-md:18px;
+    --radius-sm:12px;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --ease-out:cubic-bezier(.16,1,.3,1);
+    --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  }
+
+  html{scroll-behavior:smooth;scroll-padding-top:120px}
+
+  body{
+    font-family:'Inter',-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+    font-feature-settings:'ss01','ss02','cv01','cv11';
+  }
+
+  ::selection{background:var(--purple);color:#fff}
+
+  /* ========== BG ========== */
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .bg::before{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% -10%,rgba(139,92,246,.25),transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 60%,rgba(34,211,238,.12),transparent 60%),
+      radial-gradient(ellipse 40% 30% at 10% 90%,rgba(236,72,153,.08),transparent 60%);
+  }
+  .bg::after{
+    content:'';position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,#000,transparent);
+    -webkit-mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,#000,transparent);
+  }
+  .noise{
+    position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ========== NAV ========== */
+  .nav{
+    position:fixed;top:0;left:0;right:0;z-index:1000;
+    padding:20px 0;transition:all .5s var(--ease);
+  }
+  .nav.scrolled{
+    padding:12px 0;
+    background:rgba(5,5,16,.75);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    border-bottom:1px solid rgba(255,255,255,.05);
+  }
+  .nav-in{
+    max-width:1200px;margin:0 auto;padding:0 32px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+  }
+  .nav-brand{
+    display:flex;align-items:center;gap:12px;
+    text-decoration:none;color:#fff;font-weight:800;
+    font-family:'Space Grotesk',sans-serif;font-size:1.1rem;
+    letter-spacing:-.02em;
+  }
+  .nav-brand .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--purple-2);
+    box-shadow:0 0 12px var(--purple-2);
+  }
+  .nav-cta{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:11px 24px;border-radius:100px;
+    background:var(--grad-main);color:#fff;
+    font-size:.85rem;font-weight:700;text-decoration:none;
+    box-shadow:0 6px 24px rgba(139,92,246,.4);
+    transition:all .35s var(--ease);
+  }
+  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(139,92,246,.6)}
+
+  /* ========== SHARED ========== */
+  .section{
+    position:relative;z-index:2;
+    padding:120px 32px;
+  }
+  .wrap{max-width:1200px;margin:0 auto}
+
+  .tag{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:.72rem;font-weight:600;
+    color:var(--purple-2);text-transform:uppercase;
+    letter-spacing:3px;margin-bottom:20px;
+  }
+  .tag::before{
+    content:'';width:32px;height:1px;
+    background:linear-gradient(90deg,var(--purple-2),transparent);
+  }
+
+  h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(2rem,5vw,3.6rem);
+    font-weight:500;line-height:1.05;
+    letter-spacing:-.035em;margin-bottom:20px;
+  }
+  h2 em{
+    font-style:italic;
+    background:var(--grad-main);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .lead{
+    font-size:1.12rem;color:var(--text-2);
+    line-height:1.75;max-width:680px;
+  }
+
+  /* ========== BUTTON ========== */
+  .btn{
+    display:inline-flex;align-items:center;gap:12px;
+    padding:18px 36px;border-radius:100px;
+    font-size:.98rem;font-weight:700;letter-spacing:-.2px;
+    text-decoration:none;border:none;cursor:pointer;
+    transition:all .4s var(--ease);position:relative;
+    overflow:hidden;
+  }
+  .btn-primary{
+    background:#fff;color:#000;
+    box-shadow:0 8px 32px rgba(255,255,255,.2);
+  }
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(255,255,255,.35)}
+  .btn-secondary{
+    background:rgba(255,255,255,.05);color:#fff;
+    border:1px solid var(--border-2);
+  }
+  .btn-secondary:hover{
+    border-color:var(--purple);background:rgba(139,92,246,.1);
+    transform:translateY(-3px);
+    box-shadow:0 12px 40px rgba(139,92,246,.3);
+  }
+  .btn-lg{padding:22px 48px;font-size:1.05rem}
+
+  /* ========== HERO ========== */
+  .hero{
+    position:relative;z-index:2;
+    min-height:100vh;display:flex;align-items:center;
+    padding:160px 32px 100px;text-align:center;
+  }
+  .hero-in{max-width:900px;margin:0 auto;width:100%}
+
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 20px;border-radius:100px;
+    background:rgba(10,10,24,.7);
+    border:1px solid var(--border-2);
+    font-size:.75rem;font-weight:600;color:var(--text-2);
+    margin-bottom:32px;backdrop-filter:blur(20px);
+    letter-spacing:.5px;
+  }
+  .hero-badge .live{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:4px 10px;border-radius:100px;
+    background:rgba(16,185,129,.15);
+    border:1px solid rgba(16,185,129,.35);
+    color:var(--green);font-size:.65rem;font-weight:800;
+    text-transform:uppercase;letter-spacing:1.5px;
+  }
+  .hero-badge .live::before{
+    content:'';width:6px;height:6px;border-radius:50%;
+    background:var(--green);box-shadow:0 0 10px var(--green);
+    animation:blink 1.8s ease-in-out infinite;
+  }
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+  .hero h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(2.8rem,7vw,5.6rem);
+    font-weight:400;line-height:.98;
+    letter-spacing:-.045em;margin-bottom:28px;
+    color:#fff;
+  }
+  .hero h1 em{
+    font-style:italic;
+    background:var(--grad-hero);
+    background-size:200% 200%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:shift 8s ease infinite;
+  }
+  @keyframes shift{
+    0%,100%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+  }
+
+  .hero p{
+    font-size:1.15rem;color:var(--text-2);
+    max-width:620px;margin:0 auto 40px;line-height:1.7;
+  }
+  .hero-actions{
+    display:flex;gap:14px;justify-content:center;
+    flex-wrap:wrap;margin-bottom:32px;
+  }
+  .hero-meta{
+    display:flex;justify-content:center;gap:28px;
+    flex-wrap:wrap;font-size:.82rem;color:var(--text-3);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .hero-meta span{display:inline-flex;align-items:center;gap:8px}
+  .hero-meta i{color:var(--cyan)}
+
+  /* ========== PROBLEM ========== */
+  .problem{
+    background:rgba(239,68,68,.03);
+    border-top:1px solid rgba(239,68,68,.1);
+    border-bottom:1px solid rgba(239,68,68,.1);
+  }
+  .problem-in{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:72px;align-items:center;
+  }
+  .problem h2 em{
+    background:var(--grad-danger);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .problem-visual{
+    background:rgba(10,10,24,.6);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:40px;backdrop-filter:blur(24px);
+    position:relative;overflow:hidden;
+  }
+  .problem-visual::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:var(--grad-danger);
+  }
+  .chat{
+    display:flex;flex-direction:column;gap:20px;
+  }
+  .chat-line{
+    display:flex;align-items:flex-start;gap:14px;
+  }
+  .chat-icon{
+    flex-shrink:0;
+    width:44px;height:44px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1rem;
+  }
+  .chat-icon.bad{
+    background:rgba(239,68,68,.12);
+    border:1px solid rgba(239,68,68,.3);
+    color:var(--red);
+  }
+  .chat-icon.good{
+    background:rgba(16,185,129,.12);
+    border:1px solid rgba(16,185,129,.3);
+    color:var(--green);
+  }
+  .chat-text{
+    font-size:.95rem;color:var(--text-2);line-height:1.6;
+    padding-top:10px;
+  }
+  .chat-text strong{color:#fff;font-weight:600}
+
+  /* ========== SOLUTION ========== */
+  .solution-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:24px;margin-top:56px;
+  }
+  .sol-card{
+    padding:40px;border-radius:var(--radius);
+    background:rgba(10,10,24,.5);
+    border:1px solid var(--border);
+    backdrop-filter:blur(24px);
+    transition:all .5s var(--ease);
+    position:relative;overflow:hidden;
+  }
+  .sol-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:var(--grad-main);opacity:0;
+    transition:opacity .5s ease;
+  }
+  .sol-card:hover{
+    border-color:var(--border-2);
+    transform:translateY(-6px);
+    box-shadow:0 24px 64px rgba(0,0,0,.4);
+  }
+  .sol-card:hover::before{opacity:1}
+  .sol-icon{
+    width:60px;height:60px;border-radius:16px;
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--border-2);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.5rem;color:var(--purple-2);
+    margin-bottom:24px;
+    transition:all .5s var(--ease-spring);
+  }
+  .sol-card:hover .sol-icon{
+    background:var(--grad-main);color:#fff;
+    border-color:transparent;
+    transform:scale(1.08) rotate(-5deg);
+    box-shadow:0 12px 40px rgba(139,92,246,.5);
+  }
+  .sol-card h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.3rem;font-weight:600;
+    margin-bottom:12px;letter-spacing:-.02em;
+  }
+  .sol-card p{
+    font-size:.95rem;color:var(--text-2);line-height:1.7;
+  }
+
+  /* ========== HOW ========== */
+  .how{background:rgba(10,10,24,.3)}
+  .how-list{
+    display:flex;flex-direction:column;
+    gap:1px;background:var(--border);
+    border-radius:var(--radius);overflow:hidden;
+    border:1px solid var(--border);margin-top:56px;
+  }
+  .how-item{
+    background:var(--bg-1);
+    padding:40px 48px;
+    display:grid;
+    grid-template-columns:80px 1fr;
+    gap:32px;align-items:center;
+    transition:background .4s ease;
+  }
+  .how-item:hover{background:var(--bg-3)}
+  .how-num{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:2.6rem;font-weight:300;
+    line-height:1;letter-spacing:-.04em;
+    background:var(--grad-hero);
+    background-size:200% 200%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:shift 6s ease infinite;
+  }
+  .how-body h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.25rem;font-weight:600;
+    margin-bottom:8px;letter-spacing:-.02em;
+  }
+  .how-body p{font-size:.95rem;color:var(--text-2);line-height:1.7}
+  .how-body code{
+    font-family:'JetBrains Mono',monospace;
+    background:var(--bg-3);
+    padding:3px 10px;border-radius:6px;
+    font-size:.85em;color:var(--cyan);
+    border:1px solid var(--border);
+  }
+
+  /* ========== STATS ========== */
+  .stats{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:1px;background:var(--border);
+    border:1px solid var(--border);
+    border-radius:var(--radius);overflow:hidden;
+    margin-top:56px;
+  }
+  .stat{
+    background:var(--bg);
+    padding:48px 28px;text-align:center;
+    transition:background .4s ease;
+  }
+  .stat:hover{background:var(--bg-3)}
+  .stat-v{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(2rem,4vw,3rem);
+    font-weight:500;line-height:1;letter-spacing:-.04em;
+    margin-bottom:12px;
+    background:var(--grad-hero);
+    background-size:200% 200%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:shift 6s ease infinite;
+  }
+  .stat-l{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.68rem;color:var(--text-3);
+    text-transform:uppercase;letter-spacing:2px;
+    font-weight:600;
+  }
+
+  /* ========== DOWNLOAD ========== */
+  .download-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);
+    gap:24px;margin-top:56px;
+  }
+  .dl-card{
+    padding:48px;border-radius:var(--radius);
+    background:rgba(10,10,24,.6);
+    border:1px solid var(--border);
+    backdrop-filter:blur(24px);
+    transition:all .5s var(--ease);
+    position:relative;overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .dl-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:var(--grad-main);
+  }
+  .dl-card.warm::before{background:var(--grad-warm)}
+  .dl-card:hover{
+    border-color:var(--border-2);
+    transform:translateY(-6px);
+    box-shadow:0 24px 64px rgba(0,0,0,.4);
+  }
+  .dl-head{
+    display:flex;align-items:center;gap:16px;
+    margin-bottom:24px;
+  }
+  .dl-platform{
+    width:56px;height:56px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;
+  }
+  .dl-platform.cf{
+    background:linear-gradient(135deg,#f97316,#ea580c);
+    color:#fff;
+  }
+  .dl-platform.mr{
+    background:linear-gradient(135deg,#10b981,#059669);
+    color:#fff;
+  }
+  .dl-title h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.4rem;font-weight:600;
+    letter-spacing:-.02em;margin-bottom:4px;
+  }
+  .dl-title p{font-size:.85rem;color:var(--text-3)}
+  .dl-card > p{
+    font-size:.98rem;color:var(--text-2);
+    line-height:1.7;margin-bottom:32px;flex:1;
+  }
+  .dl-meta{
+    display:flex;flex-wrap:wrap;gap:16px;
+    font-size:.82rem;color:var(--text-3);
+    margin-bottom:28px;
+    padding-top:24px;
+    border-top:1px solid var(--border);
+  }
+  .dl-meta span{display:inline-flex;align-items:center;gap:6px}
+  .dl-meta i{color:var(--cyan)}
+
+  /* ========== FAQ ========== */
+  .faq-list{
+    display:flex;flex-direction:column;
+    gap:12px;margin-top:56px;max-width:860px;margin-left:auto;margin-right:auto;
+  }
+  .faq-item{
+    background:rgba(10,10,24,.5);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    overflow:hidden;
+    transition:all .4s var(--ease);
+  }
+  .faq-item:hover{border-color:var(--border-2)}
+  .faq-item[open]{border-color:var(--purple)}
+  .faq-q{
+    padding:24px 32px;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.1rem;font-weight:600;
+    letter-spacing:-.02em;
+    cursor:pointer;list-style:none;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:20px;
+    transition:color .3s ease;
+  }
+  .faq-q::-webkit-details-marker{display:none}
+  .faq-q::after{
+    content:'+';
+    font-family:'JetBrains Mono',monospace;
+    font-size:1.4rem;color:var(--purple-2);
+    transition:transform .4s var(--ease-spring);
+    flex-shrink:0;
+  }
+  .faq-item[open] .faq-q::after{transform:rotate(45deg)}
+  .faq-item[open] .faq-q{color:var(--purple-2)}
+  .faq-a{
+    padding:0 32px 24px;
+    font-size:.95rem;color:var(--text-2);
+    line-height:1.75;
+  }
+
+  /* ========== CTA ========== */
+  .cta{
+    position:relative;z-index:2;
+    padding:120px 32px;
+  }
+  .cta-card{
+    max-width:1000px;margin:0 auto;
+    padding:80px 48px;text-align:center;
+    border-radius:var(--radius);
+    background:rgba(10,10,24,.6);
+    border:1px solid var(--border);
+    backdrop-filter:blur(32px);
+    position:relative;overflow:hidden;
+  }
+  .cta-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:var(--grad-hero);
+  }
+  .cta-card::after{
+    content:'';position:absolute;
+    top:-40%;left:50%;transform:translateX(-50%);
+    width:120%;height:120%;
+    background:radial-gradient(ellipse,rgba(139,92,246,.15),transparent 55%);
+    pointer-events:none;
+  }
+  .cta-in{position:relative;z-index:1}
+  .cta h2{margin-bottom:24px}
+  .cta p{
+    font-size:1.1rem;color:var(--text-2);
+    max-width:560px;margin:0 auto 40px;line-height:1.7;
+  }
+  .cta-actions{
+    display:flex;gap:14px;justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  /* ========== FOOTER ========== */
+  .footer{
+    position:relative;z-index:2;
+    padding:64px 32px 40px;
+    border-top:1px solid var(--border);
+    background:rgba(5,5,16,.6);
+  }
+  .footer-in{
+    max-width:1200px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:24px;
+  }
+  .footer-brand{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;color:#fff;font-size:1rem;
+    display:flex;align-items:center;gap:10px;
+  }
+  .footer-brand .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--purple-2);box-shadow:0 0 12px var(--purple-2);
+  }
+  .footer-links{
+    display:flex;gap:24px;flex-wrap:wrap;
+  }
+  .footer-links a{
+    font-size:.85rem;color:var(--text-3);
+    text-decoration:none;transition:color .2s ease;
+  }
+  .footer-links a:hover{color:var(--purple-2)}
+  .footer-copy{font-size:.82rem;color:var(--text-3)}
+
+  /* ========== REVEAL ========== */
+  .reveal{
+    opacity:0;transform:translateY(48px);
+    transition:all 1s var(--ease-out);
+  }
+  .reveal.in{opacity:1;transform:translateY(0)}
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width:900px){
+    .problem-in{grid-template-columns:1fr;gap:48px}
+    .solution-grid{grid-template-columns:1fr;gap:16px}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .download-grid{grid-template-columns:1fr}
+    .how-item{padding:32px 28px;grid-template-columns:60px 1fr;gap:20px}
+    .how-num{font-size:2rem}
+  }
+  @media (max-width:600px){
+    .section{padding:80px 20px}
+    .hero{padding:120px 20px 80px}
+    .hero-actions{flex-direction:column;width:100%}
+    .btn{width:100%;justify-content:center}
+    .stats{grid-template-columns:1fr}
+    .faq-q{padding:20px 24px;font-size:1rem}
+    .faq-a{padding:0 24px 20px}
+    .cta-card{padding:56px 24px}
+    .footer-in{flex-direction:column;text-align:center}
+    .nav-brand span{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="noise"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-in">
+    <a href="#" class="nav-brand">
+      <span class="dot"></span>
+      <span>Scale Of Tools</span>
+    </a>
+    <a href="#download" class="nav-cta">
+      <i class="fas fa-download"></i>
+      Скачать
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-in">
+    <div class="hero-badge">
+      <span class="live">Live</span>
+      v1.1 · Fabric · Forge · NeoForge · Quilt
+    </div>
+    <h1>
+      Твой инструмент<br>
+      <em>не сломается</em><br>
+      незаметно.
+    </h1>
+    <p>
+      Scale Of Tools — клиентский мод для Minecraft. Предупреждает, когда прочность падает до 10. Сжимает инструмент по мере износа. Оставляет палки после поломки.
+    </p>
+    <div class="hero-actions">
+      <a href="#download" class="btn btn-primary">
+        <i class="fas fa-download"></i> Скачать бесплатно
+      </a>
+      <a href="#how" class="btn btn-secondary">
+        <i class="fas fa-play"></i> Как это работает
+      </a>
+    </div>
+    <div class="hero-meta">
+      <span><i class="fas fa-check"></i> 80+ скачиваний</span>
+      <span><i class="fas fa-check"></i> 4 загрузчика</span>
+      <span><i class="fas fa-check"></i> MIT License</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="section problem">
+  <div class="wrap">
+    <div class="problem-in">
+      <div class="reveal">
+        <div class="tag">Проблема</div>
+        <h2>Ты копаешь, строишь, <em>сражаешься</em> — и вдруг...</h2>
+        <p class="lead" style="margin-top:24px">
+          Инструмент ломается в самый неподходящий момент. Ты не заметил, что прочность на нуле. Алмазная кирка, которую ты добывал час, исчезает за одну секунду. И ты остаёшься с рукой в кармане.
+        </p>
+      </div>
+      <div class="problem-visual reveal">
+        <div class="chat">
+          <div class="chat-line">
+            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
+            <div class="chat-text"><strong>Твоя кирка сломалась.</strong> Ты потерял 30 минут добычи и 3 алмаза на крафт.</div>
+          </div>
+          <div class="chat-line">
+            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
+            <div class="chat-text">Ты не знал, что остался <strong>1 удар</strong>. Теперь знаешь.</div>
+          </div>
+          <div class="chat-line">
+            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
+            <div class="chat-text">Ты снова копаешь <strong>без инструмента</strong>.</div>
+          </div>
+          <div class="chat-line">
+            <div class="chat-icon good"><i class="fas fa-check"></i></div>
+            <div class="chat-text"><strong>Scale Of Tools</strong> предупредил бы тебя заранее.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="section">
+  <div class="wrap">
+    <div class="reveal" style="max-width:720px">
+      <div class="tag">Решение</div>
+      <h2>Один мод. <em>Три защиты.</em></h2>
+      <p class="lead" style="margin-top:20px">
+        Scale Of Tools работает на клиенте. Ничего не надо ставить на сервер. Никаких читов. Только удобство, которое должно было быть в ванильной игре.
+      </p>
+    </div>
+
+    <div class="solution-grid">
+      <div class="sol-card reveal">
+        <div class="sol-icon"><i class="fas fa-bell"></i></div>
+        <h3>Предупреждение</h3>
+        <p>Когда прочность падает до 10, в action bar появляется сообщение: «Almost broken: Diamond Pickaxe — 10 remaining».</p>
+      </div>
+      <div class="sol-card reveal">
+        <div class="sol-icon"><i class="fas fa-compress"></i></div>
+        <h3>Сжатие</h3>
+        <p>Инструмент визуально сжимается при износе. Чем ближе к поломке — тем меньше модель в руке. Ты видишь это без цифр.</p>
+      </div>
+      <div class="sol-card reveal">
+        <div class="sol-icon"><i class="fas fa-tree"></i></div>
+        <h3>Палки после поломки</h3>
+        <p>Если инструмент всё-таки сломался — рядом остаются палки. Они лежат 5 секунд и исчезают с лёгким облаком.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how" class="section how">
+  <div class="wrap">
+    <div class="reveal" style="max-width:720px">
+      <div class="tag">Как работает</div>
+      <h2>Установил. <em>Играешь.</em></h2>
+      <p class="lead" style="margin-top:20px">
+        Три шага — и мод работает. Никаких настроек, никаких инструкций. Всё включается по умолчанию.
+      </p>
+    </div>
+
+    <div class="how-list reveal">
+      <div class="how-item">
+        <div class="how-num">01</div>
+        <div class="how-body">
+          <h3>Установи Fabric Loader</h3>
+          <p>Скачай <code>fabricmc.net</code> и поставь Fabric для своей версии Minecraft. Fabric API не требуется.</p>
+        </div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">02</div>
+        <div class="how-body">
+          <h3>Положи .jar в mods</h3>
+          <p>Скачай <code>ScaleOfTools-1.1.jar</code> и положи в папку <code>.minecraft/mods</code>.</p>
+        </div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">03</div>
+        <div class="how-body">
+          <h3>Запусти игру</h3>
+          <p>Открой Minecraft — предупреждения включены сразу. Настройки появятся в <code>config/scaleoftools.json</code> после первого запуска.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats reveal">
+      <div class="stat">
+        <div class="stat-v">80+</div>
+        <div class="stat-l">Скачиваний</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v">16</div>
+        <div class="stat-l">Файлов</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v">4</div>
+        <div class="stat-l">Загрузчика</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v">4</div>
+        <div class="stat-l">Версии MC</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download" class="section">
+  <div class="wrap">
+    <div class="reveal" style="max-width:720px">
+      <div class="tag">Скачать</div>
+      <h2>Выбери платформу. <em>Скачай за 5 секунд.</em></h2>
+      <p class="lead" style="margin-top:20px">
+        Scale Of Tools доступен на CurseForge и Modrinth. Обе платформы безопасны, проверены модерацией и поддерживают авто-обновления.
+      </p>
+    </div>
+
+    <div class="download-grid">
+      <div class="dl-card reveal">
+        <div class="dl-head">
+          <div class="dl-platform cf"><i class="fas fa-fire"></i></div>
+          <div class="dl-title">
+            <h3>CurseForge</h3>
+            <p>Основная платформа · 80+ скачиваний</p>
+          </div>
+        </div>
+        <p>Официальная страница на CurseForge. Все 16 файлов: Fabric, Forge, NeoForge, Quilt для версий 1.20.1, 1.20.4, 1.21.1, 1.21.4.</p>
+        <div class="dl-meta">
+          <span><i class="fas fa-check"></i> Проверено модерацией</span>
+          <span><i class="fas fa-check"></i> Авто-обновления</span>
+          <span><i class="fas fa-check"></i> 16 файлов</span>
+        </div>
+        <a href="https://www.curseforge.com/minecraft/mc-mods/scale-of-tools" target="_blank" class="btn btn-primary">
+          <i class="fas fa-download"></i> Открыть на CurseForge
+        </a>
+      </div>
+
+      <div class="dl-card warm reveal">
+        <div class="dl-head">
+          <div class="dl-platform mr"><i class="fas fa-leaf"></i></div>
+          <div class="dl-title">
+            <h3>Modrinth</h3>
+            <p>Open-source платформа</p>
+          </div>
+        </div>
+        <p>Зеркало мода на Modrinth. Открытый исходный код, лицензия MIT. Подходит тем, кто ценит open-source и минимализм.</p>
+        <div class="dl-meta">
+          <span><i class="fas fa-check"></i> Open-source</span>
+          <span><i class="fas fa-check"></i> MIT License</span>
+          <span><i class="fas fa-check"></i> Без телеметрии</span>
+        </div>
+        <a href="https://modrinth.com/mod/scale-of-tools" target="_blank" class="btn btn-secondary">
+          <i class="fas fa-download"></i> Открыть на Modrinth
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section how">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center;max-width:720px;margin:0 auto">
+      <div class="tag" style="justify-content:center">FAQ</div>
+      <h2>Частые вопросы</h2>
+    </div>
+
+    <div class="faq-list reveal">
+      <details class="faq-item">
+        <summary class="faq-q">Нужно ли ставить мод на сервер?</summary>
+        <div class="faq-a">Нет. Scale Of Tools — клиентский мод. Он работает только на твоём клиенте. На сервер ничего ставить не надо, ванильные сервера поддерживаются.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Это чит? Меня забанят?</summary>
+        <div class="faq-a">Нет. Мод не даёт никаких преимуществ в бою или игре. Он просто предупреждает о низкой прочности инструмента — это информация, которую игрок и так может увидеть, наведя курсор на предмет. Никаких авто-действий мод не делает.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Какие версии Minecraft поддерживаются?</summary>
+        <div class="faq-a">Сейчас: 1.20.1, 1.20.4, 1.21.1, 1.21.4. Загрузчики: Fabric, Forge, NeoForge, Quilt. Всего 16 файлов — по одному на каждую комбинацию.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Нужен ли Fabric API?</summary>
+        <div class="faq-a">Нет. Мод использует только fabric-loader. Fabric API не требуется, но и не мешает работе мода.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Как настроить порог прочности?</summary>
+        <div class="faq-a">После первого запуска появится файл <code>config/scaleoftools.json</code>. Там есть параметры: <code>durabilityThreshold</code> (по умолчанию 10), <code>toolShrink</code>, <code>breakStickCount</code> и другие. Меняй и перезапускай игру.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Как удалить мод?</summary>
+        <div class="faq-a">Просто удали <code>.jar</code> из папки <code>mods</code>. Мод не изменяет мир и сохранения, поэтому удаление не сломает ничего.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Можно ли включить мод в сборку?</summary>
+        <div class="faq-a">Да, можно. Мод распространяется под лицензией MIT. Указывай авторство (Ludvig2457) и ссылку на страницу CurseForge или Modrinth.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-card reveal">
+    <div class="cta-in">
+      <div class="tag" style="justify-content:center">Скачать</div>
+      <h2>Больше никогда<br><em>не теряй инструменты.</em></h2>
+      <p>Скачай Scale Of Tools бесплатно. Установка занимает 30 секунд. Работает без сервера, без Fabric API, без настроек.</p>
+      <div class="cta-actions">
+        <a href="https://www.curseforge.com/minecraft/mc-mods/scale-of-tools" target="_blank" class="btn btn-primary btn-lg">
+          <i class="fas fa-download"></i> Скачать с CurseForge
+        </a>
+        <a href="https://modrinth.com/mod/scale-of-tools" target="_blank" class="btn btn-secondary btn-lg">
+          <i class="fas fa-download"></i> Скачать с Modrinth
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-in">
+    <div class="footer-brand">
+      <span class="dot"></span>
+      <span>Scale Of Tools</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/Ludvig2457Ultra/Scale-Of-Tools" target="_blank">GitHub</a>
+      <a href="https://discord.gg/5QyUmRZZd2" target="_blank">Discord</a>
+      <a href="https://www.youtube.com/@ludvig2457" target="_blank">YouTube</a>
+    </div>
+    <p class="footer-copy">© 2026 Ludvig2457 · MIT License</p>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, {passive:true});
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.1, rootMargin:'0px 0px -60px 0px'});
+
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
