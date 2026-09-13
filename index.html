@@ -99,18 +99,18 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.5px;
     }
 
     .nav-logo img {
-      width: 36px;
-      height: 36px;
+      width: 140px;
+      height: 48px;
+      object-fit: contain;
       border-radius: var(--radius-xs);
-      object-fit: cover;
-      border: 1px solid var(--border);
+      transition: opacity 0.2s ease;
+    }
+
+    .nav-logo img:hover {
+      opacity: 0.8;
     }
 
     .nav-links {
@@ -619,16 +619,12 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #fff;
     }
 
     .footer-brand img {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      object-fit: cover;
+      height: 36px;
+      width: auto;
+      object-fit: contain;
     }
 
     .footer-copy {
@@ -659,6 +655,11 @@
 
       .nav-inner {
         padding: 0 20px;
+      }
+
+      .nav-logo img {
+        width: 110px;
+        height: 38px;
       }
 
       .hero {
@@ -701,6 +702,10 @@
       .download-block {
         padding: 28px 20px;
       }
+
+      .nav-github {
+        display: none;
+      }
     }
 
     /* ===== ANIMATIONS ===== */
@@ -726,7 +731,6 @@
   <div class="nav-inner">
     <a href="#" class="nav-logo">
       <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/ludvig2457.png" alt="Ludvig2457">
-      Ludvig2457
     </a>
     <div class="nav-links">
       <a href="#superlauncher">SuperLauncher</a>
@@ -976,7 +980,6 @@
   <div class="footer-inner">
     <div class="footer-brand">
       <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/ludvig2457.png" alt="Ludvig2457">
-      Ludvig2457
     </div>
     <div class="footer-links">
       <a href="https://github.com/Ludvig2457Ultra" target="_blank">GitHub</a>
