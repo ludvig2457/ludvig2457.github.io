@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ludvig2457 — Scale Of Tools + SuperLauncherMC</title>
+<meta name="description" content="Scale Of Tools — мод, который спасает инструменты. SuperLauncherMC — быстрый лаунчер на C++ и Assembler. Всё бесплатно, всё открыто.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+  :root{
+    --bg:#050510;
+    --bg-1:#0a0a18;
+    --bg-2:#10101f;
+    --bg-3:#16162a;
+    --bg-4:#1e1e35;
+    --border:#1c1c32;
+    --border-2:#2a2a48;
+    --text:#ffffff;
+    --text-2:#a5a5c2;
+    --text-3:#5e5e7e;
+    --purple:#8b5cf6;
+    --purple-2:#a78bfa;
+    --purple-3:#c4b5fd;
+    --cyan:#22d3ee;
+    --pink:#ec4899;
+    --gold:#fbbf24;
+    --green:#10b981;
+    --red:#ef4444;
+    --grad-hero:linear-gradient(120deg,#a78bfa,#22d3ee 50%,#ec4899);
+    --grad-main:linear-gradient(135deg,#8b5cf6,#22d3ee);
+    --grad-warm:linear-gradient(135deg,#fbbf24,#ec4899);
+    --grad-green:linear-gradient(135deg,#10b981,#22d3ee);
+    --grad-danger:linear-gradient(135deg,#ef4444,#f59e0b);
+    --grad-launcher:linear-gradient(135deg,#3b82f6,#8b5cf6);
+    --radius:28px;
+    --radius-md:18px;
+    --radius-sm:12px;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --ease-out:cubic-bezier(.16,1,.3,1);
+    --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  }
+
+  html{scroll-behavior:smooth;scroll-padding-top:120px}
+
+  body{
+    font-family:'Inter',-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+    font-feature-settings:'ss01','ss02','cv01','cv11';
+  }
+
+  ::selection{background:var(--purple);color:#fff}
+
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .bg::before{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% -10%,rgba(139,92,246,.25),transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 60%,rgba(34,211,238,.12),transparent 60%),
+      radial-gradient(ellipse 40% 30% at 10% 90%,rgba(236,72,153,.08),transparent 60%);
+  }
+  .bg::after{
+    content:'';position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,#000,transparent);
+    -webkit-mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,#000,transparent);
+  }
+  .noise{
+    position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ========== NAV ========== */
+  .nav{
+    position:fixed;top:0;left:0;right:0;z-index:1000;
+    padding:16px 0;transition:all .5s var(--ease);
+  }
+  .nav.scrolled{
+    padding:10px 0;
+    background:rgba(5,5,16,.75);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    border-bottom:1px solid rgba(255,255,255,.05);
+  }
+  .nav-in{
+    max-width:1200px;margin:0 auto;padding:0 32px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+  }
+  .nav-brand{
+    display:flex;align-items:center;
+    text-decoration:none;
+    transition:transform .4s var(--ease-spring);
+  }
+  .nav-brand:hover{transform:scale(1.04)}
+  .nav-brand img{
+    height:48px;width:auto;object-fit:contain;
+    filter:drop-shadow(0 0 24px rgba(139,92,246,.4));
+    transition:filter .3s ease;
+  }
+  .nav-brand:hover img{filter:drop-shadow(0 0 40px rgba(139,92,246,.7))}
+
+  .nav-menu{
+    display:flex;gap:2px;padding:6px;
+    background:rgba(10,10,24,.7);
+    border:1px solid var(--border);
+    border-radius:100px;
+    backdrop-filter:blur(20px);
+  }
+  .nav-menu a{
+    color:var(--text-2);font-size:.82rem;font-weight:600;
+    padding:9px 18px;border-radius:100px;
+    text-decoration:none;transition:all .3s var(--ease);
+  }
+  .nav-menu a:hover{color:#fff;background:rgba(255,255,255,.06)}
+
+  .nav-cta{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:11px 24px;border-radius:100px;
+    background:var(--grad-main);color:#fff;
+    font-size:.85rem;font-weight:700;text-decoration:none;
+    box-shadow:0 6px 24px rgba(139,92,246,.4);
+    transition:all .35s var(--ease);
+  }
+  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(139,92,246,.6)}
+
+  /* ========== SHARED ========== */
+  .section{position:relative;z-index:2;padding:120px 32px}
+  .wrap{max-width:1200px;margin:0 auto}
+
+  .tag{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:.72rem;font-weight:600;
+    color:var(--purple-2);text-transform:uppercase;
+    letter-spacing:3px;margin-bottom:20px;
+  }
+  .tag::before{
+    content:'';width:32px;height:1px;
+    background:linear-gradient(90deg,var(--purple-2),transparent);
+  }
+  .tag.launcher{color:#60a5fa}
+  .tag.launcher::before{background:linear-gradient(90deg,#60a5fa,transparent)}
+
+  h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(2rem,5vw,3.6rem);
+    font-weight:500;line-height:1.05;
+    letter-spacing:-.035em;margin-bottom:20px;
+  }
+  h2 em{
+    font-style:italic;
+    background:var(--grad-main);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  h2 em.launcher{
+    background:var(--grad-launcher);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .lead{
+    font-size:1.12rem;color:var(--text-2);
+    line-height:1.75;max-width:680px;
+  }
+
+  /* ========== BUTTON ========== */
+  .btn{
+    display:inline-flex;align-items:center;gap:12px;
+    padding:18px 36px;border-radius:100px;
+    font-size:.98rem;font-weight:700;letter-spacing:-.2px;
+    text-decoration:none;border:none;cursor:pointer;
+    transition:all .4s var(--ease);position:relative;
+    overflow:hidden;
+  }
+  .btn-primary{
+    background:#fff;color:#000;
+    box-shadow:0 8px 32px rgba(255,255,255,.2);
+  }
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(255,255,255,.35)}
+  .btn-secondary{
+    background:rgba(255,255,255,.05);color:#fff;
+    border:1px solid var(--border-2);
+  }
+  .btn-secondary:hover{
+    border-color:var(--purple);background:rgba(139,92,246,.1);
+    transform:translateY(-3px);
+    box-shadow:0 12px 40px rgba(139,92,246,.3);
+  }
+  .btn-launcher{
+    background:var(--grad-launcher);color:#fff;
+    box-shadow:0 8px 32px rgba(59,130,246,.4);
+  }
+  .btn-launcher:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(59,130,246,.6)}
+  .btn-lg{padding:22px 48px;font-size:1.05rem}
+
+  /* ========== HERO (общий, с двумя CTA) ========== */
+  .hero{
+    position:relative;z-index:2;
+    min-height:100vh;display:flex;align-items:center;
+    padding:160px 32px 100px;text-align:center;
+  }
+  .hero-in{max-width:900px;margin:0 auto;width:100%}
+
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 20px;border-radius:100px;
+    background:rgba(10,10,24,.7);
+    border:1px solid var(--border-2);
+    font-size:.75rem;font-weight:600;color:var(--text-2);
+    margin-bottom:32px;backdrop-filter:blur(20px);
+    letter-spacing:.5px;
+  }
+  .hero-badge .live{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:4px 10px;border-radius:100px;
+    background:rgba(16,185,129,.15);
+    border:1px solid rgba(16,185,129,.35);
+    color:var(--green);font-size:.65rem;font-weight:800;
+    text-transform:uppercase;letter-spacing:1.5px;
+  }
+  .hero-badge .live::before{
+    content:'';width:6px;height:6px;border-radius:50%;
+    background:var(--green);box-shadow:0 0 10px var(--green);
+    animation:blink 1.8s ease-in-out infinite;
+  }
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+  .hero h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(2.8rem,7vw,5.6rem);
+    font-weight:400;line-height:.98;
+    letter-spacing:-.045em;margin-bottom:28px;
+    color:#fff;
+  }
+  .hero h1 em{
+    font-style:italic;
+    background:var(--grad-hero);
+    background-size:200% 200%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:shift 8s ease infinite;
+  }
+  @keyframes shift{
+    0%,100%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+  }
+
+  .hero p{
+    font-size:1.15rem;color:var(--text-2);
+    max-width:640px;margin:0 auto 40px;line-height:1.7;
+  }
+  .hero-actions{
+    display:flex;gap:14px;justify-content:center;
+    flex-wrap:wrap;margin-bottom:32px;
+  }
+  .hero-meta{
+    display:flex;justify-content:center;gap:28px;
+    flex-wrap:wrap;font-size:.82rem;color:var(--text-3);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .hero-meta span{display:inline-flex;align-items:center;gap:8px}
+  .hero-meta i{color:var(--cyan)}
+
+  /* ========== PROBLEM ========== */
+  .problem{
+    background:rgba(239,68,68,.03);
+    border-top:1px solid rgba(239,68,68,.1);
+    border-bottom:1px solid rgba(239,68,68,.1);
+  }
+  .problem-in{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:72px;align-items:center;
+  }
+  .problem h2 em{
+    background:var(--grad-danger);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .problem-visual{
+    background:rgba(10,10,24,.6);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:40px;backdrop-filter:blur(24px);
+    position:relative;overflow:hidden;
+  }
+  .problem-visual::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:var(--grad-danger);
+  }
+  .chat{display:flex;flex-direction:column;gap:20px}
+  .chat-line{display:flex;align-items:flex-start;gap:14px}
+  .chat-icon{
+    flex-shrink:0;
+    width:44px;height:44px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1rem;
+  }
+  .chat-icon.bad{
+    background:rgba(239,68,68,.12);
+    border:1px solid rgba(239,68,68,.3);
+    color:var(--red);
+  }
+  .chat-icon.good{
+    background:rgba(16,185,129,.12);
+    border:1px solid rgba(16,185,129,.3);
+    color:var(--green);
+  }
+  .chat-text{
+    font-size:.95rem;color:var(--text-2);line-height:1.6;
+    padding-top:10px;
+  }
+  .chat-text strong{color:#fff;font-weight:600}
+
+  /* ========== SOLUTION ========== */
+  .solution-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:24px;margin-top:56px;
+  }
+  .sol-card{
+    padding:40px;border-radius:var(--radius);
+    background:rgba(10,10,24,.5);
+    border:1px solid var(--border);
+    backdrop-filter:blur(24px);
+    transition:all .5s var(--ease);
+    position:relative;overflow:hidden;
+  }
+  .sol-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:var(--grad-main);opacity:0;
+    transition:opacity .5s ease;
+  }
+  .sol-card:hover{
+    border-color:var(--border-2);
+    transform:translateY(-6px);
+    box-shadow:0 24px 64px rgba(0,0,0,.4);
+  }
+  .sol-card:hover::before{opacity:1}
+  .sol-icon{
+    width:60px;height:60px;border-radius:16px;
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--border-2);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.5rem;color:var(--purple-2);
+    margin-bottom:24px;
+    transition:all .5s var(--ease-spring);
+  }
+  .sol-card:hover .sol-icon{
+    background:var(--grad-main);color:#fff;
+    border-color:transparent;
+    transform:scale(1.08) rotate(-5deg);
+    box-shadow:0 12px 40px rgba(139,92,246,.5);
+  }
+  .sol-card h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.3rem;font-weight:600;
+    margin-bottom:12px;letter-spacing:-.02em;
+  }
+  .sol-card p{font-size:.95rem;color:var(--text-2);line-height:1.7}
+
+  /* ========== HOW ========== */
+  .how{background:rgba(10,10,24,.3)}
+  .how-list{
+    display:flex;flex-direction:column;
+    gap:1px;background:var(--border);
+    border-radius:var(--radius);overflow:hidden;
+    border:1px solid var(--border);margin-top:56px;
+  }
+  .how-item{
+    background:var(--bg-1);
+    padding:40px 48px;
+    display:grid;
+    grid-template-columns:80px 1fr;
+    gap:32px;align-items:center;
+    transition:background .4s ease;
+  }
+  .how-item:hover{background:var(--bg-3)}
+  .how-num{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:2.6rem;font-weight:300;
+    line-height:1;letter-spacing:-.04em;
+    background:var(--grad-hero);
+    background-size:200% 200%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:shift 6s ease infinite;
+  }
+  .how-num.launcher{
+    background:var(--grad-launcher);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .how-body h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.25rem;font-weight:600;
+    margin-bottom:8px;letter-spacing:-.02em;
+  }
+  .how-body p{font-size:.95rem;color:var(--text-2);line-height:1.7}
+  .how-body code{
+    font-family:'JetBrains Mono',monospace;
+    background:var(--bg-3);
+    padding:3px 10px;border-radius:6px;
+    font-size:.85em;color:var(--cyan);
+    border:1px solid var(--border);
+  }
+
+  /* ========== STATS ========== */
+  .stats{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:1px;background:var(--border);
+    border:1px solid var(--border);
+    border-radius:var(--radius);overflow:hidden;
+    margin-top:56px;
+  }
+  .stat{
+    background:var(--bg);
+    padding:48px 28px;text-align:center;
+    transition:background .4s ease;
+  }
+  .stat:hover{background:var(--bg-3)}
+  .stat-v{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(2rem,4vw,3rem);
+    font-weight:500;line-height:1;letter-spacing:-.04em;
+    margin-bottom:12px;
+    background:var(--grad-hero);
+    background-size:200% 200%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:shift 6s ease infinite;
+  }
+  .stat-v.launcher{
+    background:var(--grad-launcher);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .stat-l{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.68rem;color:var(--text-3);
+    text-transform:uppercase;letter-spacing:2px;
+    font-weight:600;
+  }
+
+  /* ========== DOWNLOAD ========== */
+  .download-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);
+    gap:24px;margin-top:56px;
+  }
+  .dl-card{
+    padding:48px;border-radius:var(--radius);
+    background:rgba(10,10,24,.6);
+    border:1px solid var(--border);
+    backdrop-filter:blur(24px);
+    transition:all .5s var(--ease);
+    position:relative;overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .dl-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:var(--grad-main);
+  }
+  .dl-card.warm::before{background:var(--grad-warm)}
+  .dl-card.launcher::before{background:var(--grad-launcher)}
+  .dl-card:hover{
+    border-color:var(--border-2);
+    transform:translateY(-6px);
+    box-shadow:0 24px 64px rgba(0,0,0,.4);
+  }
+  .dl-head{
+    display:flex;align-items:center;gap:16px;
+    margin-bottom:24px;
+  }
+  .dl-platform{
+    width:56px;height:56px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;
+  }
+  .dl-platform.cf{
+    background:linear-gradient(135deg,#f97316,#ea580c);
+    color:#fff;
+  }
+  .dl-platform.mr{
+    background:linear-gradient(135deg,#10b981,#059669);
+    color:#fff;
+  }
+  .dl-platform.launcher{
+    background:var(--grad-launcher);
+    color:#fff;
+  }
+  .dl-title h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.4rem;font-weight:600;
+    letter-spacing:-.02em;margin-bottom:4px;
+  }
+  .dl-title p{font-size:.85rem;color:var(--text-3)}
+  .dl-card > p{
+    font-size:.98rem;color:var(--text-2);
+    line-height:1.7;margin-bottom:32px;flex:1;
+  }
+  .dl-meta{
+    display:flex;flex-wrap:wrap;gap:16px;
+    font-size:.82rem;color:var(--text-3);
+    margin-bottom:28px;
+    padding-top:24px;
+    border-top:1px solid var(--border);
+  }
+  .dl-meta span{display:inline-flex;align-items:center;gap:6px}
+  .dl-meta i{color:var(--cyan)}
+
+  /* ========== LAUNCHER (супер-секция) ========== */
+  .launcher{
+    position:relative;
+    background:rgba(10,10,24,.4);
+    border-top:1px solid rgba(59,130,246,.15);
+    border-bottom:1px solid rgba(59,130,246,.15);
+  }
+  .launcher-head{
+    display:grid;grid-template-columns:1.2fr 1fr;
+    gap:64px;align-items:center;margin-bottom:80px;
+  }
+  .launcher-hero-visual{
+    position:relative;
+    aspect-ratio:16/10;
+    border-radius:var(--radius);
+    background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(139,92,246,.1));
+    border:1px solid var(--border);
+    overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .launcher-hero-visual::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:var(--grad-launcher);
+  }
+  .launcher-mock{
+    width:80%;
+    background:rgba(5,5,16,.85);
+    border:1px solid var(--border-2);
+    border-radius:16px;
+    overflow:hidden;
+    backdrop-filter:blur(20px);
+    box-shadow:0 24px 64px rgba(0,0,0,.5);
+  }
+  .lm-bar{
+    padding:14px 18px;
+    background:rgba(0,0,0,.4);
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;gap:8px;
+  }
+  .lm-dot{width:10px;height:10px;border-radius:50%}
+  .lm-dot.r{background:#ef4444}
+  .lm-dot.y{background:#fbbf24}
+  .lm-dot.g{background:#10b981}
+  .lm-title{
+    margin-left:12px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:.72rem;color:var(--text-3);
+    font-weight:500;
+  }
+  .lm-body{padding:24px}
+  .lm-row{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 16px;
+    background:rgba(255,255,255,.02);
+    border:1px solid var(--border);
+    border-radius:10px;
+    margin-bottom:10px;
+    font-size:.82rem;
+    color:var(--text-2);
+  }
+  .lm-row:last-child{margin-bottom:0}
+  .lm-row i{
+    color:var(--purple-2);
+    font-size:.9rem;
+    width:20px;
+    text-align:center;
+  }
+  .lm-row.active{
+    background:rgba(59,130,246,.1);
+    border-color:rgba(59,130,246,.35);
+    color:#fff;
+  }
+  .lm-row.active i{color:#60a5fa}
+  .lm-progress{
+    flex:1;
+    height:4px;
+    background:rgba(255,255,255,.05);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .lm-progress-fill{
+    height:100%;
+    width:70%;
+    background:var(--grad-launcher);
+    border-radius:2px;
+  }
+  .lm-pct{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.72rem;
+    color:#60a5fa;
+    font-weight:600;
+  }
+
+  .features-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:20px;margin-bottom:64px;
+  }
+  .feature{
+    padding:32px;
+    border-radius:var(--radius-md);
+    background:rgba(10,10,24,.5);
+    border:1px solid var(--border);
+    backdrop-filter:blur(24px);
+    transition:all .5s var(--ease);
+    position:relative;
+    overflow:hidden;
+  }
+  .feature::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:var(--grad-launcher);
+    opacity:0;transition:opacity .5s ease;
+  }
+  .feature:hover{
+    border-color:var(--border-2);
+    transform:translateY(-4px);
+    box-shadow:0 16px 48px rgba(0,0,0,.4);
+  }
+  .feature:hover::before{opacity:1}
+  .feature i{
+    font-size:1.6rem;
+    color:#60a5fa;
+    margin-bottom:16px;
+    display:block;
+    transition:transform .4s var(--ease-spring);
+  }
+  .feature:hover i{transform:scale(1.15) rotate(-6deg)}
+  .feature h4{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.05rem;font-weight:600;
+    margin-bottom:8px;letter-spacing:-.02em;
+  }
+  .feature p{
+    font-size:.88rem;color:var(--text-2);line-height:1.65;
+  }
+
+  /* ========== FAQ ========== */
+  .faq-list{
+    display:flex;flex-direction:column;
+    gap:12px;margin-top:56px;max-width:860px;margin-left:auto;margin-right:auto;
+  }
+  .faq-item{
+    background:rgba(10,10,24,.5);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    overflow:hidden;
+    transition:all .4s var(--ease);
+  }
+  .faq-item:hover{border-color:var(--border-2)}
+  .faq-item[open]{border-color:var(--purple)}
+  .faq-q{
+    padding:24px 32px;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.1rem;font-weight:600;
+    letter-spacing:-.02em;
+    cursor:pointer;list-style:none;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:20px;
+    transition:color .3s ease;
+  }
+  .faq-q::-webkit-details-marker{display:none}
+  .faq-q::after{
+    content:'+';
+    font-family:'JetBrains Mono',monospace;
+    font-size:1.4rem;color:var(--purple-2);
+    transition:transform .4s var(--ease-spring);
+    flex-shrink:0;
+  }
+  .faq-item[open] .faq-q::after{transform:rotate(45deg)}
+  .faq-item[open] .faq-q{color:var(--purple-2)}
+  .faq-a{
+    padding:0 32px 24px;
+    font-size:.95rem;color:var(--text-2);
+    line-height:1.75;
+  }
+  .faq-a code{
+    font-family:'JetBrains Mono',monospace;
+    background:var(--bg-3);
+    padding:2px 8px;border-radius:6px;
+    font-size:.85em;color:var(--cyan);
+    border:1px solid var(--border);
+  }
+
+  /* ========== CTA ========== */
+  .cta{position:relative;z-index:2;padding:120px 32px}
+  .cta-card{
+    max-width:1000px;margin:0 auto;
+    padding:80px 48px;text-align:center;
+    border-radius:var(--radius);
+    background:rgba(10,10,24,.6);
+    border:1px solid var(--border);
+    backdrop-filter:blur(32px);
+    position:relative;overflow:hidden;
+  }
+  .cta-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:var(--grad-hero);
+  }
+  .cta-card::after{
+    content:'';position:absolute;
+    top:-40%;left:50%;transform:translateX(-50%);
+    width:120%;height:120%;
+    background:radial-gradient(ellipse,rgba(139,92,246,.15),transparent 55%);
+    pointer-events:none;
+  }
+  .cta-in{position:relative;z-index:1}
+  .cta h2{margin-bottom:24px}
+  .cta p{
+    font-size:1.1rem;color:var(--text-2);
+    max-width:560px;margin:0 auto 40px;line-height:1.7;
+  }
+  .cta-actions{
+    display:flex;gap:14px;justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  /* ========== FOOTER ========== */
+  .footer{
+    position:relative;z-index:2;
+    padding:64px 32px 40px;
+    border-top:1px solid var(--border);
+    background:rgba(5,5,16,.6);
+  }
+  .footer-in{
+    max-width:1200px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:24px;
+  }
+  .footer-brand{
+    display:flex;align-items:center;
+    text-decoration:none;
+  }
+  .footer-brand img{
+    height:40px;width:auto;object-fit:contain;
+    filter:drop-shadow(0 0 20px rgba(139,92,246,.35));
+    transition:opacity .3s ease;
+  }
+  .footer-brand img:hover{opacity:.75}
+  .footer-links{display:flex;gap:24px;flex-wrap:wrap}
+  .footer-links a{
+    font-size:.85rem;color:var(--text-3);
+    text-decoration:none;transition:color .2s ease;
+  }
+  .footer-links a:hover{color:var(--purple-2)}
+  .footer-copy{font-size:.82rem;color:var(--text-3)}
+
+  /* ========== REVEAL ========== */
+  .reveal{
+    opacity:0;transform:translateY(48px);
+    transition:all 1s var(--ease-out);
+  }
+  .reveal.in{opacity:1;transform:translateY(0)}
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width:1000px){
+    .launcher-head{grid-template-columns:1fr;gap:48px}
+    .features-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:900px){
+    .problem-in{grid-template-columns:1fr;gap:48px}
+    .solution-grid{grid-template-columns:1fr;gap:16px}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .download-grid{grid-template-columns:1fr}
+    .how-item{padding:32px 28px;grid-template-columns:60px 1fr;gap:20px}
+    .how-num{font-size:2rem}
+    .nav-menu{display:none}
+  }
+  @media (max-width:600px){
+    .section{padding:80px 20px}
+    .hero{padding:120px 20px 80px}
+    .hero-actions{flex-direction:column;width:100%}
+    .btn{width:100%;justify-content:center}
+    .stats{grid-template-columns:1fr}
+    .features-grid{grid-template-columns:1fr}
+    .faq-q{padding:20px 24px;font-size:1rem}
+    .faq-a{padding:0 24px 20px}
+    .cta-card{padding:56px 24px}
+    .footer-in{flex-direction:column;text-align:center}
+    .nav-brand img{height:36px}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="noise"></div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-in">
+    <a href="#" class="nav-brand">
+      <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/minecraft_title1.png" alt="Ludvig2457">
+    </a>
+    <div class="nav-menu">
+      <a href="#superlauncher">SuperLauncher</a>
+      <a href="#scaleoftools">Scale Of Tools</a>
+      <a href="#download">Скачать</a>
+    </div>
+    <a href="#superlauncher" class="nav-cta">
+      <i class="fas fa-rocket"></i>
+      Лаунчер
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-in">
+    <div class="hero-badge">
+      <span class="live">Live</span>
+      Два проекта · Открытый исходный код · 2026
+    </div>
+    <h1>
+      Инструменты<br>
+      для тех, кто <em>делает.</em>
+    </h1>
+    <p>
+      SuperLauncherMC — лаунчер на C++ и Assembler, который весит 260 КБ и запускается мгновенно. Scale Of Tools — клиентский мод, который спасает твои инструменты от поломки.
+    </p>
+    <div class="hero-actions">
+      <a href="#superlauncher" class="btn btn-launcher">
+        <i class="fas fa-rocket"></i> SuperLauncherMC
+      </a>
+      <a href="#scaleoftools" class="btn btn-secondary">
+        <i class="fas fa-wrench"></i> Scale Of Tools
+      </a>
+    </div>
+    <div class="hero-meta">
+      <span><i class="fas fa-check"></i> 260 КБ</span>
+      <span><i class="fas fa-check"></i> 0 зависимостей</span>
+      <span><i class="fas fa-check"></i> 4 загрузчика</span>
+      <span><i class="fas fa-check"></i> MIT + GPLv3</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SUPERLAUNCHERMC ========== -->
+<section id="superlauncher" class="section launcher">
+  <div class="wrap">
+    <div class="launcher-head">
+      <div class="reveal">
+        <div class="tag launcher">01 — Minecraft Launcher</div>
+        <h2>SuperLauncherMC. <em class="launcher">260 КБ. Мгновенный запуск.</em></h2>
+        <p class="lead" style="margin-top:20px">
+          Нативный бинарник на C++ и Assembler. Не требует Java, не тянет рантаймы, не собирает телеметрию. Работает на Windows 10/11 и Linux. Есть отдельная сборка для Windows XP.
+        </p>
+        <div class="hero-actions" style="justify-content:flex-start;margin-top:36px">
+          <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative/releases/download/3.0/SuperLauncherNative.exe" target="_blank" class="btn btn-launcher">
+            <i class="fas fa-download"></i> Скачать 3.0 Beta
+          </a>
+          <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative" target="_blank" class="btn btn-secondary">
+            <i class="fab fa-github"></i> GitHub
+          </a>
+        </div>
+      </div>
+
+      <div class="launcher-hero-visual reveal">
+        <div class="launcher-mock">
+          <div class="lm-bar">
+            <div class="lm-dot r"></div>
+            <div class="lm-dot y"></div>
+            <div class="lm-dot g"></div>
+            <span class="lm-title">SuperLauncherMC 3.0 Beta</span>
+          </div>
+          <div class="lm-body">
+            <div class="lm-row active">
+              <i class="fas fa-download"></i>
+              <span style="flex:1">Скачивание Minecraft 1.21.4</span>
+              <div class="lm-progress"><div class="lm-progress-fill"></div></div>
+              <span class="lm-pct">70%</span>
+            </div>
+            <div class="lm-row">
+              <i class="fas fa-cubes"></i>
+              <span style="flex:1">Установка Fabric Loader</span>
+              <i class="fas fa-check" style="color:var(--green)"></i>
+            </div>
+            <div class="lm-row">
+              <i class="fas fa-boxes"></i>
+              <span style="flex:1">Загрузка модов (12)</span>
+              <i class="fas fa-check" style="color:var(--green)"></i>
+            </div>
+            <div class="lm-row">
+              <i class="fas fa-rocket"></i>
+              <span style="flex:1">Запуск игры</span>
+              <i class="fas fa-circle" style="color:#60a5fa;font-size:.5rem"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="features-grid">
+      <div class="feature reveal">
+        <i class="fas fa-bolt"></i>
+        <h4>Нативный C++ / Assembler</h4>
+        <p>Не требует Java. Не тянет рантаймы. Запускается за миллисекунды, работает даже на слабых машинах.</p>
+      </div>
+      <div class="feature reveal">
+        <i class="fas fa-cubes"></i>
+        <h4>Modrinth API</h4>
+        <p>Установка модпаков в один клик. Поддержка Forge, Fabric, NeoForge, Quilt и OptiFine.</p>
+      </div>
+      <div class="feature reveal">
+        <i class="fas fa-server"></i>
+        <h4>Управление серверами</h4>
+        <p>Локальные серверы, плагины из Modrinth, поддержка Bukkit/Spigot/Paper, авто-обновления.</p>
+      </div>
+      <div class="feature reveal">
+        <i class="fas fa-palette"></i>
+        <h4>Темы и Rich Presence</h4>
+        <p>Светлая и тёмная темы, анимированные переходы, Discord Rich Presence.</p>
+      </div>
+      <div class="feature reveal">
+        <i class="fas fa-layer-group"></i>
+        <h4>Мульти-загрузчики</h4>
+        <p>Одна кнопка — и у тебя готовая сборка. Дедупликация модов по хэшам, никаких конфликтов.</p>
+      </div>
+      <div class="feature reveal">
+        <i class="fas fa-floppy-disk"></i>
+        <h4>Поддержка XP</h4>
+        <p>Отдельная сборка для Windows XP. Работает даже там, где современные лаунчеры не запускаются.</p>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats reveal">
+      <div class="stat">
+        <div class="stat-v launcher">260</div>
+        <div class="stat-l">Килобайт</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v launcher">0</div>
+        <div class="stat-l">Зависимостей</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v launcher">4</div>
+        <div class="stat-l">Загрузчика</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v launcher">∞</div>
+        <div class="stat-l">Версий MC</div>
+      </div>
+    </div>
+
+    <!-- DOWNLOAD CARDS -->
+    <div class="download-grid" style="margin-top:56px">
+      <div class="dl-card launcher reveal">
+        <div class="dl-head">
+          <div class="dl-platform launcher"><i class="fas fa-rocket"></i></div>
+          <div class="dl-title">
+            <h3>SuperLauncherMC 3.0 Beta</h3>
+            <p>Нативный бинарник · C++ / Assembler</p>
+          </div>
+        </div>
+        <p>Windows 10/11. Не требует Java. Весит 260 КБ. Портативный — один .exe без установки.</p>
+        <div class="dl-meta">
+          <span><i class="fab fa-windows"></i> Windows 10/11</span>
+          <span><i class="fas fa-code"></i> C++ / Assembler</span>
+          <span><i class="fas fa-file-archive"></i> 260 КБ</span>
+        </div>
+        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative/releases/download/3.0/SuperLauncherNative.exe" target="_blank" class="btn btn-launcher">
+          <i class="fas fa-download"></i> Скачать 3.0 Beta
+        </a>
+      </div>
+
+      <div class="dl-card reveal">
+        <div class="dl-head">
+          <div class="dl-platform launcher" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fas fa-floppy-disk"></i></div>
+          <div class="dl-title">
+            <h3>SuperLauncherMC для Windows XP</h3>
+            <p>Legacy-версия</p>
+          </div>
+        </div>
+        <p>Специальная сборка для Windows XP. Работает на старом железе, где современные лаунчеры не запускаются.</p>
+        <div class="dl-meta">
+          <span><i class="fab fa-windows"></i> Windows XP</span>
+          <span><i class="fas fa-code"></i> Нативный .exe</span>
+          <span><i class="fas fa-floppy-disk"></i> Портативная</span>
+        </div>
+        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative/releases/download/3.0/SuperLauncherNative_xp.exe" target="_blank" class="btn btn-secondary">
+          <i class="fas fa-download"></i> Скачать для XP
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PROBLEM (Scale Of Tools) ========== -->
+<section class="section problem">
+  <div class="wrap">
+    <div class="problem-in">
+      <div class="reveal">
+        <div class="tag">Scale Of Tools · Проблема</div>
+        <h2>Ты копаешь, строишь, <em>сражаешься</em> — и вдруг...</h2>
+        <p class="lead" style="margin-top:24px">
+          Инструмент ломается в самый неподходящий момент. Ты не заметил, что прочность на нуле. Алмазная кирка, которую ты добывал час, исчезает за одну секунду. И ты остаёшься с рукой в кармане.
+        </p>
+      </div>
+      <div class="problem-visual reveal">
+        <div class="chat">
+          <div class="chat-line">
+            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
+            <div class="chat-text"><strong>Твоя кирка сломалась.</strong> Ты потерял 30 минут добычи и 3 алмаза на крафт.</div>
+          </div>
+          <div class="chat-line">
+            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
+            <div class="chat-text">Ты не знал, что остался <strong>1 удар</strong>. Теперь знаешь.</div>
+          </div>
+          <div class="chat-line">
+            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
+            <div class="chat-text">Ты снова копаешь <strong>без инструмента</strong>.</div>
+          </div>
+          <div class="chat-line">
+            <div class="chat-icon good"><i class="fas fa-check"></i></div>
+            <div class="chat-text"><strong>Scale Of Tools</strong> предупредил бы тебя заранее.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SOLUTION ========== -->
+<section id="scaleoftools" class="section">
+  <div class="wrap">
+    <div class="reveal" style="max-width:720px">
+      <div class="tag">Scale Of Tools · Решение</div>
+      <h2>Один мод. <em>Три защиты.</em></h2>
+      <p class="lead" style="margin-top:20px">
+        Scale Of Tools работает на клиенте. Ничего не надо ставить на сервер. Никаких читов. Только удобство, которое должно было быть в ванильной игре.
+      </p>
+    </div>
+
+    <div class="solution-grid">
+      <div class="sol-card reveal">
+        <div class="sol-icon"><i class="fas fa-bell"></i></div>
+        <h3>Предупреждение</h3>
+        <p>Когда прочность падает до 10, в action bar появляется сообщение: «Almost broken: Diamond Pickaxe — 10 remaining».</p>
+      </div>
+      <div class="sol-card reveal">
+        <div class="sol-icon"><i class="fas fa-compress"></i></div>
+        <h3>Сжатие</h3>
+        <p>Инструмент визуально сжимается при износе. Чем ближе к поломке — тем меньше модель в руке. Ты видишь это без цифр.</p>
+      </div>
+      <div class="sol-card reveal">
+        <div class="sol-icon"><i class="fas fa-tree"></i></div>
+        <h3>Палки после поломки</h3>
+        <p>Если инструмент всё-таки сломался — рядом остаются палки. Они лежат 5 секунд и исчезают с лёгким облаком.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== HOW (общее) ========== -->
+<section id="how" class="section how">
+  <div class="wrap">
+    <div class="reveal" style="max-width:720px">
+      <div class="tag">Установка</div>
+      <h2>Установил. <em>Играешь.</em></h2>
+      <p class="lead" style="margin-top:20px">
+        Для обоих проектов установка занимает минуту. Никаких инструкций, никаких зависимостей, никаких настроек по умолчанию.
+      </p>
+    </div>
+
+    <div class="how-list reveal">
+      <div class="how-item">
+        <div class="how-num launcher">01</div>
+        <div class="how-body">
+          <h3>Скачай SuperLauncherMC</h3>
+          <p>Скачай <code>SuperLauncherNative.exe</code> и запусти. Java не требуется — лаунчер сам скачает нужную версию и поставит Forge, Fabric или NeoForge.</p>
+        </div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">02</div>
+        <div class="how-body">
+          <h3>Выбери версию Minecraft</h3>
+          <p>В лаунчере выбери нужную версию, загрузчик и нажми «Играть». Все файлы скачаются автоматически.</p>
+        </div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">03</div>
+        <div class="how-body">
+          <h3>Установи Scale Of Tools</h3>
+          <p>Скачай <code>ScaleOfTools-1.1.jar</code> и положи в папку <code>.minecraft/mods</code>. Для Fabric нужен только fabric-loader, Fabric API не обязателен.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats reveal">
+      <div class="stat">
+        <div class="stat-v">80+</div>
+        <div class="stat-l">Скачиваний</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v">16</div>
+        <div class="stat-l">Файлов мода</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v launcher">260</div>
+        <div class="stat-l">КБ лаунчер</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v launcher">4</div>
+        <div class="stat-l">Загрузчика</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== DOWNLOAD (общее) ========== -->
+<section id="download" class="section">
+  <div class="wrap">
+    <div class="reveal" style="max-width:720px">
+      <div class="tag">Скачать</div>
+      <h2>Всё бесплатно. <em>Всё открыто.</em></h2>
+      <p class="lead" style="margin-top:20px">
+        Оба проекта доступны бесплатно. SuperLauncherMC — на GitHub, Scale Of Tools — на CurseForge и Modrinth. Лицензии MIT и GPLv3.
+      </p>
+    </div>
+
+    <div class="download-grid">
+      <div class="dl-card launcher reveal">
+        <div class="dl-head">
+          <div class="dl-platform launcher"><i class="fas fa-rocket"></i></div>
+          <div class="dl-title">
+            <h3>SuperLauncherMC</h3>
+            <p>Нативный лаунчер на C++ / Assembler</p>
+          </div>
+        </div>
+        <p>Windows 10/11 и Windows XP. 260 КБ. Без Java. Modrinth API, 4 загрузчика, управление серверами.</p>
+        <div class="dl-meta">
+          <span><i class="fab fa-windows"></i> Windows 10/11 / XP</span>
+          <span><i class="fas fa-code"></i> C++ / Assembler</span>
+          <span><i class="fas fa-file-archive"></i> 260 КБ</span>
+          <span><i class="fas fa-balance-scale"></i> GPLv3</span>
+        </div>
+        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative" target="_blank" class="btn btn-launcher">
+          <i class="fab fa-github"></i> Открыть на GitHub
+        </a>
+      </div>
+
+      <div class="dl-card warm reveal">
+        <div class="dl-head">
+          <div class="dl-platform cf"><i class="fas fa-fire"></i></div>
+          <div class="dl-title">
+            <h3>Scale Of Tools</h3>
+            <p>Мод для Minecraft · 80+ скачиваний</p>
+          </div>
+        </div>
+        <p>CurseForge и Modrinth. 16 файлов: Fabric, Forge, NeoForge, Quilt для 4 версий Minecraft.</p>
+        <div class="dl-meta">
+          <span><i class="fas fa-check"></i> Проверено модерацией</span>
+          <span><i class="fas fa-cubes"></i> 16 файлов</span>
+          <span><i class="fas fa-balance-scale"></i> MIT</span>
+        </div>
+        <a href="https://www.curseforge.com/minecraft/mc-mods/scale-of-tools" target="_blank" class="btn btn-primary">
+          <i class="fas fa-download"></i> Скачать с CurseForge
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FAQ ========== -->
+<section class="section how">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center;max-width:720px;margin:0 auto">
+      <div class="tag" style="justify-content:center">FAQ</div>
+      <h2>Частые вопросы</h2>
+    </div>
+
+    <div class="faq-list reveal">
+      <details class="faq-item">
+        <summary class="faq-q">Что такое SuperLauncherMC?</summary>
+        <div class="faq-a">Это нативный Minecraft-лаунчер на C++ и Assembler. Весит 260 КБ, не требует Java, работает на Windows 10/11 и XP. Умеет ставить моды и загрузчики в один клик, управлять серверами, использовать Modrinth API.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Почему лаунчер такой маленький?</summary>
+        <div class="faq-a">Потому что он не тянет за собой JVM, не включает в себя Electron или Qt, не использует внешние библиотеки. Только C++, Assembler и прямые вызовы WinAPI. Всё лишнее — вырезано.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Scale Of Tools — это чит? Меня забанят?</summary>
+        <div class="faq-a">Нет. Мод не даёт никаких преимуществ в бою или игре. Он просто предупреждает о низкой прочности инструмента — информацию, которую игрок и так может увидеть, наведя курсор на предмет. Никаких авто-действий мод не делает.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Нужно ли ставить Scale Of Tools на сервер?</summary>
+        <div class="faq-a">Нет. Это клиентский мод. Он работает только на твоём клиенте. На сервер ничего ставить не надо — ванильные сервера поддерживаются.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Какие версии Minecraft поддерживаются?</summary>
+        <div class="faq-a">Scale Of Tools: 1.20.1, 1.20.4, 1.21.1, 1.21.4. Загрузчики: Fabric, Forge, NeoForge, Quilt. SuperLauncherMC: все версии Minecraft, включая старые Alpha и Beta.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Нужен ли Fabric API для мода?</summary>
+        <div class="faq-a">Нет. Мод использует только fabric-loader. Fabric API не требуется, но и не мешает работе мода.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Как удалить мод?</summary>
+        <div class="faq-a">Просто удали <code>.jar</code> из папки <code>mods</code>. Мод не изменяет мир и сохранения, поэтому удаление ничего не сломает.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Можно ли включить мод в сборку?</summary>
+        <div class="faq-a">Да. Мод распространяется под лицензией MIT. Указывай авторство (Ludvig2457) и ссылку на страницу CurseForge или Modrinth.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CTA ========== -->
+<section class="cta">
+  <div class="cta-card reveal">
+    <div class="cta-in">
+      <div class="tag" style="justify-content:center">Начни сейчас</div>
+      <h2>Один разработчик.<br><em>Два инструмента. Ноль компромиссов.</em></h2>
+      <p>Скачай SuperLauncherMC и Scale Of Tools бесплатно. Установка занимает 30 секунд. Работает без Java, без сервера, без телеметрии.</p>
+      <div class="cta-actions">
+        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative/releases/download/3.0/SuperLauncherNative.exe" target="_blank" class="btn btn-launcher btn-lg">
+          <i class="fas fa-rocket"></i> SuperLauncherMC
+        </a>
+        <a href="https://www.curseforge.com/minecraft/mc-mods/scale-of-tools" target="_blank" class="btn btn-secondary btn-lg">
+          <i class="fas fa-wrench"></i> Scale Of Tools
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="footer-in">
+    <a href="#" class="footer-brand">
+      <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/minecraft_title1.png" alt="Ludvig2457">
+    </a>
+    <div class="footer-links">
+      <a href="https://github.com/Ludvig2457Ultra" target="_blank">GitHub</a>
+      <a href="https://discord.gg/5QyUmRZZd2" target="_blank">Discord</a>
+      <a href="https://www.youtube.com/@ludvig2457" target="_blank">YouTube</a>
+      <a href="https://modrinth.com/mod/scale-of-tools" target="_blank">Modrinth</a>
+    </div>
+    <p class="footer-copy">© 2026 Ludvig2457 · MIT + GPLv3</p>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, {passive:true});
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.1, rootMargin:'0px 0px -60px 0px'});
+
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
