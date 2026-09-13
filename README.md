@@ -1,4 +1,4 @@
-<img width="720" height="87" alt="minecraft_title1" src="https://github.com/user-attachments/assets/ce8963b5-cb26-4543-98f7-53195cc59386" />
+<img width="715" height="715" alt="ludvig2457" src="https://github.com/user-attachments/assets/17223b84-2667-41a0-837e-b0a14b84738f" />
 
 ## Разделы
 - [Главная](index.html)
