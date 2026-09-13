@@ -3,61 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ludvig2457 — Разработка • Лаунчеры • ОС • Моды</title>
-  <meta name="description" content="SuperLauncher, LudvigOS, Scale Of Tools — экосистема инструментов от Ludvig2457.">
+  <title>Ludvig2457 — Инструменты для тех, кто делает</title>
+  <meta name="description" content="SuperLauncher, LudvigOS, Scale Of Tools — экосистема инструментов от Ludvig2457. Быстро, открыто, бесплатно.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    /* ========== RESET & BASE ========== */
-    * {
+    /* ============ RESET ============ */
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
     :root {
-      --bg: #05050a;
-      --bg2: #0a0a12;
-      --bg3: #10101c;
-      --bg4: #16162a;
-      --border: #1e1e32;
-      --border2: #2a2a44;
-      --text: #f5f5fa;
-      --text2: #a8a8c0;
-      --text3: #6a6a88;
+      --bg: #030308;
+      --bg-2: #07070f;
+      --bg-3: #0c0c18;
+      --bg-4: #121222;
+      --border: #1a1a2e;
+      --border-2: #252544;
+      --text: #ffffff;
+      --text-2: #a8a8c5;
+      --text-3: #5e5e7a;
       --purple: #8b5cf6;
-      --purple2: #a78bfa;
+      --purple-2: #a78bfa;
       --cyan: #22d3ee;
-      --cyan2: #67e8f9;
+      --cyan-2: #67e8f9;
       --pink: #ec4899;
       --gold: #fbbf24;
       --green: #10b981;
-      --grad-main: linear-gradient(135deg, #8b5cf6 0%, #22d3ee 100%);
-      --grad-warm: linear-gradient(135deg, #fbbf24 0%, #ec4899 100%);
-      --grad-cool: linear-gradient(135deg, #22d3ee 0%, #8b5cf6 100%);
-      --grad-green: linear-gradient(135deg, #10b981 0%, #22d3ee 100%);
-      --radius: 24px;
-      --radius-md: 16px;
+      --grad-hero: linear-gradient(120deg, #a78bfa 0%, #22d3ee 50%, #ec4899 100%);
+      --grad-main: linear-gradient(135deg, #8b5cf6, #22d3ee);
+      --grad-warm: linear-gradient(135deg, #fbbf24, #ec4899);
+      --grad-cool: linear-gradient(135deg, #22d3ee, #8b5cf6);
+      --grad-green: linear-gradient(135deg, #10b981, #22d3ee);
+      --radius: 28px;
+      --radius-md: 18px;
       --radius-sm: 12px;
       --radius-xs: 8px;
-      --blur: blur(24px);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     html {
       scroll-behavior: smooth;
-      scroll-padding-top: 100px;
+      scroll-padding-top: 120px;
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
+      font-feature-settings: 'ss01', 'ss02', 'cv01', 'cv11';
     }
 
     ::selection {
@@ -65,23 +68,66 @@
       color: #fff;
     }
 
-    /* ========== SCROLLBAR ========== */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--bg2);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--border2);
-      border-radius: 5px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--purple);
+    /* ============ SCROLL PROGRESS ============ */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: var(--grad-hero);
+      z-index: 10000;
+      width: 0%;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.8);
     }
 
-    /* ========== ANIMATED BACKGROUND ========== */
-    .bg-orbs {
+    /* ============ CUSTOM CURSOR ============ */
+    .cursor-dot, .cursor-ring {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      transition: opacity 0.3s ease;
+      mix-blend-mode: difference;
+    }
+
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor-ring {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s var(--ease-out), width 0.3s var(--ease), height 0.3s var(--ease);
+    }
+
+    .cursor-ring.hover {
+      width: 60px;
+      height: 60px;
+      border-color: var(--purple-2);
+      background: rgba(139, 92, 246, 0.1);
+    }
+
+    @media (hover: none) {
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+
+    /* ============ NOISE + BG ============ */
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      pointer-events: none;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .bg-aurora {
       position: fixed;
       inset: 0;
       z-index: 0;
@@ -89,83 +135,88 @@
       overflow: hidden;
     }
 
-    .orb {
+    .aurora {
       position: absolute;
       border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0.35;
-      animation: float 20s ease-in-out infinite;
+      filter: blur(120px);
+      opacity: 0.4;
+      will-change: transform;
     }
 
-    .orb-1 {
-      width: 600px;
-      height: 600px;
-      background: var(--purple);
+    .aurora-1 {
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, #8b5cf6, transparent 70%);
       top: -200px;
       left: -200px;
-      animation-delay: 0s;
+      animation: drift1 25s ease-in-out infinite;
     }
 
-    .orb-2 {
+    .aurora-2 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, #22d3ee, transparent 70%);
+      top: 30%;
+      right: -200px;
+      animation: drift2 30s ease-in-out infinite;
+    }
+
+    .aurora-3 {
       width: 500px;
       height: 500px;
-      background: var(--cyan);
-      top: 40%;
-      right: -200px;
-      animation-delay: -7s;
+      background: radial-gradient(circle, #ec4899, transparent 70%);
+      bottom: -200px;
+      left: 40%;
+      animation: drift3 35s ease-in-out infinite;
     }
 
-    .orb-3 {
-      width: 400px;
-      height: 400px;
-      background: var(--pink);
-      bottom: -150px;
-      left: 30%;
-      animation-delay: -14s;
-    }
-
-    @keyframes float {
+    @keyframes drift1 {
       0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(80px, -60px) scale(1.1); }
-      66% { transform: translate(-60px, 80px) scale(0.9); }
+      50% { transform: translate(100px, 80px) scale(1.15); }
+    }
+    @keyframes drift2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-120px, 100px) scale(0.9); }
+    }
+    @keyframes drift3 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(80px, -100px) scale(1.1); }
     }
 
-    .grid-overlay {
+    .dot-grid {
       position: fixed;
       inset: 0;
       z-index: 1;
       pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
-      -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+      background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
+      -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
     }
 
-    /* ========== NAVBAR ========== */
+    /* ============ NAVBAR ============ */
     .navbar {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       z-index: 1000;
-      padding: 16px 0;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 20px 0;
+      transition: all 0.5s var(--ease);
     }
 
     .navbar.scrolled {
-      padding: 10px 0;
-      background: rgba(5, 5, 10, 0.7);
-      backdrop-filter: var(--blur) saturate(180%);
-      -webkit-backdrop-filter: var(--blur) saturate(180%);
-      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+      background: rgba(3, 3, 8, 0.7);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .nav-inner {
-      max-width: 1320px;
+      max-width: 1360px;
       margin: 0 auto;
-      padding: 0 32px;
+      padding: 0 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -175,66 +226,71 @@
     .nav-logo {
       display: flex;
       align-items: center;
-      transition: transform 0.3s ease;
+      transition: transform 0.4s var(--ease);
     }
 
     .nav-logo:hover {
-      transform: scale(1.05);
+      transform: scale(1.06);
     }
 
     .nav-logo img {
-      height: 44px;
+      height: 42px;
       width: auto;
       object-fit: contain;
-      filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.3));
+      filter: drop-shadow(0 0 24px rgba(139, 92, 246, 0.4));
     }
 
     .nav-links {
       display: flex;
-      gap: 4px;
+      gap: 2px;
       padding: 6px;
-      background: rgba(16, 16, 28, 0.6);
+      background: rgba(12, 12, 24, 0.7);
       border: 1px solid var(--border);
       border-radius: 100px;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .nav-links a {
-      color: var(--text2);
-      font-size: 0.85rem;
+      color: var(--text-2);
+      font-size: 0.82rem;
       font-weight: 600;
-      padding: 8px 18px;
+      padding: 9px 20px;
       border-radius: 100px;
-      transition: all 0.25s ease;
+      transition: all 0.3s var(--ease);
+      letter-spacing: 0.2px;
       position: relative;
     }
 
     .nav-links a:hover {
       color: #fff;
-      background: var(--bg4);
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .nav-cta {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 22px;
+      padding: 11px 24px;
       border-radius: 100px;
-      background: var(--grad-main);
-      color: #fff;
-      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-2);
+      color: var(--text);
+      font-size: 0.82rem;
       font-weight: 700;
-      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
-      transition: all 0.3s ease;
+      transition: all 0.35s var(--ease);
+      backdrop-filter: blur(20px);
     }
 
     .nav-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(139, 92, 246, 0.6);
+      border-color: var(--purple);
       color: #fff;
+      background: rgba(139, 92, 246, 0.1);
+      box-shadow: 0 0 32px rgba(139, 92, 246, 0.4);
+      transform: translateY(-2px);
     }
 
-    /* ========== HERO ========== */
+    /* ============ HERO ============ */
     .hero {
       position: relative;
       z-index: 2;
@@ -242,361 +298,471 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 160px 40px 120px;
       text-align: center;
-      padding: 140px 32px 100px;
+      overflow: hidden;
     }
 
-    .hero-content {
-      max-width: 1000px;
-      animation: heroIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+    .hero-inner {
+      max-width: 1100px;
+      position: relative;
+      z-index: 2;
     }
 
-    @keyframes heroIn {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero-badge {
+    .hero-eyebrow {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 22px;
+      gap: 12px;
+      padding: 10px 24px 10px 14px;
       border-radius: 100px;
-      background: rgba(16, 16, 28, 0.8);
-      border: 1px solid var(--border2);
-      font-size: 0.8rem;
+      background: rgba(12, 12, 24, 0.7);
+      border: 1px solid var(--border-2);
+      font-size: 0.78rem;
       font-weight: 600;
-      color: var(--text2);
-      margin-bottom: 36px;
-      backdrop-filter: blur(12px);
+      color: var(--text-2);
+      margin-bottom: 40px;
+      backdrop-filter: blur(20px);
       letter-spacing: 0.5px;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease-out) 0.1s forwards;
     }
 
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
+    .hero-eyebrow .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--green);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-eyebrow .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: var(--green);
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-      animation: pulse 2s infinite;
+      box-shadow: 0 0 10px var(--green);
+      animation: glow 2s ease-in-out infinite;
     }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-      70% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    @keyframes glow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
     .hero h1 {
       font-family: 'Space Grotesk', 'Inter', sans-serif;
-      font-size: clamp(3rem, 8vw, 6.5rem);
-      font-weight: 700;
+      font-size: clamp(3.2rem, 9vw, 7.5rem);
+      font-weight: 500;
       line-height: 0.95;
-      letter-spacing: -0.04em;
-      margin-bottom: 28px;
-      background: linear-gradient(180deg, #fff 0%, #a8a8c0 100%);
+      letter-spacing: -0.045em;
+      margin-bottom: 32px;
+      color: #fff;
+    }
+
+    .hero h1 .line {
+      display: block;
+      opacity: 0;
+      animation: fadeUp 1s var(--ease-out) forwards;
+    }
+
+    .hero h1 .line:nth-child(1) { animation-delay: 0.2s; }
+    .hero h1 .line:nth-child(2) { animation-delay: 0.35s; }
+    .hero h1 .line:nth-child(3) { animation-delay: 0.5s; }
+
+    .hero h1 .accent {
+      font-style: italic;
+      font-weight: 400;
+      background: var(--grad-hero);
+      background-size: 200% 200%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      animation: gradientShift 6s ease infinite;
     }
 
-    .hero h1 .grad {
-      background: var(--grad-main);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      position: relative;
-      display: inline-block;
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
 
-    .hero p {
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-sub {
       font-size: 1.15rem;
-      color: var(--text2);
-      max-width: 640px;
+      color: var(--text-2);
+      max-width: 620px;
       margin: 0 auto 48px;
       line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.9s var(--ease-out) 0.7s forwards;
     }
 
-    .hero-buttons {
+    .hero-actions {
       display: flex;
-      gap: 16px;
+      gap: 14px;
       justify-content: center;
       flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.9s var(--ease-out) 0.9s forwards;
     }
 
-    /* ========== BUTTONS ========== */
+    /* ============ BUTTONS ============ */
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      padding: 16px 34px;
-      border-radius: var(--radius-sm);
+      padding: 17px 36px;
+      border-radius: 100px;
       font-size: 0.95rem;
       font-weight: 700;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: -0.2px;
+      transition: all 0.35s var(--ease);
       border: none;
       cursor: pointer;
-      letter-spacing: -0.2px;
       position: relative;
       overflow: hidden;
-    }
-
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s ease;
-    }
-
-    .btn:hover::before {
-      left: 100%;
+      text-decoration: none;
     }
 
     .btn-primary {
-      background: var(--grad-main);
-      color: #fff;
-      box-shadow: 0 8px 32px rgba(139, 92, 246, 0.4);
+      background: #fff;
+      color: #000;
+      box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15);
     }
 
     .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 16px 48px rgba(139, 92, 246, 0.6);
-      color: #fff;
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 16px 48px rgba(255, 255, 255, 0.3);
+      color: #000;
     }
 
     .btn-secondary {
-      background: rgba(16, 16, 28, 0.8);
-      color: var(--text);
-      border: 1px solid var(--border2);
-      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      border: 1px solid var(--border-2);
+      backdrop-filter: blur(20px);
     }
 
     .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
       border-color: var(--purple);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 40px rgba(139, 92, 246, 0.3);
       color: #fff;
-      transform: translateY(-3px);
-      box-shadow: 0 12px 40px rgba(139, 92, 246, 0.25);
     }
 
     .btn-large {
       padding: 20px 44px;
-      font-size: 1.05rem;
+      font-size: 1.02rem;
     }
 
-    /* ========== SECTIONS ========== */
+    /* ============ MARQUEE ============ */
+    .marquee {
+      position: relative;
+      z-index: 2;
+      padding: 32px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      background: rgba(7, 7, 15, 0.4);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 64px;
+      animation: scroll 40s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-item {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      white-space: nowrap;
+    }
+
+    .marquee-item i {
+      color: var(--purple-2);
+      font-size: 0.7rem;
+    }
+
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ============ SECTIONS ============ */
     .section {
       position: relative;
       z-index: 2;
-      padding: 140px 32px;
+      padding: 160px 40px;
     }
 
     .section-inner {
-      max-width: 1320px;
+      max-width: 1360px;
       margin: 0 auto;
     }
 
-    .section-header {
-      text-align: center;
-      margin-bottom: 88px;
+    .section-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 40px;
+      align-items: end;
+      margin-bottom: 96px;
     }
 
-    .section-label {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
+    .section-head-content {
+      max-width: 720px;
+    }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--purple-2);
       text-transform: uppercase;
       letter-spacing: 3px;
-      color: var(--purple2);
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
-    .section-header h2 {
+    .section-tag::before {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--purple-2);
+    }
+
+    .section-head h2 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.2rem, 5vw, 3.8rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 20px;
-      line-height: 1.1;
+      font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+      font-weight: 500;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      margin-bottom: 24px;
     }
 
-    .section-sub {
-      font-size: 1.1rem;
-      color: var(--text2);
-      max-width: 620px;
-      margin: 0 auto;
+    .section-head h2 .accent {
+      font-style: italic;
+      font-weight: 400;
+      background: var(--grad-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-head p {
+      font-size: 1.05rem;
+      color: var(--text-2);
       line-height: 1.7;
     }
 
-    /* ========== GLASS CARDS ========== */
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 20px;
-      margin-bottom: 72px;
+    .section-index {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 5rem;
+      font-weight: 300;
+      color: var(--text-3);
+      opacity: 0.2;
+      line-height: 1;
+      letter-spacing: -0.05em;
     }
 
-    .feature-card {
-      background: rgba(16, 16, 28, 0.5);
+    /* ============ BENTO CARDS ============ */
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+      margin-bottom: 80px;
+    }
+
+    .bento-card {
+      background: rgba(12, 12, 24, 0.5);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 36px;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 40px;
       position: relative;
       overflow: hidden;
-      backdrop-filter: blur(20px);
+      transition: all 0.5s var(--ease);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
     }
 
-    .feature-card::after {
+    .bento-card::before {
       content: '';
       position: absolute;
       inset: 0;
       border-radius: var(--radius);
       padding: 1px;
-      background: linear-gradient(135deg, transparent, transparent);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      background: linear-gradient(135deg, transparent 30%, var(--border-2));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
       opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.5s var(--ease);
       pointer-events: none;
     }
 
-    .feature-card:hover {
-      border-color: var(--border2);
+    .bento-card::after {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s var(--ease);
+      pointer-events: none;
+    }
+
+    .bento-card:hover {
+      border-color: var(--border-2);
       transform: translateY(-8px);
-      background: rgba(22, 22, 42, 0.6);
-      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
     }
 
-    .feature-card:hover::after {
-      opacity: 1;
-      background: var(--grad-main);
-    }
+    .bento-card:hover::before { opacity: 1; }
+    .bento-card:hover::after { opacity: 1; }
 
-    .feature-icon {
-      width: 60px;
-      height: 60px;
+    .bento-card.span-7 { grid-column: span 7; }
+    .bento-card.span-5 { grid-column: span 5; }
+    .bento-card.span-6 { grid-column: span 6; }
+    .bento-card.span-4 { grid-column: span 4; }
+    .bento-card.span-8 { grid-column: span 8; }
+    .bento-card.span-12 { grid-column: span 12; }
+
+    .bento-icon {
+      width: 64px;
+      height: 64px;
       border-radius: var(--radius-sm);
-      background: var(--bg4);
-      border: 1px solid var(--border2);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-2);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.5rem;
-      color: var(--purple2);
-      margin-bottom: 24px;
-      transition: all 0.3s ease;
+      color: var(--purple-2);
+      margin-bottom: 28px;
+      transition: all 0.5s var(--ease);
+      position: relative;
+      z-index: 1;
     }
 
-    .feature-card:hover .feature-icon {
-      transform: scale(1.1) rotate(-5deg);
+    .bento-card:hover .bento-icon {
+      transform: scale(1.08) rotate(-4deg);
       background: var(--grad-main);
       color: #fff;
       border-color: transparent;
-      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 12px 40px rgba(139, 92, 246, 0.5);
     }
 
-    .feature-card h3 {
+    .bento-card h3 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       letter-spacing: -0.02em;
+      position: relative;
+      z-index: 1;
     }
 
-    .feature-card p {
-      font-size: 0.92rem;
-      color: var(--text2);
+    .bento-card p {
+      font-size: 0.95rem;
+      color: var(--text-2);
       line-height: 1.7;
+      position: relative;
+      z-index: 1;
     }
 
-    /* ========== DOWNLOAD BLOCK ========== */
-    .download-block {
-      background: rgba(16, 16, 28, 0.6);
+    .bento-card.feature-large {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(34, 211, 238, 0.05));
+    }
+
+    /* ============ DOWNLOAD ============ */
+    .download {
+      background: rgba(7, 7, 15, 0.6);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 48px;
-      text-align: center;
+      padding: 64px;
       position: relative;
       overflow: hidden;
-      backdrop-filter: blur(20px);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      margin-top: 80px;
     }
 
-    .download-block::before {
+    .download::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 3px;
-      background: var(--grad-main);
+      height: 1px;
+      background: var(--grad-hero);
+      opacity: 0.6;
     }
 
-    .download-block::after {
+    .download::after {
       content: '';
       position: absolute;
       top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse, rgba(139, 92, 246, 0.12), transparent 60%);
       pointer-events: none;
     }
 
     .download-content {
       position: relative;
       z-index: 1;
-    }
-
-    .download-version {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 48px;
       align-items: center;
-      justify-content: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
     }
 
-    .version-badge {
-      display: inline-block;
-      padding: 6px 18px;
-      border-radius: 100px;
-      background: var(--grad-main);
-      color: #fff;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+    .download-info h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
     }
 
-    .version-badge.hot {
-      background: var(--grad-warm);
-      box-shadow: 0 4px 16px rgba(236, 72, 153, 0.4);
-    }
-
-    .version-badge.green {
-      background: var(--grad-green);
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
-    }
-
-    .version-date {
-      font-size: 0.85rem;
-      color: var(--text3);
+    .download-info p {
+      color: var(--text-2);
+      font-size: 1rem;
+      margin-bottom: 24px;
+      max-width: 560px;
     }
 
     .download-meta {
       display: flex;
-      justify-content: center;
-      gap: 32px;
+      gap: 24px;
       flex-wrap: wrap;
-      font-size: 0.88rem;
-      color: var(--text2);
-      margin-bottom: 32px;
+      font-size: 0.85rem;
+      color: var(--text-2);
     }
 
     .download-meta span {
@@ -609,148 +775,121 @@
       color: var(--cyan);
     }
 
-    .download-note {
-      margin-top: 18px;
-      font-size: 0.85rem;
-      color: var(--text3);
-    }
-
-    .download-note a {
-      color: var(--purple2);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .download-note code {
+    .version-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: var(--purple-2);
       font-family: 'JetBrains Mono', monospace;
-      background: var(--bg4);
-      padding: 3px 10px;
-      border-radius: var(--radius-xs);
-      font-size: 0.85em;
-      color: var(--cyan);
-      border: 1px solid var(--border);
-    }
-
-    /* ========== SYS REQS ========== */
-    .sys-reqs {
-      margin-top: 32px;
-      background: rgba(16, 16, 28, 0.5);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 36px;
-      backdrop-filter: blur(20px);
-    }
-
-    .sys-reqs h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.15rem;
-      font-weight: 600;
-      margin-bottom: 24px;
-      letter-spacing: -0.02em;
-    }
-
-    .reqs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      font-size: 0.9rem;
-      color: var(--text2);
-    }
-
-    .req-item {
-      padding: 16px 20px;
-      background: var(--bg4);
-      border-radius: var(--radius-xs);
-      border: 1px solid var(--border);
-      transition: all 0.25s ease;
-    }
-
-    .req-item:hover {
-      border-color: var(--border2);
-      transform: translateX(4px);
-    }
-
-    .req-item strong {
-      color: var(--text);
-      font-weight: 600;
-      display: block;
-      margin-bottom: 4px;
-      font-size: 0.8rem;
+      font-size: 0.72rem;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: var(--text3);
+      margin-bottom: 20px;
     }
 
-    /* ========== SPECS ========== */
-    .specs {
+    .version-pill.hot {
+      background: rgba(251, 191, 36, 0.12);
+      border-color: rgba(251, 191, 36, 0.3);
+      color: var(--gold);
+    }
+
+    .version-pill.green {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: var(--green);
+    }
+
+    /* ============ STATS ============ */
+    .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 18px;
-      margin-bottom: 48px;
-    }
-
-    .spec {
-      background: rgba(16, 16, 28, 0.5);
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 80px;
       border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 28px;
+    }
+
+    .stat {
+      background: var(--bg);
+      padding: 48px 32px;
       text-align: center;
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(20px);
+      transition: all 0.4s var(--ease);
+      position: relative;
     }
 
-    .spec:hover {
-      border-color: var(--purple);
-      transform: translateY(-6px);
-      box-shadow: 0 16px 40px rgba(139, 92, 246, 0.2);
+    .stat:hover {
+      background: var(--bg-3);
     }
 
-    .spec-label {
-      display: block;
-      font-size: 0.7rem;
+    .stat-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      margin-bottom: 12px;
+      background: var(--grad-hero);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 6s ease infinite;
+    }
+
+    .stat-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-3);
       text-transform: uppercase;
       letter-spacing: 2px;
-      color: var(--text3);
-      margin-bottom: 10px;
-      font-weight: 700;
+      font-weight: 600;
     }
 
-    .spec-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--cyan);
-    }
-
-    /* ========== ABOUT ========== */
-    .about-content {
-      max-width: 800px;
+    /* ============ ABOUT ============ */
+    .about {
+      max-width: 900px;
       margin: 0 auto;
       text-align: center;
     }
 
-    .about-content h2 {
+    .about h2 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 700;
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 500;
       letter-spacing: -0.03em;
-      margin-bottom: 28px;
       line-height: 1.1;
+      margin-bottom: 32px;
     }
 
-    .about-content p {
-      color: var(--text2);
-      margin-bottom: 20px;
+    .about h2 .accent {
+      font-style: italic;
+      font-weight: 400;
+      background: var(--grad-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .about p {
+      font-size: 1.08rem;
+      color: var(--text-2);
       line-height: 1.8;
-      font-size: 1.05rem;
+      margin-bottom: 20px;
     }
 
     .about-links {
       display: flex;
       justify-content: center;
-      gap: 14px;
+      gap: 12px;
       flex-wrap: wrap;
-      margin-top: 40px;
+      margin-top: 48px;
     }
 
     .about-links a {
@@ -758,232 +897,201 @@
       align-items: center;
       gap: 10px;
       padding: 14px 28px;
-      border-radius: var(--radius-sm);
-      background: rgba(16, 16, 28, 0.6);
+      border-radius: 100px;
+      background: rgba(12, 12, 24, 0.7);
       border: 1px solid var(--border);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
       color: var(--text);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(12px);
+      transition: all 0.35s var(--ease);
+      backdrop-filter: blur(20px);
     }
 
     .about-links a:hover {
       border-color: var(--purple);
       color: #fff;
       transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(139, 92, 246, 0.3);
+      box-shadow: 0 16px 40px rgba(139, 92, 246, 0.3);
+      background: rgba(139, 92, 246, 0.1);
     }
 
-    /* ========== STATS ========== */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 20px;
-      margin-bottom: 88px;
-    }
-
-    .stat {
-      text-align: center;
-      padding: 32px 20px;
-      background: rgba(16, 16, 28, 0.4);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      transition: all 0.3s ease;
-      backdrop-filter: blur(20px);
-    }
-
-    .stat:hover {
-      border-color: var(--purple);
-      transform: translateY(-4px);
-    }
-
-    .stat-value {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 700;
-      background: var(--grad-main);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--text3);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-weight: 600;
-    }
-
-    /* ========== FOOTER ========== */
+    /* ============ FOOTER ============ */
     .footer {
       position: relative;
       z-index: 2;
-      padding: 56px 32px 40px;
+      padding: 80px 40px 48px;
       border-top: 1px solid var(--border);
-      background: rgba(10, 10, 18, 0.6);
-      backdrop-filter: blur(20px);
+      background: rgba(3, 3, 8, 0.6);
+      backdrop-filter: blur(24px);
     }
 
     .footer-inner {
-      max-width: 1320px;
+      max-width: 1360px;
       margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 24px;
     }
 
-    .footer-brand {
-      display: flex;
-      align-items: center;
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 64px;
     }
 
     .footer-brand img {
-      height: 40px;
+      height: 44px;
       width: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 0 16px rgba(139, 92, 246, 0.3));
-      transition: opacity 0.3s ease;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 24px rgba(139, 92, 246, 0.3));
     }
 
-    .footer-brand img:hover {
-      opacity: 0.7;
+    .footer-brand p {
+      color: var(--text-2);
+      font-size: 0.9rem;
+      max-width: 320px;
+      line-height: 1.7;
     }
 
-    .footer-links {
-      display: flex;
-      gap: 28px;
-      flex-wrap: wrap;
+    .footer-col h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-3);
+      margin-bottom: 20px;
+      font-weight: 600;
     }
 
-    .footer-links a {
-      font-size: 0.88rem;
-      color: var(--text3);
-      font-weight: 500;
+    .footer-col a {
+      display: block;
+      color: var(--text-2);
+      font-size: 0.9rem;
+      padding: 6px 0;
       transition: color 0.2s ease;
     }
 
-    .footer-links a:hover {
-      color: var(--purple2);
+    .footer-col a:hover {
+      color: var(--purple-2);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 20px;
     }
 
     .footer-copy {
       font-size: 0.85rem;
-      color: var(--text3);
+      color: var(--text-3);
     }
 
-    /* ========== RESPONSIVE ========== */
-    @media (max-width: 1024px) {
-      .nav-links {
-        display: none;
-      }
+    .footer-social {
+      display: flex;
+      gap: 12px;
     }
 
-    @media (max-width: 768px) {
-      .nav-inner {
-        padding: 0 20px;
-      }
-
-      .nav-logo img {
-        height: 36px;
-      }
-
-      .hero {
-        padding: 120px 20px 80px;
-      }
-
-      .hero h1 {
-        letter-spacing: -0.03em;
-      }
-
-      .section {
-        padding: 90px 20px;
-      }
-
-      .section-header {
-        margin-bottom: 56px;
-      }
-
-      .download-block {
-        padding: 32px 24px;
-      }
-
-      .download-meta {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .footer-inner {
-        flex-direction: column;
-        text-align: center;
-      }
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-2);
+      transition: all 0.3s var(--ease);
     }
 
-    @media (max-width: 480px) {
-      .hero-buttons {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .btn {
-        justify-content: center;
-      }
-
-      .nav-cta span {
-        display: none;
-      }
-
-      .about-links {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .about-links a {
-        justify-content: center;
-      }
+    .footer-social a:hover {
+      background: var(--grad-main);
+      color: #fff;
+      border-color: transparent;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
     }
 
-    /* ========== SCROLL ANIMATIONS ========== */
+    /* ============ REVEAL ============ */
     .reveal {
       opacity: 0;
       transform: translateY(40px);
-      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 1s var(--ease-out);
     }
 
     .reveal.visible {
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 1100px) {
+      .nav-links { display: none; }
+      .bento-card.span-7,
+      .bento-card.span-5,
+      .bento-card.span-6,
+      .bento-card.span-4,
+      .bento-card.span-8 { grid-column: span 12; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-inner { padding: 0 20px; }
+      .nav-logo img { height: 34px; }
+      .nav-cta { padding: 9px 16px; }
+      .nav-cta span { display: none; }
+      .hero { padding: 120px 20px 80px; }
+      .section { padding: 100px 20px; }
+      .section-head { grid-template-columns: 1fr; margin-bottom: 64px; }
+      .section-index { font-size: 3rem; }
+      .bento-card { padding: 28px; }
+      .download { padding: 40px 24px; }
+      .download-content { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-actions { flex-direction: column; width: 100%; }
+      .btn { justify-content: center; width: 100%; }
+    }
   </style>
 </head>
 <body>
 
-<!-- ANIMATED BACKGROUND -->
-<div class="bg-orbs">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
+<!-- PROGRESS BAR -->
+<div class="scroll-progress" id="progress"></div>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NOISE -->
+<div class="noise"></div>
+
+<!-- AURORA BG -->
+<div class="bg-aurora">
+  <div class="aurora aurora-1"></div>
+  <div class="aurora aurora-2"></div>
+  <div class="aurora aurora-3"></div>
 </div>
-<div class="grid-overlay"></div>
+<div class="dot-grid"></div>
 
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
-    <a href="#" class="nav-logo">
+    <a href="#" class="nav-logo" data-cursor="hover">
       <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/ludvig2457.png" alt="Ludvig2457">
     </a>
     <div class="nav-links">
       <a href="#superlauncher">SuperLauncher</a>
       <a href="#ludvig-os">LudvigOS</a>
-      <a href="#mods">Моды</a>
-      <a href="#about">О проекте</a>
+      <a href="#mods">Mods</a>
+      <a href="#about">About</a>
     </div>
-    <a href="https://github.com/Ludvig2457Ultra" target="_blank" class="nav-cta">
+    <a href="https://github.com/Ludvig2457Ultra" target="_blank" class="nav-cta" data-cursor="hover">
       <i class="fab fa-github"></i>
       <span>GitHub</span>
     </a>
@@ -992,115 +1100,120 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span class="pulse-dot"></span>
-      Экосистема Ludvig2457 • 2026
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <span class="badge">Live</span>
+      Экосистема Ludvig2457 — 2026
     </div>
     <h1>
-      Играй. Создавай.<br>
-      <span class="grad">Управляй.</span>
+      <span class="line">Инструменты</span>
+      <span class="line">для тех, кто</span>
+      <span class="line"><span class="accent">делает.</span></span>
     </h1>
-    <p>SuperLauncher — быстрый Minecraft лаунчер на C++ и Assembler. LudvigOS — минималистичная ОС с собственным ядром. Scale Of Tools — мод, который спасает твои инструменты.</p>
-    <div class="hero-buttons">
-      <a href="#superlauncher" class="btn btn-primary">
+    <p class="hero-sub">
+      SuperLauncher на C++ и Assembler. LudvigOS с собственным ядром. Scale Of Tools — мод, который спасает твои инструменты. Всё открыто. Всё быстро.
+    </p>
+    <div class="hero-actions">
+      <a href="#superlauncher" class="btn btn-primary" data-cursor="hover">
         <i class="fas fa-download"></i> Скачать SuperLauncher
       </a>
-      <a href="#ludvig-os" class="btn btn-secondary">
-        <i class="fas fa-download"></i> Скачать LudvigOS
+      <a href="#ludvig-os" class="btn btn-secondary" data-cursor="hover">
+        <i class="fas fa-microchip"></i> Изучить LudvigOS
       </a>
     </div>
   </div>
 </section>
 
-<!-- STATS -->
-<section class="section" style="padding-top:0;padding-bottom:80px;">
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <div class="marquee-item"><i class="fas fa-circle"></i> SuperLauncher 3.0 Beta</div>
+    <div class="marquee-item"><i class="fas fa-circle"></i> LudvigOS v1.2</div>
+    <div class="marquee-item"><i class="fas fa-circle"></i> Scale Of Tools v1.1</div>
+    <div class="marquee-item"><i class="fas fa-circle"></i> 260 KB Launcher</div>
+    <div class="marquee-item"><i class="fas fa-circle"></i> C++ · Assembler · Fabric · Forge</div>
+    <div class="marquee-item"><i class="fas fa-circle"></i> Open Source · MIT · GPLv3</div>
+    <div class="marquee-item"><i class="fas fa-circle"></i> SuperLauncher 3.0 Beta</div>
+    <div class="marquee-item"><i class="fas fa-circle"></i> LudvigOS v1.2</div>
+    <div class="marquee-item"><i class="fas fa-circle"></i> Scale Of Tools v1.1</div>
+    <div class="marquee-item"><i class="fas fa-circle"></i> 260 KB Launcher</div>
+    <div class="marquee-item"><i class="fas fa-circle"></i> C++ · Assembler · Fabric · Forge</div>
+    <div class="marquee-item"><i class="fas fa-circle"></i> Open Source · MIT · GPLv3</div>
+  </div>
+</div>
+
+<!-- SUPERLAUNCHER -->
+<section id="superlauncher" class="section">
   <div class="section-inner">
-    <div class="stats reveal">
+    <div class="section-head reveal">
+      <div class="section-head-content">
+        <div class="section-tag">01 — Minecraft Launcher</div>
+        <h2>SuperLauncher. <span class="accent">Быстрее, чем ты моргнёшь.</span></h2>
+        <p>Лаунчер на C++ и Assembler — не требует Java, не тянет за собой рантаймы, весит всего 260 КБ. Поддержка Modrinth, Forge, Fabric, NeoForge, Quilt и управление серверами.</p>
+      </div>
+      <div class="section-index">01</div>
+    </div>
+
+    <div class="bento reveal">
+      <div class="bento-card feature-large span-7">
+        <div class="bento-icon"><i class="fas fa-bolt"></i></div>
+        <h3>Нативный бинарник</h3>
+        <p>Написан на C++ и Assembler. Мгновенный запуск, минимальное потребление памяти, никаких внешних зависимостей. Работает на Windows 10/11 и Linux.</p>
+      </div>
+      <div class="bento-card span-5">
+        <div class="bento-icon"><i class="fas fa-cubes"></i></div>
+        <h3>Моды в один клик</h3>
+        <p>Modrinth API, 40+ встроенных модов, авто-установка Forge, Fabric, NeoForge и OptiFine.</p>
+      </div>
+      <div class="bento-card span-5">
+        <div class="bento-icon"><i class="fas fa-server"></i></div>
+        <h3>Серверы</h3>
+        <p>Создание локальных серверов, плагины из Modrinth, поддержка Bukkit/Spigot/Paper, авто-обновления.</p>
+      </div>
+      <div class="bento-card span-7">
+        <div class="bento-icon"><i class="fas fa-palette"></i></div>
+        <h3>Интерфейс 2026</h3>
+        <p>Светлая и тёмная темы, анимированные переходы, Discord Rich Presence, дедупликация модов по хэшам.</p>
+      </div>
+    </div>
+
+    <div class="download reveal">
+      <div class="download-content">
+        <div class="download-info">
+          <div class="version-pill">v3.0 Beta</div>
+          <h3>SuperLauncher 3.0 Beta</h3>
+          <p>Нативный бинарник для Windows 10/11. Не требует Java. Весит 260 КБ. Открытый исходный код на GitHub.</p>
+          <div class="download-meta">
+            <span><i class="fab fa-windows"></i> Windows 10/11</span>
+            <span><i class="fas fa-code"></i> C++ / Assembler</span>
+            <span><i class="fas fa-file-archive"></i> 260 КБ</span>
+            <span><i class="fas fa-floppy-disk"></i> XP-версия</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative/releases/download/3.0/SuperLauncherNative.exe" target="_blank" class="btn btn-primary btn-large" data-cursor="hover">
+            <i class="fas fa-download"></i> Скачать 3.0 Beta
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid reveal" style="margin-top:32px;">
       <div class="stat">
-        <div class="stat-value">260 КБ</div>
-        <div class="stat-label">Вес лаунчера</div>
+        <div class="stat-value">260</div>
+        <div class="stat-label">Килобайт</div>
       </div>
       <div class="stat">
-        <div class="stat-value">80+</div>
-        <div class="stat-label">Скачиваний</div>
+        <div class="stat-value">0</div>
+        <div class="stat-label">Зависимостей</div>
       </div>
       <div class="stat">
         <div class="stat-value">4</div>
         <div class="stat-label">Загрузчика</div>
       </div>
       <div class="stat">
-        <div class="stat-value">2 МБ</div>
-        <div class="stat-label">ОЗУ для ОС</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SUPERLAUNCHER -->
-<section id="superlauncher" class="section">
-  <div class="section-inner">
-    <div class="section-header reveal">
-      <div class="section-label">01 — Minecraft Launcher</div>
-      <h2>SuperLauncher</h2>
-      <p class="section-sub">Minecraft лаунчер с автоматической установкой модов и управлением серверами</p>
-    </div>
-
-    <div class="features reveal">
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-cubes"></i></div>
-        <h3>Моды и сборки</h3>
-        <p>Modrinth API — установка модпаков в один клик. Поддержка Forge, Fabric, NeoForge и OptiFine с авто-установкой.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-server"></i></div>
-        <h3>Управление серверами</h3>
-        <p>Создание локальных серверов, плагины из Modrinth, поддержка Bukkit/Spigot/Paper, авто-обновления.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-palette"></i></div>
-        <h3>Современный интерфейс</h3>
-        <p>Светлая и тёмная темы, анимированные переходы, Discord Rich Presence.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-        <h3>Нативный бинарник</h3>
-        <p>SuperLauncher 3.0 Beta написана на C++ и Assembler — не требует Java и внешних рантаймов, весит всего ~260 КБ.</p>
-      </div>
-    </div>
-
-    <div class="download-block reveal">
-      <div class="download-content">
-        <div class="download-version">
-          <span class="version-badge">v3.0 Beta</span>
-          <span class="version-date">2026 — C++ + Assembler / нативный .exe</span>
-        </div>
-        <div class="download-meta">
-          <span><i class="fab fa-windows"></i> Windows 10/11 (.exe)</span>
-          <span><i class="fas fa-code"></i> C++ / Assembler</span>
-          <span><i class="fas fa-file-archive"></i> ~260 КБ</span>
-        </div>
-        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative/releases/download/3.0/SuperLauncherNative.exe" target="_blank" class="btn btn-primary btn-large">
-          <i class="fas fa-download"></i> Скачать SuperLauncher 3.0 Beta
-        </a>
-        <p class="download-note">
-          Для старых систем (Windows XP): <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative/releases/download/3.0/SuperLauncherNative_xp.exe" target="_blank"><i class="fas fa-floppy-disk"></i> SuperLauncherNative_xp.exe</a>
-        </p>
-        <p class="download-note">
-          Open source: <code>github.com/Ludvig2457Ultra/SuperLauncherMCNative</code>
-        </p>
-      </div>
-    </div>
-
-    <div class="sys-reqs reveal">
-      <h3>Системные требования</h3>
-      <div class="reqs-grid">
-        <div class="req-item"><strong>ОС</strong>Windows 10/11, Linux (Arch)</div>
-        <div class="req-item"><strong>CPU</strong>любой x86_64</div>
-        <div class="req-item"><strong>RAM</strong>от 2 ГБ</div>
-        <div class="req-item"><strong>Java</strong>не требуется</div>
-        <div class="req-item"><strong>Место</strong>от 200 МБ</div>
-        <div class="req-item"><strong>GPU</strong>любая с OpenGL 3.2+</div>
+        <div class="stat-value">∞</div>
+        <div class="stat-label">Версий Minecraft</div>
       </div>
     </div>
   </div>
@@ -1109,71 +1222,56 @@
 <!-- LUDVIGOS -->
 <section id="ludvig-os" class="section">
   <div class="section-inner">
-    <div class="section-header reveal">
-      <div class="section-label">02 — Operating System</div>
-      <h2>LudvigOS</h2>
-      <p class="section-sub">Собственная операционная система на C++ с графическим интерфейсом</p>
+    <div class="section-head reveal">
+      <div class="section-head-content">
+        <div class="section-tag">02 — Operating System</div>
+        <h2>LudvigOS. <span class="accent">Два мегабайта свободы.</span></h2>
+        <p>Собственная операционная система на C++ и Assembly. Собственное ядро на Multiboot, VGA-драйвер, GUI с мышью и клавиатурой, командная оболочка с пакетными менеджерами.</p>
+      </div>
+      <div class="section-index">02</div>
     </div>
 
-    <div class="features reveal">
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-microchip"></i></div>
+    <div class="bento reveal">
+      <div class="bento-card span-6">
+        <div class="bento-icon"><i class="fas fa-microchip"></i></div>
         <h3>Собственное ядро</h3>
-        <p>Полноценное ядро на C++ с поддержкой Multiboot, VGA-драйвером и управлением памятью.</p>
+        <p>Написано на C++ с поддержкой Multiboot. Управление памятью, VGA-драйвер, обработка прерываний.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-desktop"></i></div>
+      <div class="bento-card span-6">
+        <div class="bento-icon"><i class="fas fa-desktop"></i></div>
         <h3>Графический интерфейс</h3>
-        <p>Рабочий десктоп с поддержкой мыши и клавиатуры через порты 0x60/0x64.</p>
+        <p>Рабочий десктоп с поддержкой мыши и клавиатуры через порты 0x60/0x64. Окна, курсор, реакция на ввод.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-terminal"></i></div>
-        <h3>Командная оболочка</h3>
-        <p>Терминал с neofetch, LUR/LURE пакетными менеджерами и игровыми командами.</p>
+      <div class="bento-card span-5">
+        <div class="bento-icon"><i class="fas fa-terminal"></i></div>
+        <h3>Shell + LUR/LURE</h3>
+        <p>Командная оболочка с neofetch, пакетными менеджерами LUR и LURE, игровыми командами.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-tachometer-alt"></i></div>
+      <div class="bento-card feature-large span-7">
+        <div class="bento-icon"><i class="fas fa-feather"></i></div>
         <h3>Всего 2 МБ ОЗУ</h3>
-        <p>Экстремально лёгкая ОС — работает даже на самых старых машинах.</p>
+        <p>Экстремально лёгкая система. Работает даже на самых старых машинах. Загружается через GRUB2 из ISO-образа. Идеально для QEMU и ретро-железа.</p>
       </div>
     </div>
 
-    <div class="specs reveal">
-      <div class="spec">
-        <span class="spec-label">Ядро</span>
-        <span class="spec-value">C++ Multiboot</span>
-      </div>
-      <div class="spec">
-        <span class="spec-label">Видеорежим</span>
-        <span class="spec-value">VGA 80×25</span>
-      </div>
-      <div class="spec">
-        <span class="spec-label">Загрузчик</span>
-        <span class="spec-value">GRUB2</span>
-      </div>
-      <div class="spec">
-        <span class="spec-label">Формат</span>
-        <span class="spec-value">ISO QEMU</span>
-      </div>
-    </div>
-
-    <div class="download-block reveal">
+    <div class="download reveal">
       <div class="download-content">
-        <div class="download-version">
-          <span class="version-badge green">v1.2</span>
-          <span class="version-date">13 октября 2025 — Revolution Update</span>
+        <div class="download-info">
+          <div class="version-pill green">v1.2 · Revolution Update</div>
+          <h3>LudvigOS v1.2 ISO</h3>
+          <p>Полноценная ISO-сборка с shell и графическим интерфейсом. Запускается в QEMU или на реальном железе через GRUB2.</p>
+          <div class="download-meta">
+            <span><i class="fas fa-compact-disc"></i> ISO образ</span>
+            <span><i class="fas fa-terminal"></i> Shell + GUI</span>
+            <span><i class="fas fa-memory"></i> 2 МБ ОЗУ</span>
+            <span><i class="fas fa-laptop"></i> QEMU / Bare metal</span>
+          </div>
         </div>
-        <div class="download-meta">
-          <span><i class="fas fa-compact-disc"></i> ISO образ</span>
-          <span><i class="fas fa-terminal"></i> Shell + GUI</span>
-          <span><i class="fas fa-laptop"></i> Запуск в QEMU</span>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="https://github.com/Ludvig2457Ultra/LudvigOS/releases/download/v1.2/LudvigOS.iso" target="_blank" class="btn btn-secondary btn-large" data-cursor="hover">
+            <i class="fas fa-download"></i> Скачать LudvigOS ISO
+          </a>
         </div>
-        <a href="https://github.com/Ludvig2457Ultra/LudvigOS/releases/download/v1.2/LudvigOS.iso" target="_blank" class="btn btn-secondary btn-large">
-          <i class="fas fa-download"></i> Скачать LudvigOS v1.2 ISO
-        </a>
-        <p class="download-note">
-          Запуск: <code>qemu-system-i386 -cdrom LudvigOS.iso -m 512M</code>
-        </p>
       </div>
     </div>
   </div>
@@ -1182,52 +1280,52 @@
 <!-- MODS -->
 <section id="mods" class="section">
   <div class="section-inner">
-    <div class="section-header reveal">
-      <div class="section-label">03 — Minecraft Mods</div>
-      <h2>Scale Of Tools</h2>
-      <p class="section-sub">Мод, который спасает твои инструменты от неожиданной поломки</p>
+    <div class="section-head reveal">
+      <div class="section-head-content">
+        <div class="section-tag">03 — Minecraft Mods</div>
+        <h2>Scale Of Tools. <span class="accent">Спасает инструменты.</span></h2>
+        <p>Клиентский мод, который предупреждает, когда инструмент вот-вот сломается. Работает на Fabric, Forge, NeoForge и Quilt. 80+ скачиваний на CurseForge.</p>
+      </div>
+      <div class="section-index">03</div>
     </div>
 
-    <div class="features reveal">
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-wrench"></i></div>
+    <div class="bento reveal">
+      <div class="bento-card span-4">
+        <div class="bento-icon"><i class="fas fa-wrench"></i></div>
         <h3>Предупреждение</h3>
-        <p>Показывает уведомление в action bar, когда прочность падает до 10.</p>
+        <p>Уведомление в action bar, когда прочность падает до 10. Инструмент не сломается незаметно.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-compress"></i></div>
-        <h3>Сжатие инструмента</h3>
-        <p>Инструмент сжимается при износе — видно, что скоро сломается.</p>
+      <div class="bento-card span-4">
+        <div class="bento-icon"><i class="fas fa-compress"></i></div>
+        <h3>Сжатие</h3>
+        <p>Инструмент визуально сжимается при износе — видно, что скоро сломается.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-layer-group"></i></div>
+      <div class="bento-card span-4">
+        <div class="bento-icon"><i class="fas fa-layer-group"></i></div>
         <h3>Все загрузчики</h3>
-        <p>Fabric, Forge, NeoForge, Quilt. Поддержка 1.20.1, 1.20.4, 1.21.1, 1.21.4.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><i class="fas fa-download"></i></div>
-        <h3>80+ скачиваний</h3>
-        <p>Мод уже скачали 80+ раз на CurseForge. Присоединяйся!</p>
+        <p>Fabric, Forge, NeoForge, Quilt. Версии 1.20.1, 1.20.4, 1.21.1, 1.21.4.</p>
       </div>
     </div>
 
-    <div class="download-block reveal">
+    <div class="download reveal">
       <div class="download-content">
-        <div class="download-version">
-          <span class="version-badge hot">v1.1</span>
-          <span class="version-date">12 сентября 2026 — мульти-загрузчик</span>
+        <div class="download-info">
+          <div class="version-pill hot">v1.1 · Multi-loader</div>
+          <h3>Scale Of Tools v1.1</h3>
+          <p>16 файлов: 4 загрузчика × 4 версии. Клиентский мод. Лицензия MIT. 80+ скачиваний на CurseForge.</p>
+          <div class="download-meta">
+            <span><i class="fas fa-cubes"></i> 16 файлов</span>
+            <span><i class="fas fa-code-branch"></i> 4 загрузчика</span>
+            <span><i class="fas fa-download"></i> 80+ downloads</span>
+            <span><i class="fas fa-balance-scale"></i> MIT License</span>
+          </div>
         </div>
-        <div class="download-meta">
-          <span><i class="fas fa-cubes"></i> 16 файлов</span>
-          <span><i class="fas fa-code-branch"></i> 4 загрузчика</span>
-          <span><i class="fas fa-gamepad"></i> 4 версии</span>
-        </div>
-        <div class="hero-buttons">
-          <a href="https://www.curseforge.com/minecraft/mc-mods/scale-of-tools" target="_blank" class="btn btn-primary">
-            <i class="fas fa-download"></i> Скачать с CurseForge
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="https://www.curseforge.com/minecraft/mc-mods/scale-of-tools" target="_blank" class="btn btn-primary btn-large" data-cursor="hover">
+            <i class="fas fa-download"></i> CurseForge
           </a>
-          <a href="https://modrinth.com/mod/scale-of-tools" target="_blank" class="btn btn-secondary">
-            <i class="fas fa-download"></i> Скачать с Modrinth
+          <a href="https://modrinth.com/mod/scale-of-tools" target="_blank" class="btn btn-secondary btn-large" data-cursor="hover">
+            <i class="fas fa-download"></i> Modrinth
           </a>
         </div>
       </div>
@@ -1238,16 +1336,16 @@
 <!-- ABOUT -->
 <section id="about" class="section">
   <div class="section-inner">
-    <div class="about-content reveal">
-      <div class="section-label">04 — About</div>
-      <h2>О проекте Ludvig2457</h2>
-      <p>Ludvig2457 — разработчик с открытым исходным кодом. Создаёт инструменты для геймеров и энтузиастов: Minecraft лаунчер с полной поддержкой модов и собственную операционную систему.</p>
-      <p>SuperLauncher написан на C++ и Assembler. LudvigOS написана на C++ и Assembly, загружается через GRUB2. Scale Of Tools — клиентский мод на Fabric, Forge, NeoForge и Quilt.</p>
+    <div class="about reveal">
+      <div class="section-tag" style="justify-content:center;">04 — About</div>
+      <h2>Один разработчик. <span class="accent">Три проекта. Ноль компромиссов.</span></h2>
+      <p>Ludvig2457 — open-source разработчик. Пишет на C++ и Assembly, собирает лаунчеры, делает ОС, делает моды. Не использует чужие SDK, не тянет за собой гигабайты зависимостей, не ставит подписи вендоров выше качества кода.</p>
+      <p>SuperLauncher — 260 КБ и мгновенный запуск. LudvigOS — 2 МБ ОЗУ и собственное ядро. Scale Of Tools — 80+ скачиваний и работа на четырёх загрузчиках.</p>
       <div class="about-links">
-        <a href="https://github.com/Ludvig2457Ultra" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMC" target="_blank"><i class="fas fa-rocket"></i> SuperLauncher</a>
-        <a href="https://github.com/Ludvig2457Ultra/LudvigOS" target="_blank"><i class="fas fa-microchip"></i> LudvigOS</a>
-        <a href="https://ludvig2457.github.io/" target="_blank"><i class="fas fa-globe"></i> Сайт</a>
+        <a href="https://github.com/Ludvig2457Ultra" target="_blank" data-cursor="hover"><i class="fab fa-github"></i> GitHub</a>
+        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMC" target="_blank" data-cursor="hover"><i class="fas fa-rocket"></i> SuperLauncher</a>
+        <a href="https://github.com/Ludvig2457Ultra/LudvigOS" target="_blank" data-cursor="hover"><i class="fas fa-microchip"></i> LudvigOS</a>
+        <a href="https://modrinth.com/mod/scale-of-tools" target="_blank" data-cursor="hover"><i class="fas fa-wrench"></i> Scale Of Tools</a>
       </div>
     </div>
   </div>
@@ -1256,32 +1354,90 @@
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-brand">
-      <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/ludvig2457.png" alt="Ludvig2457">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/ludvig2457.png" alt="Ludvig2457">
+        <p>Инструменты для тех, кто делает. Открытый исходный код, минимум зависимостей, максимум скорости.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Проекты</h4>
+        <a href="#superlauncher">SuperLauncher</a>
+        <a href="#ludvig-os">LudvigOS</a>
+        <a href="#mods">Scale Of Tools</a>
+      </div>
+      <div class="footer-col">
+        <h4>Ссылки</h4>
+        <a href="https://github.com/Ludvig2457Ultra" target="_blank">GitHub</a>
+        <a href="https://modrinth.com/mod/scale-of-tools" target="_blank">Modrinth</a>
+        <a href="https://www.curseforge.com/minecraft/mc-mods/scale-of-tools" target="_blank">CurseForge</a>
+      </div>
+      <div class="footer-col">
+        <h4>Контакты</h4>
+        <a href="https://discord.gg/5QyUmRZZd2" target="_blank">Discord</a>
+        <a href="https://www.youtube.com/@ludvig2457" target="_blank">YouTube</a>
+        <a href="https://ludvig2457.github.io/" target="_blank">Сайт</a>
+      </div>
     </div>
-    <div class="footer-links">
-      <a href="https://github.com/Ludvig2457Ultra" target="_blank">GitHub</a>
-      <a href="https://discord.gg/5QyUmRZZd2" target="_blank">Discord</a>
-      <a href="https://www.youtube.com/@ludvig2457" target="_blank">YouTube</a>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Ludvig2457. Open source под MIT и GPLv3.</p>
+      <div class="footer-social">
+        <a href="https://github.com/Ludvig2457Ultra" target="_blank" data-cursor="hover"><i class="fab fa-github"></i></a>
+        <a href="https://discord.gg/5QyUmRZZd2" target="_blank" data-cursor="hover"><i class="fab fa-discord"></i></a>
+        <a href="https://www.youtube.com/@ludvig2457" target="_blank" data-cursor="hover"><i class="fab fa-youtube"></i></a>
+      </div>
     </div>
-    <p class="footer-copy">© 2026 Ludvig2457. Open source.</p>
   </div>
 </footer>
 
-<!-- SCROLL SCRIPT -->
+<!-- SCRIPTS -->
 <script>
-  // Navbar scroll effect
+  // ============ SCROLL PROGRESS ============
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    progress.style.width = pct + '%';
+  });
+
+  // ============ NAVBAR SCROLL ============
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
+    if (window.scrollY > 40) {
       navbar.classList.add('scrolled');
     } else {
       navbar.classList.remove('scrolled');
     }
   });
 
-  // Reveal on scroll
-  const reveals = document.querySelectorAll('.reveal');
+  // ============ CUSTOM CURSOR ============
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  let rx = mx, ry = my;
+
+  window.addEventListener('mousemove', (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.15;
+    ry += (my - ry) * 0.15;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Cursor hover
+  document.querySelectorAll('[data-cursor="hover"], a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  });
+
+  // ============ REVEAL ON SCROLL ============
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -1289,9 +1445,30 @@
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  }, { threshold: 0.12, rootMargin: '0px 0px -80px 0px' });
 
-  reveals.forEach(el => observer.observe(el));
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ============ PARALLAX HERO ============
+  const heroInner = document.querySelector('.hero-inner');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    if (scrolled < window.innerHeight) {
+      heroInner.style.transform = `translateY(${scrolled * 0.3}px)`;
+      heroInner.style.opacity = 1 - (scrolled / window.innerHeight) * 0.8;
+    }
+  });
+
+  // ============ AURORA PARALLAX ============
+  const auroras = document.querySelectorAll('.aurora');
+  window.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 40;
+    const y = (e.clientY / window.innerHeight - 0.5) * 40;
+    auroras.forEach((a, i) => {
+      const factor = (i + 1) * 0.5;
+      a.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+    });
+  });
 </script>
 
 </body>
