@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ludvig2457 — Scale Of Tools + SuperLauncherMC</title>
-<meta name="description" content="Scale Of Tools — мод, который спасает инструменты. SuperLauncherMC — быстрый лаунчер на C++ и Assembler. Всё бесплатно, всё открыто.">
+<title>SuperLauncherMC — лаунчер Minecraft на C++ и Assembler</title>
+<meta name="description" content="Нативный Minecraft-лаунчер на C++ и Assembler. 260 КБ. Без Java. Modrinth API, Forge, Fabric, NeoForge, Quilt, управление серверами. Windows 10/11 и XP.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -31,6 +31,9 @@
     --gold:#fbbf24;
     --green:#10b981;
     --red:#ef4444;
+    --blue:#3b82f6;
+    --blue-2:#60a5fa;
+    --blue-3:#93c5fd;
     --grad-hero:linear-gradient(120deg,#a78bfa,#22d3ee 50%,#ec4899);
     --grad-main:linear-gradient(135deg,#8b5cf6,#22d3ee);
     --grad-warm:linear-gradient(135deg,#fbbf24,#ec4899);
@@ -58,15 +61,15 @@
     font-feature-settings:'ss01','ss02','cv01','cv11';
   }
 
-  ::selection{background:var(--purple);color:#fff}
+  ::selection{background:var(--blue);color:#fff}
 
   .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
   .bg::before{
     content:'';position:absolute;inset:0;
     background:
-      radial-gradient(ellipse 60% 40% at 50% -10%,rgba(139,92,246,.25),transparent 60%),
-      radial-gradient(ellipse 50% 40% at 90% 60%,rgba(34,211,238,.12),transparent 60%),
-      radial-gradient(ellipse 40% 30% at 10% 90%,rgba(236,72,153,.08),transparent 60%);
+      radial-gradient(ellipse 60% 40% at 50% -10%,rgba(59,130,246,.28),transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 60%,rgba(139,92,246,.15),transparent 60%),
+      radial-gradient(ellipse 40% 30% at 10% 90%,rgba(34,211,238,.08),transparent 60%);
   }
   .bg::after{
     content:'';position:absolute;inset:0;
@@ -99,18 +102,21 @@
     display:flex;align-items:center;justify-content:space-between;gap:24px;
   }
   .nav-brand{
-    display:flex;align-items:center;
-    text-decoration:none;
+    display:flex;align-items:center;gap:12px;
+    text-decoration:none;color:#fff;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.15rem;font-weight:700;
+    letter-spacing:-.02em;
     transition:transform .4s var(--ease-spring);
   }
   .nav-brand:hover{transform:scale(1.04)}
-  .nav-brand img{
-    height:48px;width:auto;object-fit:contain;
-    filter:drop-shadow(0 0 24px rgba(139,92,246,.4));
-    transition:filter .3s ease;
+  .nav-brand .mark{
+    width:40px;height:40px;border-radius:12px;
+    background:var(--grad-launcher);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:1.1rem;
+    box-shadow:0 6px 20px rgba(59,130,246,.4);
   }
-  .nav-brand:hover img{filter:drop-shadow(0 0 40px rgba(139,92,246,.7))}
-
   .nav-menu{
     display:flex;gap:2px;padding:6px;
     background:rgba(10,10,24,.7);
@@ -124,16 +130,15 @@
     text-decoration:none;transition:all .3s var(--ease);
   }
   .nav-menu a:hover{color:#fff;background:rgba(255,255,255,.06)}
-
   .nav-cta{
     display:inline-flex;align-items:center;gap:10px;
     padding:11px 24px;border-radius:100px;
-    background:var(--grad-main);color:#fff;
+    background:var(--grad-launcher);color:#fff;
     font-size:.85rem;font-weight:700;text-decoration:none;
-    box-shadow:0 6px 24px rgba(139,92,246,.4);
+    box-shadow:0 6px 24px rgba(59,130,246,.4);
     transition:all .35s var(--ease);
   }
-  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(139,92,246,.6)}
+  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(59,130,246,.6)}
 
   /* ========== SHARED ========== */
   .section{position:relative;z-index:2;padding:120px 32px}
@@ -143,15 +148,13 @@
     display:inline-flex;align-items:center;gap:10px;
     font-family:'JetBrains Mono',monospace;
     font-size:.72rem;font-weight:600;
-    color:var(--purple-2);text-transform:uppercase;
+    color:var(--blue-2);text-transform:uppercase;
     letter-spacing:3px;margin-bottom:20px;
   }
   .tag::before{
     content:'';width:32px;height:1px;
-    background:linear-gradient(90deg,var(--purple-2),transparent);
+    background:linear-gradient(90deg,var(--blue-2),transparent);
   }
-  .tag.launcher{color:#60a5fa}
-  .tag.launcher::before{background:linear-gradient(90deg,#60a5fa,transparent)}
 
   h2{
     font-family:'Space Grotesk',sans-serif;
@@ -161,12 +164,6 @@
   }
   h2 em{
     font-style:italic;
-    background:var(--grad-main);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background-clip:text;
-  }
-  h2 em.launcher{
     background:var(--grad-launcher);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
@@ -196,18 +193,18 @@
     border:1px solid var(--border-2);
   }
   .btn-secondary:hover{
-    border-color:var(--purple);background:rgba(139,92,246,.1);
+    border-color:var(--blue);background:rgba(59,130,246,.1);
     transform:translateY(-3px);
-    box-shadow:0 12px 40px rgba(139,92,246,.3);
+    box-shadow:0 12px 40px rgba(59,130,246,.3);
   }
   .btn-launcher{
     background:var(--grad-launcher);color:#fff;
     box-shadow:0 8px 32px rgba(59,130,246,.4);
   }
-  .btn-launcher:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(59,130,246,.6)}
+  .btn-launcher:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(59,130,246,.6);color:#fff}
   .btn-lg{padding:22px 48px;font-size:1.05rem}
 
-  /* ========== HERO (общий, с двумя CTA) ========== */
+  /* ========== HERO ========== */
   .hero{
     position:relative;z-index:2;
     min-height:100vh;display:flex;align-items:center;
@@ -248,7 +245,7 @@
   }
   .hero h1 em{
     font-style:italic;
-    background:var(--grad-hero);
+    background:var(--grad-launcher);
     background-size:200% 200%;
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
@@ -274,7 +271,7 @@
     font-family:'JetBrains Mono',monospace;
   }
   .hero-meta span{display:inline-flex;align-items:center;gap:8px}
-  .hero-meta i{color:var(--cyan)}
+  .hero-meta i{color:var(--blue-2)}
 
   /* ========== PROBLEM ========== */
   .problem{
@@ -342,7 +339,7 @@
   }
   .sol-card::before{
     content:'';position:absolute;top:0;left:0;right:0;height:2px;
-    background:var(--grad-main);opacity:0;
+    background:var(--grad-launcher);opacity:0;
     transition:opacity .5s ease;
   }
   .sol-card:hover{
@@ -356,15 +353,15 @@
     background:rgba(255,255,255,.03);
     border:1px solid var(--border-2);
     display:flex;align-items:center;justify-content:center;
-    font-size:1.5rem;color:var(--purple-2);
+    font-size:1.5rem;color:var(--blue-2);
     margin-bottom:24px;
     transition:all .5s var(--ease-spring);
   }
   .sol-card:hover .sol-icon{
-    background:var(--grad-main);color:#fff;
+    background:var(--grad-launcher);color:#fff;
     border-color:transparent;
     transform:scale(1.08) rotate(-5deg);
-    box-shadow:0 12px 40px rgba(139,92,246,.5);
+    box-shadow:0 12px 40px rgba(59,130,246,.5);
   }
   .sol-card h3{
     font-family:'Space Grotesk',sans-serif;
@@ -372,6 +369,157 @@
     margin-bottom:12px;letter-spacing:-.02em;
   }
   .sol-card p{font-size:.95rem;color:var(--text-2);line-height:1.7}
+
+  /* ========== LAUNCHER MOCK ========== */
+  .showcase{
+    display:grid;grid-template-columns:1fr 1.1fr;
+    gap:64px;align-items:center;margin-top:56px;
+  }
+  .launcher-mock{
+    width:100%;
+    background:rgba(5,5,16,.85);
+    border:1px solid var(--border-2);
+    border-radius:16px;
+    overflow:hidden;
+    backdrop-filter:blur(20px);
+    box-shadow:0 32px 80px rgba(0,0,0,.6), 0 0 80px rgba(59,130,246,.15);
+    position:relative;
+  }
+  .launcher-mock::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:var(--grad-launcher);
+  }
+  .lm-bar{
+    padding:14px 18px;
+    background:rgba(0,0,0,.4);
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;gap:8px;
+  }
+  .lm-dot{width:10px;height:10px;border-radius:50%}
+  .lm-dot.r{background:#ef4444}
+  .lm-dot.y{background:#fbbf24}
+  .lm-dot.g{background:#10b981}
+  .lm-title{
+    margin-left:12px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:.72rem;color:var(--text-3);
+    font-weight:500;
+  }
+  .lm-body{padding:28px}
+  .lm-row{
+    display:flex;align-items:center;gap:12px;
+    padding:14px 18px;
+    background:rgba(255,255,255,.02);
+    border:1px solid var(--border);
+    border-radius:10px;
+    margin-bottom:10px;
+    font-size:.85rem;
+    color:var(--text-2);
+  }
+  .lm-row:last-child{margin-bottom:0}
+  .lm-row i{
+    color:var(--blue-2);
+    font-size:.95rem;
+    width:22px;
+    text-align:center;
+  }
+  .lm-row.active{
+    background:rgba(59,130,246,.1);
+    border-color:rgba(59,130,246,.35);
+    color:#fff;
+  }
+  .lm-row.active i{color:var(--blue-2)}
+  .lm-progress{
+    flex:1;
+    height:4px;
+    background:rgba(255,255,255,.05);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .lm-progress-fill{
+    height:100%;
+    width:70%;
+    background:var(--grad-launcher);
+    border-radius:2px;
+    animation:progress 3s ease-in-out infinite;
+  }
+  @keyframes progress{
+    0%,100%{width:30%}
+    50%{width:90%}
+  }
+  .lm-pct{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.72rem;
+    color:var(--blue-2);
+    font-weight:600;
+    min-width:38px;
+    text-align:right;
+  }
+
+  .showcase-text h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.6rem;font-weight:600;
+    margin-bottom:16px;letter-spacing:-.025em;
+  }
+  .showcase-text p{
+    font-size:1rem;color:var(--text-2);
+    line-height:1.75;margin-bottom:24px;
+  }
+  .showcase-list{
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .showcase-item{
+    display:flex;align-items:center;gap:12px;
+    font-size:.95rem;color:var(--text-2);
+  }
+  .showcase-item i{
+    color:var(--green);
+    font-size:.9rem;
+    width:20px;
+  }
+
+  /* ========== FEATURES ========== */
+  .features-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:20px;margin-top:56px;
+  }
+  .feature{
+    padding:32px;
+    border-radius:var(--radius-md);
+    background:rgba(10,10,24,.5);
+    border:1px solid var(--border);
+    backdrop-filter:blur(24px);
+    transition:all .5s var(--ease);
+    position:relative;
+    overflow:hidden;
+  }
+  .feature::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:var(--grad-launcher);
+    opacity:0;transition:opacity .5s ease;
+  }
+  .feature:hover{
+    border-color:var(--border-2);
+    transform:translateY(-4px);
+    box-shadow:0 16px 48px rgba(0,0,0,.4);
+  }
+  .feature:hover::before{opacity:1}
+  .feature i{
+    font-size:1.6rem;
+    color:var(--blue-2);
+    margin-bottom:16px;
+    display:block;
+    transition:transform .4s var(--ease-spring);
+  }
+  .feature:hover i{transform:scale(1.15) rotate(-6deg)}
+  .feature h4{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.05rem;font-weight:600;
+    margin-bottom:8px;letter-spacing:-.02em;
+  }
+  .feature p{
+    font-size:.88rem;color:var(--text-2);line-height:1.65;
+  }
 
   /* ========== HOW ========== */
   .how{background:rgba(10,10,24,.3)}
@@ -394,14 +542,6 @@
     font-family:'Space Grotesk',sans-serif;
     font-size:2.6rem;font-weight:300;
     line-height:1;letter-spacing:-.04em;
-    background:var(--grad-hero);
-    background-size:200% 200%;
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background-clip:text;
-    animation:shift 6s ease infinite;
-  }
-  .how-num.launcher{
     background:var(--grad-launcher);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
@@ -440,14 +580,6 @@
     font-size:clamp(2rem,4vw,3rem);
     font-weight:500;line-height:1;letter-spacing:-.04em;
     margin-bottom:12px;
-    background:var(--grad-hero);
-    background-size:200% 200%;
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background-clip:text;
-    animation:shift 6s ease infinite;
-  }
-  .stat-v.launcher{
     background:var(--grad-launcher);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
@@ -476,10 +608,9 @@
   }
   .dl-card::before{
     content:'';position:absolute;top:0;left:0;right:0;height:3px;
-    background:var(--grad-main);
+    background:var(--grad-launcher);
   }
-  .dl-card.warm::before{background:var(--grad-warm)}
-  .dl-card.launcher::before{background:var(--grad-launcher)}
+  .dl-card.xp::before{background:var(--grad-warm)}
   .dl-card:hover{
     border-color:var(--border-2);
     transform:translateY(-6px);
@@ -493,19 +624,9 @@
     width:56px;height:56px;border-radius:14px;
     display:flex;align-items:center;justify-content:center;
     font-size:1.6rem;
+    background:var(--grad-launcher);color:#fff;
   }
-  .dl-platform.cf{
-    background:linear-gradient(135deg,#f97316,#ea580c);
-    color:#fff;
-  }
-  .dl-platform.mr{
-    background:linear-gradient(135deg,#10b981,#059669);
-    color:#fff;
-  }
-  .dl-platform.launcher{
-    background:var(--grad-launcher);
-    color:#fff;
-  }
+  .dl-platform.xp{background:var(--grad-warm)}
   .dl-title h3{
     font-family:'Space Grotesk',sans-serif;
     font-size:1.4rem;font-weight:600;
@@ -524,141 +645,37 @@
     border-top:1px solid var(--border);
   }
   .dl-meta span{display:inline-flex;align-items:center;gap:6px}
-  .dl-meta i{color:var(--cyan)}
+  .dl-meta i{color:var(--blue-2)}
 
-  /* ========== LAUNCHER (супер-секция) ========== */
-  .launcher{
-    position:relative;
-    background:rgba(10,10,24,.4);
-    border-top:1px solid rgba(59,130,246,.15);
-    border-bottom:1px solid rgba(59,130,246,.15);
+  /* ========== REQS ========== */
+  .reqs{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:16px;margin-top:56px;
   }
-  .launcher-head{
-    display:grid;grid-template-columns:1.2fr 1fr;
-    gap:64px;align-items:center;margin-bottom:80px;
-  }
-  .launcher-hero-visual{
-    position:relative;
-    aspect-ratio:16/10;
-    border-radius:var(--radius);
-    background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(139,92,246,.1));
-    border:1px solid var(--border);
-    overflow:hidden;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .launcher-hero-visual::before{
-    content:'';position:absolute;top:0;left:0;right:0;height:3px;
-    background:var(--grad-launcher);
-  }
-  .launcher-mock{
-    width:80%;
-    background:rgba(5,5,16,.85);
-    border:1px solid var(--border-2);
-    border-radius:16px;
-    overflow:hidden;
-    backdrop-filter:blur(20px);
-    box-shadow:0 24px 64px rgba(0,0,0,.5);
-  }
-  .lm-bar{
-    padding:14px 18px;
-    background:rgba(0,0,0,.4);
-    border-bottom:1px solid var(--border);
-    display:flex;align-items:center;gap:8px;
-  }
-  .lm-dot{width:10px;height:10px;border-radius:50%}
-  .lm-dot.r{background:#ef4444}
-  .lm-dot.y{background:#fbbf24}
-  .lm-dot.g{background:#10b981}
-  .lm-title{
-    margin-left:12px;
-    font-family:'JetBrains Mono',monospace;
-    font-size:.72rem;color:var(--text-3);
-    font-weight:500;
-  }
-  .lm-body{padding:24px}
-  .lm-row{
-    display:flex;align-items:center;gap:12px;
-    padding:12px 16px;
-    background:rgba(255,255,255,.02);
-    border:1px solid var(--border);
-    border-radius:10px;
-    margin-bottom:10px;
-    font-size:.82rem;
-    color:var(--text-2);
-  }
-  .lm-row:last-child{margin-bottom:0}
-  .lm-row i{
-    color:var(--purple-2);
-    font-size:.9rem;
-    width:20px;
-    text-align:center;
-  }
-  .lm-row.active{
-    background:rgba(59,130,246,.1);
-    border-color:rgba(59,130,246,.35);
-    color:#fff;
-  }
-  .lm-row.active i{color:#60a5fa}
-  .lm-progress{
-    flex:1;
-    height:4px;
-    background:rgba(255,255,255,.05);
-    border-radius:2px;
-    overflow:hidden;
-  }
-  .lm-progress-fill{
-    height:100%;
-    width:70%;
-    background:var(--grad-launcher);
-    border-radius:2px;
-  }
-  .lm-pct{
-    font-family:'JetBrains Mono',monospace;
-    font-size:.72rem;
-    color:#60a5fa;
-    font-weight:600;
-  }
-
-  .features-grid{
-    display:grid;grid-template-columns:repeat(3,1fr);
-    gap:20px;margin-bottom:64px;
-  }
-  .feature{
-    padding:32px;
-    border-radius:var(--radius-md);
+  .req{
+    padding:24px;
     background:rgba(10,10,24,.5);
     border:1px solid var(--border);
+    border-radius:var(--radius-sm);
     backdrop-filter:blur(24px);
-    transition:all .5s var(--ease);
-    position:relative;
-    overflow:hidden;
+    transition:all .3s ease;
   }
-  .feature::before{
-    content:'';position:absolute;top:0;left:0;right:0;height:2px;
-    background:var(--grad-launcher);
-    opacity:0;transition:opacity .5s ease;
+  .req:hover{border-color:var(--border-2);transform:translateY(-3px)}
+  .req-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    color:var(--text-3);
+    margin-bottom:8px;
+    font-weight:600;
   }
-  .feature:hover{
-    border-color:var(--border-2);
-    transform:translateY(-4px);
-    box-shadow:0 16px 48px rgba(0,0,0,.4);
-  }
-  .feature:hover::before{opacity:1}
-  .feature i{
-    font-size:1.6rem;
-    color:#60a5fa;
-    margin-bottom:16px;
-    display:block;
-    transition:transform .4s var(--ease-spring);
-  }
-  .feature:hover i{transform:scale(1.15) rotate(-6deg)}
-  .feature h4{
+  .req-value{
     font-family:'Space Grotesk',sans-serif;
-    font-size:1.05rem;font-weight:600;
-    margin-bottom:8px;letter-spacing:-.02em;
-  }
-  .feature p{
-    font-size:.88rem;color:var(--text-2);line-height:1.65;
+    font-size:1rem;
+    font-weight:600;
+    color:var(--text);
+    letter-spacing:-.01em;
   }
 
   /* ========== FAQ ========== */
@@ -674,7 +691,7 @@
     transition:all .4s var(--ease);
   }
   .faq-item:hover{border-color:var(--border-2)}
-  .faq-item[open]{border-color:var(--purple)}
+  .faq-item[open]{border-color:var(--blue)}
   .faq-q{
     padding:24px 32px;
     font-family:'Space Grotesk',sans-serif;
@@ -689,12 +706,12 @@
   .faq-q::after{
     content:'+';
     font-family:'JetBrains Mono',monospace;
-    font-size:1.4rem;color:var(--purple-2);
+    font-size:1.4rem;color:var(--blue-2);
     transition:transform .4s var(--ease-spring);
     flex-shrink:0;
   }
   .faq-item[open] .faq-q::after{transform:rotate(45deg)}
-  .faq-item[open] .faq-q{color:var(--purple-2)}
+  .faq-item[open] .faq-q{color:var(--blue-2)}
   .faq-a{
     padding:0 32px 24px;
     font-size:.95rem;color:var(--text-2);
@@ -721,13 +738,13 @@
   }
   .cta-card::before{
     content:'';position:absolute;top:0;left:0;right:0;height:3px;
-    background:var(--grad-hero);
+    background:var(--grad-launcher);
   }
   .cta-card::after{
     content:'';position:absolute;
     top:-40%;left:50%;transform:translateX(-50%);
     width:120%;height:120%;
-    background:radial-gradient(ellipse,rgba(139,92,246,.15),transparent 55%);
+    background:radial-gradient(ellipse,rgba(59,130,246,.18),transparent 55%);
     pointer-events:none;
   }
   .cta-in{position:relative;z-index:1}
@@ -754,21 +771,25 @@
     flex-wrap:wrap;gap:24px;
   }
   .footer-brand{
-    display:flex;align-items:center;
-    text-decoration:none;
+    display:flex;align-items:center;gap:12px;
+    color:#fff;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1rem;font-weight:700;
+    letter-spacing:-.02em;
   }
-  .footer-brand img{
-    height:40px;width:auto;object-fit:contain;
-    filter:drop-shadow(0 0 20px rgba(139,92,246,.35));
-    transition:opacity .3s ease;
+  .footer-brand .mark{
+    width:32px;height:32px;border-radius:10px;
+    background:var(--grad-launcher);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:.9rem;
+    box-shadow:0 4px 16px rgba(59,130,246,.4);
   }
-  .footer-brand img:hover{opacity:.75}
   .footer-links{display:flex;gap:24px;flex-wrap:wrap}
   .footer-links a{
     font-size:.85rem;color:var(--text-3);
     text-decoration:none;transition:color .2s ease;
   }
-  .footer-links a:hover{color:var(--purple-2)}
+  .footer-links a:hover{color:var(--blue-2)}
   .footer-copy{font-size:.82rem;color:var(--text-3)}
 
   /* ========== REVEAL ========== */
@@ -780,7 +801,7 @@
 
   /* ========== RESPONSIVE ========== */
   @media (max-width:1000px){
-    .launcher-head{grid-template-columns:1fr;gap:48px}
+    .showcase{grid-template-columns:1fr;gap:48px}
     .features-grid{grid-template-columns:1fr 1fr}
   }
   @media (max-width:900px){
@@ -803,7 +824,6 @@
     .faq-a{padding:0 24px 20px}
     .cta-card{padding:56px 24px}
     .footer-in{flex-direction:column;text-align:center}
-    .nav-brand img{height:36px}
   }
 </style>
 </head>
@@ -816,16 +836,18 @@
 <nav class="nav" id="nav">
   <div class="nav-in">
     <a href="#" class="nav-brand">
-      <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/minecraft_title1.png" alt="Ludvig2457">
+      <span class="mark"><i class="fas fa-rocket"></i></span>
+      <span>SuperLauncherMC</span>
     </a>
     <div class="nav-menu">
-      <a href="#superlauncher">SuperLauncher</a>
-      <a href="#scaleoftools">Scale Of Tools</a>
+      <a href="#features">Возможности</a>
+      <a href="#how">Установка</a>
       <a href="#download">Скачать</a>
+      <a href="#faq">FAQ</a>
     </div>
-    <a href="#superlauncher" class="nav-cta">
-      <i class="fas fa-rocket"></i>
-      Лаунчер
+    <a href="#download" class="nav-cta">
+      <i class="fas fa-download"></i>
+      Скачать
     </a>
   </div>
 </nav>
@@ -835,152 +857,281 @@
   <div class="hero-in">
     <div class="hero-badge">
       <span class="live">Live</span>
-      Два проекта · Открытый исходный код · 2026
+      v3.0 Beta · C++ · Assembler · 260 КБ
     </div>
     <h1>
-      Инструменты<br>
-      для тех, кто <em>делает.</em>
+      Лаунчер, который<br>
+      <em>не тормозит.</em>
     </h1>
     <p>
-      SuperLauncherMC — лаунчер на C++ и Assembler, который весит 260 КБ и запускается мгновенно. Scale Of Tools — клиентский мод, который спасает твои инструменты от поломки.
+      SuperLauncherMC — нативный Minecraft-лаунчер на C++ и Assembler. Не требует Java. Весит 260 КБ. Запускается за миллисекунды. Работает даже на Windows XP.
     </p>
     <div class="hero-actions">
-      <a href="#superlauncher" class="btn btn-launcher">
-        <i class="fas fa-rocket"></i> SuperLauncherMC
+      <a href="#download" class="btn btn-launcher">
+        <i class="fas fa-download"></i> Скачать 3.0 Beta
       </a>
-      <a href="#scaleoftools" class="btn btn-secondary">
-        <i class="fas fa-wrench"></i> Scale Of Tools
+      <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative" target="_blank" class="btn btn-secondary">
+        <i class="fab fa-github"></i> GitHub
       </a>
     </div>
     <div class="hero-meta">
       <span><i class="fas fa-check"></i> 260 КБ</span>
       <span><i class="fas fa-check"></i> 0 зависимостей</span>
-      <span><i class="fas fa-check"></i> 4 загрузчика</span>
-      <span><i class="fas fa-check"></i> MIT + GPLv3</span>
+      <span><i class="fas fa-check"></i> Windows 10/11 + XP</span>
+      <span><i class="fas fa-check"></i> GPLv3</span>
     </div>
   </div>
 </section>
 
-<!-- ========== SUPERLAUNCHERMC ========== -->
-<section id="superlauncher" class="section launcher">
+<!-- PROBLEM -->
+<section class="section problem">
   <div class="wrap">
-    <div class="launcher-head">
+    <div class="problem-in">
       <div class="reveal">
-        <div class="tag launcher">01 — Minecraft Launcher</div>
-        <h2>SuperLauncherMC. <em class="launcher">260 КБ. Мгновенный запуск.</em></h2>
-        <p class="lead" style="margin-top:20px">
-          Нативный бинарник на C++ и Assembler. Не требует Java, не тянет рантаймы, не собирает телеметрию. Работает на Windows 10/11 и Linux. Есть отдельная сборка для Windows XP.
+        <div class="tag">Проблема</div>
+        <h2>Современные лаунчеры <em>слишком тяжёлые.</em></h2>
+        <p class="lead" style="margin-top:24px">
+          Они тянут за собой Java, Electron, Qt, гигабайты зависимостей. Запускаются 10 секунд. Жрут память. Показывают рекламу. И требуют современную систему.
         </p>
-        <div class="hero-actions" style="justify-content:flex-start;margin-top:36px">
-          <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative/releases/download/3.0/SuperLauncherNative.exe" target="_blank" class="btn btn-launcher">
-            <i class="fas fa-download"></i> Скачать 3.0 Beta
-          </a>
-          <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative" target="_blank" class="btn btn-secondary">
-            <i class="fab fa-github"></i> GitHub
-          </a>
-        </div>
       </div>
-
-      <div class="launcher-hero-visual reveal">
-        <div class="launcher-mock">
-          <div class="lm-bar">
-            <div class="lm-dot r"></div>
-            <div class="lm-dot y"></div>
-            <div class="lm-dot g"></div>
-            <span class="lm-title">SuperLauncherMC 3.0 Beta</span>
+      <div class="problem-visual reveal">
+        <div class="chat">
+          <div class="chat-line">
+            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
+            <div class="chat-text"><strong>200 МБ установщик.</strong> Только чтобы запустить игру на 500 МБ.</div>
           </div>
-          <div class="lm-body">
-            <div class="lm-row active">
-              <i class="fas fa-download"></i>
-              <span style="flex:1">Скачивание Minecraft 1.21.4</span>
-              <div class="lm-progress"><div class="lm-progress-fill"></div></div>
-              <span class="lm-pct">70%</span>
-            </div>
-            <div class="lm-row">
-              <i class="fas fa-cubes"></i>
-              <span style="flex:1">Установка Fabric Loader</span>
-              <i class="fas fa-check" style="color:var(--green)"></i>
-            </div>
-            <div class="lm-row">
-              <i class="fas fa-boxes"></i>
-              <span style="flex:1">Загрузка модов (12)</span>
-              <i class="fas fa-check" style="color:var(--green)"></i>
-            </div>
-            <div class="lm-row">
-              <i class="fas fa-rocket"></i>
-              <span style="flex:1">Запуск игры</span>
-              <i class="fas fa-circle" style="color:#60a5fa;font-size:.5rem"></i>
-            </div>
+          <div class="chat-line">
+            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
+            <div class="chat-text"><strong>Java runtime</strong> тянет за собой ещё 300 МБ.</div>
+          </div>
+          <div class="chat-line">
+            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
+            <div class="chat-text">На <strong>старом ПК</strong> не запускается вообще.</div>
+          </div>
+          <div class="chat-line">
+            <div class="chat-icon good"><i class="fas fa-check"></i></div>
+            <div class="chat-text"><strong>SuperLauncherMC</strong> — 260 КБ и мгновенный запуск.</div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- FEATURES -->
+<!-- SOLUTION -->
+<section class="section">
+  <div class="wrap">
+    <div class="reveal" style="max-width:720px">
+      <div class="tag">Решение</div>
+      <h2>Один .exe. <em>Ноль зависимостей.</em></h2>
+      <p class="lead" style="margin-top:20px">
+        SuperLauncherMC написан на чистом C++ с ассемблерными вставками в критических местах. Никакой JVM, никакого Electron, никаких внешних библиотек. Только прямые вызовы WinAPI и максимум производительности.
+      </p>
+    </div>
+
+    <div class="solution-grid">
+      <div class="sol-card reveal">
+        <div class="sol-icon"><i class="fas fa-bolt"></i></div>
+        <h3>Мгновенный запуск</h3>
+        <p>Лаунчер открывается за миллисекунды. Никакого прогресса «Инициализация...», потому что инициализировать нечего.</p>
+      </div>
+      <div class="sol-card reveal">
+        <div class="sol-icon"><i class="fas fa-feather"></i></div>
+        <h3>260 КБ</h3>
+        <p>Весит меньше одной фотографии. Помещается на любую флешку. Не требует установки — запустил и играешь.</p>
+      </div>
+      <div class="sol-card reveal">
+        <div class="sol-icon"><i class="fas fa-floppy-disk"></i></div>
+        <h3>Windows XP</h3>
+        <p>Отдельная сборка для Windows XP. Работает даже там, где современные лаунчеры отказываются запускаться.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE -->
+<section class="section how">
+  <div class="wrap">
+    <div class="reveal" style="max-width:720px">
+      <div class="tag">Как это выглядит</div>
+      <h2>Интерфейс 2026 года. <em>В 260 КБ.</em></h2>
+      <p class="lead" style="margin-top:20px">
+        Светлая и тёмная темы, анимированные переходы, Discord Rich Presence. Всё работает мгновенно, потому что нет прослоек между кодом и железом.
+      </p>
+    </div>
+
+    <div class="showcase">
+      <div class="launcher-mock reveal">
+        <div class="lm-bar">
+          <div class="lm-dot r"></div>
+          <div class="lm-dot y"></div>
+          <div class="lm-dot g"></div>
+          <span class="lm-title">SuperLauncherMC 3.0 Beta</span>
+        </div>
+        <div class="lm-body">
+          <div class="lm-row active">
+            <i class="fas fa-download"></i>
+            <span style="flex:1">Скачивание Minecraft 1.21.4</span>
+            <div class="lm-progress"><div class="lm-progress-fill"></div></div>
+            <span class="lm-pct">70%</span>
+          </div>
+          <div class="lm-row">
+            <i class="fas fa-cubes"></i>
+            <span style="flex:1">Установка Fabric Loader</span>
+            <i class="fas fa-check" style="color:var(--green)"></i>
+          </div>
+          <div class="lm-row">
+            <i class="fas fa-boxes"></i>
+            <span style="flex:1">Загрузка модов (12)</span>
+            <i class="fas fa-check" style="color:var(--green)"></i>
+          </div>
+          <div class="lm-row">
+            <i class="fas fa-shield-halved"></i>
+            <span style="flex:1">Проверка целостности файлов</span>
+            <i class="fas fa-check" style="color:var(--green)"></i>
+          </div>
+          <div class="lm-row">
+            <i class="fas fa-rocket"></i>
+            <span style="flex:1">Запуск игры</span>
+            <i class="fas fa-circle" style="color:var(--blue-2);font-size:.5rem"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="showcase-text reveal">
+        <h3>Всё под контролем</h3>
+        <p>Лаунчер сам скачивает нужную версию Java, ставит Forge, Fabric или NeoForge, загружает моды из Modrinth и запускает игру. Ты просто выбираешь версию и нажимаешь «Играть».</p>
+        <div class="showcase-list">
+          <div class="showcase-item"><i class="fas fa-check"></i> Auto Java setup</div>
+          <div class="showcase-item"><i class="fas fa-check"></i> Modrinth API (без ключа, без лимитов)</div>
+          <div class="showcase-item"><i class="fas fa-check"></i> Многопоточная загрузка — 5 потоков</div>
+          <div class="showcase-item"><i class="fas fa-check"></i> Кэш модов и бэкапы</div>
+          <div class="showcase-item"><i class="fas fa-check"></i> Управление серверами (Bukkit/Spigot/Paper)</div>
+          <div class="showcase-item"><i class="fas fa-check"></i> Тёмная и светлая темы</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="section">
+  <div class="wrap">
+    <div class="reveal" style="max-width:720px">
+      <div class="tag">Возможности</div>
+      <h2>Всё, что нужно. <em>И ничего лишнего.</em></h2>
+    </div>
+
     <div class="features-grid">
       <div class="feature reveal">
         <i class="fas fa-bolt"></i>
         <h4>Нативный C++ / Assembler</h4>
-        <p>Не требует Java. Не тянет рантаймы. Запускается за миллисекунды, работает даже на слабых машинах.</p>
+        <p>Прямые вызовы WinAPI. Никаких JVM, Electron, Qt. Максимальная производительность.</p>
       </div>
       <div class="feature reveal">
         <i class="fas fa-cubes"></i>
         <h4>Modrinth API</h4>
-        <p>Установка модпаков в один клик. Поддержка Forge, Fabric, NeoForge, Quilt и OptiFine.</p>
-      </div>
-      <div class="feature reveal">
-        <i class="fas fa-server"></i>
-        <h4>Управление серверами</h4>
-        <p>Локальные серверы, плагины из Modrinth, поддержка Bukkit/Spigot/Paper, авто-обновления.</p>
-      </div>
-      <div class="feature reveal">
-        <i class="fas fa-palette"></i>
-        <h4>Темы и Rich Presence</h4>
-        <p>Светлая и тёмная темы, анимированные переходы, Discord Rich Presence.</p>
+        <p>Установка модпаков в один клик. Без ключа, без лимитов, без рекламы.</p>
       </div>
       <div class="feature reveal">
         <i class="fas fa-layer-group"></i>
-        <h4>Мульти-загрузчики</h4>
-        <p>Одна кнопка — и у тебя готовая сборка. Дедупликация модов по хэшам, никаких конфликтов.</p>
+        <h4>4 загрузчика</h4>
+        <p>Forge, Fabric, NeoForge, Quilt, OptiFine. Все ставится автоматически.</p>
       </div>
       <div class="feature reveal">
-        <i class="fas fa-floppy-disk"></i>
-        <h4>Поддержка XP</h4>
-        <p>Отдельная сборка для Windows XP. Работает даже там, где современные лаунчеры не запускаются.</p>
+        <i class="fas fa-server"></i>
+        <h4>Серверы</h4>
+        <p>Плагины из Modrinth, поддержка Bukkit/Spigot/Paper, авто-обновления.</p>
+      </div>
+      <div class="feature reveal">
+        <i class="fas fa-layer-group"></i>
+        <h4>Дедупликация</h4>
+        <p>Моды сравниваются по хэшам, а не по длине имени. Никаких конфликтов.</p>
+      </div>
+      <div class="feature reveal">
+        <i class="fas fa-palette"></i>
+        <h4>Интерфейс 2026</h4>
+        <p>Тёмная и светлая темы, анимированные переходы, Discord Rich Presence.</p>
       </div>
     </div>
 
     <!-- STATS -->
     <div class="stats reveal">
       <div class="stat">
-        <div class="stat-v launcher">260</div>
+        <div class="stat-v">260</div>
         <div class="stat-l">Килобайт</div>
       </div>
       <div class="stat">
-        <div class="stat-v launcher">0</div>
+        <div class="stat-v">0</div>
         <div class="stat-l">Зависимостей</div>
       </div>
       <div class="stat">
-        <div class="stat-v launcher">4</div>
+        <div class="stat-v">4</div>
         <div class="stat-l">Загрузчика</div>
       </div>
       <div class="stat">
-        <div class="stat-v launcher">∞</div>
-        <div class="stat-l">Версий MC</div>
+        <div class="stat-v">∞</div>
+        <div class="stat-l">Версий Minecraft</div>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- DOWNLOAD CARDS -->
-    <div class="download-grid" style="margin-top:56px">
-      <div class="dl-card launcher reveal">
+<!-- HOW -->
+<section id="how" class="section how">
+  <div class="wrap">
+    <div class="reveal" style="max-width:720px">
+      <div class="tag">Установка</div>
+      <h2>Три шага. <em>И ты в игре.</em></h2>
+    </div>
+
+    <div class="how-list reveal">
+      <div class="how-item">
+        <div class="how-num">01</div>
+        <div class="how-body">
+          <h3>Скачай .exe</h3>
+          <p>Скачай <code>SuperLauncherNative.exe</code> с GitHub. Портативный файл, не требует установки. Java не нужна.</p>
+        </div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">02</div>
+        <div class="how-body">
+          <h3>Выбери версию Minecraft</h3>
+          <p>Запусти лаунчер, выбери нужную версию и загрузчик (Forge, Fabric, NeoForge, Quilt или OptiFine).</p>
+        </div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">03</div>
+        <div class="how-body">
+          <h3>Нажми «Играть»</h3>
+          <p>Лаунчер сам скачает Java, файлы игры, загрузчик и моды. Запустит Minecraft автоматически.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download" class="section">
+  <div class="wrap">
+    <div class="reveal" style="max-width:720px">
+      <div class="tag">Скачать</div>
+      <h2>Две версии. <em>Обе бесплатны.</em></h2>
+      <p class="lead" style="margin-top:20px">
+        Основная сборка для Windows 10/11 и отдельная сборка для Windows XP. Обе портативные, обе весят 260 КБ.
+      </p>
+    </div>
+
+    <div class="download-grid">
+      <div class="dl-card reveal">
         <div class="dl-head">
-          <div class="dl-platform launcher"><i class="fas fa-rocket"></i></div>
+          <div class="dl-platform"><i class="fas fa-rocket"></i></div>
           <div class="dl-title">
-            <h3>SuperLauncherMC 3.0 Beta</h3>
-            <p>Нативный бинарник · C++ / Assembler</p>
+            <h3>v3.0 Beta</h3>
+            <p>Windows 10 / 11</p>
           </div>
         </div>
-        <p>Windows 10/11. Не требует Java. Весит 260 КБ. Портативный — один .exe без установки.</p>
+        <p>Нативная сборка на C++ и Assembler. Не требует Java. Modrinth API, 4 загрузчика, управление серверами, кэш и бэкапы.</p>
         <div class="dl-meta">
           <span><i class="fab fa-windows"></i> Windows 10/11</span>
           <span><i class="fas fa-code"></i> C++ / Assembler</span>
@@ -991,12 +1142,12 @@
         </a>
       </div>
 
-      <div class="dl-card reveal">
+      <div class="dl-card xp reveal">
         <div class="dl-head">
-          <div class="dl-platform launcher" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fas fa-floppy-disk"></i></div>
+          <div class="dl-platform xp"><i class="fas fa-floppy-disk"></i></div>
           <div class="dl-title">
-            <h3>SuperLauncherMC для Windows XP</h3>
-            <p>Legacy-версия</p>
+            <h3>XP Edition</h3>
+            <p>Windows XP</p>
           </div>
         </div>
         <p>Специальная сборка для Windows XP. Работает на старом железе, где современные лаунчеры не запускаются.</p>
@@ -1010,188 +1161,39 @@
         </a>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ========== PROBLEM (Scale Of Tools) ========== -->
-<section class="section problem">
-  <div class="wrap">
-    <div class="problem-in">
-      <div class="reveal">
-        <div class="tag">Scale Of Tools · Проблема</div>
-        <h2>Ты копаешь, строишь, <em>сражаешься</em> — и вдруг...</h2>
-        <p class="lead" style="margin-top:24px">
-          Инструмент ломается в самый неподходящий момент. Ты не заметил, что прочность на нуле. Алмазная кирка, которую ты добывал час, исчезает за одну секунду. И ты остаёшься с рукой в кармане.
-        </p>
+    <!-- REQS -->
+    <div class="reqs reveal">
+      <div class="req">
+        <div class="req-label">ОС</div>
+        <div class="req-value">Windows 7 / 10 / 11 / XP</div>
       </div>
-      <div class="problem-visual reveal">
-        <div class="chat">
-          <div class="chat-line">
-            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
-            <div class="chat-text"><strong>Твоя кирка сломалась.</strong> Ты потерял 30 минут добычи и 3 алмаза на крафт.</div>
-          </div>
-          <div class="chat-line">
-            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
-            <div class="chat-text">Ты не знал, что остался <strong>1 удар</strong>. Теперь знаешь.</div>
-          </div>
-          <div class="chat-line">
-            <div class="chat-icon bad"><i class="fas fa-times"></i></div>
-            <div class="chat-text">Ты снова копаешь <strong>без инструмента</strong>.</div>
-          </div>
-          <div class="chat-line">
-            <div class="chat-icon good"><i class="fas fa-check"></i></div>
-            <div class="chat-text"><strong>Scale Of Tools</strong> предупредил бы тебя заранее.</div>
-          </div>
-        </div>
+      <div class="req">
+        <div class="req-label">Процессор</div>
+        <div class="req-value">Любой x86 / x86_64</div>
+      </div>
+      <div class="req">
+        <div class="req-label">RAM</div>
+        <div class="req-value">от 2 ГБ</div>
+      </div>
+      <div class="req">
+        <div class="req-label">Java</div>
+        <div class="req-value">Не требуется</div>
+      </div>
+      <div class="req">
+        <div class="req-label">Место на диске</div>
+        <div class="req-value">от 200 МБ (под игру)</div>
+      </div>
+      <div class="req">
+        <div class="req-label">GPU</div>
+        <div class="req-value">Любая с OpenGL 3.2+</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ========== SOLUTION ========== -->
-<section id="scaleoftools" class="section">
-  <div class="wrap">
-    <div class="reveal" style="max-width:720px">
-      <div class="tag">Scale Of Tools · Решение</div>
-      <h2>Один мод. <em>Три защиты.</em></h2>
-      <p class="lead" style="margin-top:20px">
-        Scale Of Tools работает на клиенте. Ничего не надо ставить на сервер. Никаких читов. Только удобство, которое должно было быть в ванильной игре.
-      </p>
-    </div>
-
-    <div class="solution-grid">
-      <div class="sol-card reveal">
-        <div class="sol-icon"><i class="fas fa-bell"></i></div>
-        <h3>Предупреждение</h3>
-        <p>Когда прочность падает до 10, в action bar появляется сообщение: «Almost broken: Diamond Pickaxe — 10 remaining».</p>
-      </div>
-      <div class="sol-card reveal">
-        <div class="sol-icon"><i class="fas fa-compress"></i></div>
-        <h3>Сжатие</h3>
-        <p>Инструмент визуально сжимается при износе. Чем ближе к поломке — тем меньше модель в руке. Ты видишь это без цифр.</p>
-      </div>
-      <div class="sol-card reveal">
-        <div class="sol-icon"><i class="fas fa-tree"></i></div>
-        <h3>Палки после поломки</h3>
-        <p>Если инструмент всё-таки сломался — рядом остаются палки. Они лежат 5 секунд и исчезают с лёгким облаком.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ========== HOW (общее) ========== -->
-<section id="how" class="section how">
-  <div class="wrap">
-    <div class="reveal" style="max-width:720px">
-      <div class="tag">Установка</div>
-      <h2>Установил. <em>Играешь.</em></h2>
-      <p class="lead" style="margin-top:20px">
-        Для обоих проектов установка занимает минуту. Никаких инструкций, никаких зависимостей, никаких настроек по умолчанию.
-      </p>
-    </div>
-
-    <div class="how-list reveal">
-      <div class="how-item">
-        <div class="how-num launcher">01</div>
-        <div class="how-body">
-          <h3>Скачай SuperLauncherMC</h3>
-          <p>Скачай <code>SuperLauncherNative.exe</code> и запусти. Java не требуется — лаунчер сам скачает нужную версию и поставит Forge, Fabric или NeoForge.</p>
-        </div>
-      </div>
-      <div class="how-item">
-        <div class="how-num">02</div>
-        <div class="how-body">
-          <h3>Выбери версию Minecraft</h3>
-          <p>В лаунчере выбери нужную версию, загрузчик и нажми «Играть». Все файлы скачаются автоматически.</p>
-        </div>
-      </div>
-      <div class="how-item">
-        <div class="how-num">03</div>
-        <div class="how-body">
-          <h3>Установи Scale Of Tools</h3>
-          <p>Скачай <code>ScaleOfTools-1.1.jar</code> и положи в папку <code>.minecraft/mods</code>. Для Fabric нужен только fabric-loader, Fabric API не обязателен.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- STATS -->
-    <div class="stats reveal">
-      <div class="stat">
-        <div class="stat-v">80+</div>
-        <div class="stat-l">Скачиваний</div>
-      </div>
-      <div class="stat">
-        <div class="stat-v">16</div>
-        <div class="stat-l">Файлов мода</div>
-      </div>
-      <div class="stat">
-        <div class="stat-v launcher">260</div>
-        <div class="stat-l">КБ лаунчер</div>
-      </div>
-      <div class="stat">
-        <div class="stat-v launcher">4</div>
-        <div class="stat-l">Загрузчика</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ========== DOWNLOAD (общее) ========== -->
-<section id="download" class="section">
-  <div class="wrap">
-    <div class="reveal" style="max-width:720px">
-      <div class="tag">Скачать</div>
-      <h2>Всё бесплатно. <em>Всё открыто.</em></h2>
-      <p class="lead" style="margin-top:20px">
-        Оба проекта доступны бесплатно. SuperLauncherMC — на GitHub, Scale Of Tools — на CurseForge и Modrinth. Лицензии MIT и GPLv3.
-      </p>
-    </div>
-
-    <div class="download-grid">
-      <div class="dl-card launcher reveal">
-        <div class="dl-head">
-          <div class="dl-platform launcher"><i class="fas fa-rocket"></i></div>
-          <div class="dl-title">
-            <h3>SuperLauncherMC</h3>
-            <p>Нативный лаунчер на C++ / Assembler</p>
-          </div>
-        </div>
-        <p>Windows 10/11 и Windows XP. 260 КБ. Без Java. Modrinth API, 4 загрузчика, управление серверами.</p>
-        <div class="dl-meta">
-          <span><i class="fab fa-windows"></i> Windows 10/11 / XP</span>
-          <span><i class="fas fa-code"></i> C++ / Assembler</span>
-          <span><i class="fas fa-file-archive"></i> 260 КБ</span>
-          <span><i class="fas fa-balance-scale"></i> GPLv3</span>
-        </div>
-        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative" target="_blank" class="btn btn-launcher">
-          <i class="fab fa-github"></i> Открыть на GitHub
-        </a>
-      </div>
-
-      <div class="dl-card warm reveal">
-        <div class="dl-head">
-          <div class="dl-platform cf"><i class="fas fa-fire"></i></div>
-          <div class="dl-title">
-            <h3>Scale Of Tools</h3>
-            <p>Мод для Minecraft · 80+ скачиваний</p>
-          </div>
-        </div>
-        <p>CurseForge и Modrinth. 16 файлов: Fabric, Forge, NeoForge, Quilt для 4 версий Minecraft.</p>
-        <div class="dl-meta">
-          <span><i class="fas fa-check"></i> Проверено модерацией</span>
-          <span><i class="fas fa-cubes"></i> 16 файлов</span>
-          <span><i class="fas fa-balance-scale"></i> MIT</span>
-        </div>
-        <a href="https://www.curseforge.com/minecraft/mc-mods/scale-of-tools" target="_blank" class="btn btn-primary">
-          <i class="fas fa-download"></i> Скачать с CurseForge
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ========== FAQ ========== -->
-<section class="section how">
+<!-- FAQ -->
+<section id="faq" class="section how">
   <div class="wrap">
     <div class="reveal" style="text-align:center;max-width:720px;margin:0 auto">
       <div class="tag" style="justify-content:center">FAQ</div>
@@ -1200,80 +1202,80 @@
 
     <div class="faq-list reveal">
       <details class="faq-item">
-        <summary class="faq-q">Что такое SuperLauncherMC?</summary>
-        <div class="faq-a">Это нативный Minecraft-лаунчер на C++ и Assembler. Весит 260 КБ, не требует Java, работает на Windows 10/11 и XP. Умеет ставить моды и загрузчики в один клик, управлять серверами, использовать Modrinth API.</div>
-      </details>
-
-      <details class="faq-item">
         <summary class="faq-q">Почему лаунчер такой маленький?</summary>
-        <div class="faq-a">Потому что он не тянет за собой JVM, не включает в себя Electron или Qt, не использует внешние библиотеки. Только C++, Assembler и прямые вызовы WinAPI. Всё лишнее — вырезано.</div>
+        <div class="faq-a">Потому что он не тянет за собой JVM, не включает Electron или Qt, не использует внешние библиотеки. Только C++, Assembler и прямые вызовы WinAPI.</div>
       </details>
 
       <details class="faq-item">
-        <summary class="faq-q">Scale Of Tools — это чит? Меня забанят?</summary>
-        <div class="faq-a">Нет. Мод не даёт никаких преимуществ в бою или игре. Он просто предупреждает о низкой прочности инструмента — информацию, которую игрок и так может увидеть, наведя курсор на предмет. Никаких авто-действий мод не делает.</div>
-      </details>
-
-      <details class="faq-item">
-        <summary class="faq-q">Нужно ли ставить Scale Of Tools на сервер?</summary>
-        <div class="faq-a">Нет. Это клиентский мод. Он работает только на твоём клиенте. На сервер ничего ставить не надо — ванильные сервера поддерживаются.</div>
+        <summary class="faq-q">Нужна ли Java?</summary>
+        <div class="faq-a">Нет. Лаунчер сам скачает нужную версию Java под конкретную версию Minecraft. Тебе не нужно ничего ставить вручную.</div>
       </details>
 
       <details class="faq-item">
         <summary class="faq-q">Какие версии Minecraft поддерживаются?</summary>
-        <div class="faq-a">Scale Of Tools: 1.20.1, 1.20.4, 1.21.1, 1.21.4. Загрузчики: Fabric, Forge, NeoForge, Quilt. SuperLauncherMC: все версии Minecraft, включая старые Alpha и Beta.</div>
+        <div class="faq-a">Все — от Alpha до последних релизов. Лаунчер использует официальный список версий Minecraft и автоматически подбирает нужную Java.</div>
       </details>
 
       <details class="faq-item">
-        <summary class="faq-q">Нужен ли Fabric API для мода?</summary>
-        <div class="faq-a">Нет. Мод использует только fabric-loader. Fabric API не требуется, но и не мешает работе мода.</div>
+        <summary class="faq-q">Какие загрузчики модов поддерживаются?</summary>
+        <div class="faq-a">Forge, Fabric, NeoForge, Quilt и OptiFine. Все ставятся автоматически в пару кликов.</div>
       </details>
 
       <details class="faq-item">
-        <summary class="faq-q">Как удалить мод?</summary>
-        <div class="faq-a">Просто удали <code>.jar</code> из папки <code>mods</code>. Мод не изменяет мир и сохранения, поэтому удаление ничего не сломает.</div>
+        <summary class="faq-q">Можно ли запустить на Windows XP?</summary>
+        <div class="faq-a">Да. Есть отдельная сборка <code>SuperLauncherNative_xp.exe</code>, собранная специально для Windows XP. Она весит те же 260 КБ и работает на старом железе.</div>
       </details>
 
       <details class="faq-item">
-        <summary class="faq-q">Можно ли включить мод в сборку?</summary>
-        <div class="faq-a">Да. Мод распространяется под лицензией MIT. Указывай авторство (Ludvig2457) и ссылку на страницу CurseForge или Modrinth.</div>
+        <summary class="faq-q">Лаунчер бесплатный?</summary>
+        <div class="faq-a">Да, полностью бесплатный. Исходный код открыт на GitHub под лицензией GPLv3.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Можно ли играть без лицензии?</summary>
+        <div class="faq-a">Да, поддерживается офлайн-режим. Но для игры на официальных серверах потребуется лицензионный аккаунт.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Как обновить лаунчер?</summary>
+        <div class="faq-a">У лаунчера есть встроенный авто-апдейтер. Он сам проверяет обновления при запуске и предлагает установить новую версию.</div>
       </details>
     </div>
   </div>
 </section>
 
-<!-- ========== CTA ========== -->
+<!-- CTA -->
 <section class="cta">
   <div class="cta-card reveal">
     <div class="cta-in">
-      <div class="tag" style="justify-content:center">Начни сейчас</div>
-      <h2>Один разработчик.<br><em>Два инструмента. Ноль компромиссов.</em></h2>
-      <p>Скачай SuperLauncherMC и Scale Of Tools бесплатно. Установка занимает 30 секунд. Работает без Java, без сервера, без телеметрии.</p>
+      <div class="tag" style="justify-content:center">Скачать</div>
+      <h2>260 КБ. <em>И ты в игре.</em></h2>
+      <p>Скачай SuperLauncherMC бесплатно. Установка занимает 10 секунд. Работает на Windows 10/11 и XP, без Java, без зависимостей.</p>
       <div class="cta-actions">
         <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative/releases/download/3.0/SuperLauncherNative.exe" target="_blank" class="btn btn-launcher btn-lg">
-          <i class="fas fa-rocket"></i> SuperLauncherMC
+          <i class="fas fa-download"></i> Скачать 3.0 Beta
         </a>
-        <a href="https://www.curseforge.com/minecraft/mc-mods/scale-of-tools" target="_blank" class="btn btn-secondary btn-lg">
-          <i class="fas fa-wrench"></i> Scale Of Tools
+        <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative" target="_blank" class="btn btn-secondary btn-lg">
+          <i class="fab fa-github"></i> Открыть на GitHub
         </a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ========== FOOTER ========== -->
+<!-- FOOTER -->
 <footer class="footer">
   <div class="footer-in">
     <a href="#" class="footer-brand">
-      <img src="https://github.com/ludvig2457/ludvig2457.github.io/raw/main/assets/minecraft_title1.png" alt="Ludvig2457">
+      <span class="mark"><i class="fas fa-rocket"></i></span>
+      <span>SuperLauncherMC</span>
     </a>
     <div class="footer-links">
-      <a href="https://github.com/Ludvig2457Ultra" target="_blank">GitHub</a>
+      <a href="https://github.com/Ludvig2457Ultra/SuperLauncherMCNative" target="_blank">GitHub</a>
       <a href="https://discord.gg/5QyUmRZZd2" target="_blank">Discord</a>
       <a href="https://www.youtube.com/@ludvig2457" target="_blank">YouTube</a>
-      <a href="https://modrinth.com/mod/scale-of-tools" target="_blank">Modrinth</a>
     </div>
-    <p class="footer-copy">© 2026 Ludvig2457 · MIT + GPLv3</p>
+    <p class="footer-copy">© 2026 Ludvig2457 · GPLv3</p>
   </div>
 </footer>
 
