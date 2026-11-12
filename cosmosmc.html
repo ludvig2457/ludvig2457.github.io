@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CosmosMC — PvP Client</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: #0A0E1A;
+        color: #E9ECF8;
+        overflow-x: hidden;
+    }
+    .bg-gradient {
+        position: fixed; inset: 0; z-index: -1;
+        background: radial-gradient(ellipse at top, #111A34 0%, #0A0E1A 60%);
+    }
+
+    /* ---- Sun + orbit + planet ---- */
+    .cosmos-logo {
+        position: relative;
+        width: 120px; height: 120px;
+        margin: 40px auto 20px;
+    }
+    .sun {
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 60px; height: 60px;
+        margin: -30px 0 0 -30px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, #7B6CFF, #55E6C1);
+        box-shadow: 0 0 40px rgba(85, 230, 193, 0.6);
+    }
+    .orbit {
+        position: absolute; inset: 0;
+        border: 2px solid rgba(85, 230, 193, 0.25);
+        border-radius: 50%;
+        transform: rotateX(70deg);
+    }
+    .planet {
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 14px; height: 14px;
+        margin: -7px 0 0 -7px;
+        border-radius: 50%;
+        background: #FFFFFF;
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+        animation: orbit 4s linear infinite;
+        transform-origin: 0 0;
+    }
+    @keyframes orbit {
+        from { transform: rotate(0deg) translateX(60px) rotate(0deg); }
+        to   { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+    }
+
+    /* ---- Hero ---- */
+    .hero {
+        text-align: center;
+        padding: 20px 20px 60px;
+    }
+    h1 {
+        font-size: clamp(42px, 8vw, 88px);
+        background: linear-gradient(90deg, #55E6C1, #7B6CFF, #FF6FB5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 900;
+        letter-spacing: -2px;
+    }
+    .subtitle {
+        font-size: 20px;
+        color: #9AA3BE;
+        margin-top: 8px;
+    }
+    .download-btn {
+        display: inline-block;
+        margin-top: 32px;
+        padding: 16px 48px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #0A0E1A;
+        background: linear-gradient(135deg, #55E6C1, #7B6CFF);
+        border-radius: 12px;
+        text-decoration: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 8px 32px rgba(85, 230, 193, 0.35);
+    }
+    .download-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(85, 230, 193, 0.55);
+    }
+
+    /* ---- Features ---- */
+    .features {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 60px 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 24px;
+    }
+    .feature {
+        background: rgba(20, 26, 48, 0.8);
+        border: 1px solid rgba(85, 230, 193, 0.15);
+        border-radius: 16px;
+        padding: 28px;
+        transition: border-color 0.2s, transform 0.2s;
+    }
+    .feature:hover {
+        border-color: rgba(85, 230, 193, 0.5);
+        transform: translateY(-4px);
+    }
+    .feature h3 {
+        color: #55E6C1;
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+    .feature p {
+        color: #9AA3BE;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    /* ---- Footer ---- */
+    footer {
+        text-align: center;
+        padding: 40px 20px;
+        color: #5E6784;
+        font-size: 14px;
+        border-top: 1px solid rgba(85, 230, 193, 0.1);
+    }
+</style>
+</head>
+<body>
+<div class="bg-gradient"></div>
+
+<div class="hero">
+    <div class="cosmos-logo">
+        <div class="orbit"></div>
+        <div class="sun"></div>
+        <div class="planet"></div>
+    </div>
+    <h1>COSMOSMC</h1>
+    <p class="subtitle">The lightweight PvP client — 1000+ FPS, zero bloat.</p>
+    <a href="https://www.curseforge.com/minecraft/mc-mods/cosmosclient" class="download-btn">Download</a>
+</div>
+
+<div class="features">
+    <div class="feature">
+        <h3>⚡ 1000+ FPS</h3>
+        <p>Optimised hot path, zero allocations, Sodium-ready. Stable frame times in PvP.</p>
+    </div>
+    <div class="feature">
+        <h3>🎯 FastPlace</h3>
+        <p>Instant block placement, no delays. Built-in, no extra mods required.</p>
+    </div>
+    <div class="feature">
+        <h3>💀 AutoTotem</h3>
+        <p>Automatically moves a totem to your offhand when empty.</p>
+    </div>
+    <div class="feature">
+        <h3>✨ Particle Changer</h3>
+        <p>Custom crit colours, bigger crits, hide explosion and sweep particles.</p>
+    </div>
+    <div class="feature">
+        <h3>🎨 HUD Editor</h3>
+        <p>Drag, resize, and snap every widget. 8 resize handles, pixel-perfect control.</p>
+    </div>
+    <div class="feature">
+        <h3>🔧 Minimal by design</h3>
+        <p>No background panels. Only text and keys. Built for players who hate bloat.</p>
+    </div>
+</div>
+
+<footer>
+    CosmosMC © 2026 — Made by <span style="color:#55E6C1">ludvig2457</span>
+</footer>
+
+</body>
+</html>
